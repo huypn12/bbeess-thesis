@@ -39,3 +39,5 @@
 *.vrb
 *.nav
 *.out
+
+auto/
