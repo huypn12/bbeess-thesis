@@ -25,9 +25,6 @@
 *.bcf
 *.run.xml
 
-# PDF output - usually a bad idea to keep this in Git
-*.pdf
-
 # Latexmk
 *.fdb_latexmk
 
@@ -41,3 +38,4 @@
 *.out
 
 auto/
+bbees/third_party/
