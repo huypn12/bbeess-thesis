@@ -1,0 +1,43 @@
+\documentclass{article}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+\begin{document}
+\pagestyle{empty}
+
+
+% Define block styles
+\tikzstyle{decision} = [diamond, draw, fill=blue!20, 
+    text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
+\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
+    text width=5em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm,
+    minimum height=2em]
+    
+\begin{tikzpicture}[node distance = 3cm, auto]
+  % Place nodes
+  \node [block] (smodel) {Single-agent pDTMC models $\mathcal{S}_{1}^{\theta_1}\ldots\mathcal{S}_{N}^{\theta_N}$};
+  \node [block, below of=smodel] (mmodel) {Multi-agent pDTMC model $\mathcal{M}_\Theta$};
+  \node [block, left of=mmodel] (props) {PCTL property $\phi$};
+  \node [block, right of=mmodel, node distance=4cm] (data) {Synthetic data $y_{obs}$};
+  \node [block, below of=mmodel] (sample) {Sample parameter candidate $\Theta*$};
+  \node [block, below of=sample, left of=sample] (satp) {Estimate satisfaction probability $P(\mathcal{M}_{\Theta*}\models\phi)$};
+  \node [block, below of=sample, right of=sample] (post) {Estimate posterior $\pi(\Theta*|y_{obs})$};
+  \node [block, below of=post] (psynth) {Parameter synthesis $\hat{\Theta}$};
+  
+    % Draw edges
+  \path [line] (smodel) -- (mmodel);
+  \path [line] (mmodel) -- (sample);
+  \path [line] (props) -- (sample);
+  \path [line] (mmodel) -- (sample);
+  \path [line] (data) -- (sample);
+  \path [line] (sample) -- (satp);
+  \path [line] (satp) -- (post);
+  \path [line] (post) -- (sample);
+  \path [line] (post) -- (psynth);
+  
+\end{tikzpicture}
+
+
+\end{document}

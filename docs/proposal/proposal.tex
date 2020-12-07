@@ -1,1 +1,61 @@
- 
+ \documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+
+% graphics
+\usepackage{graphicx}
+\usepackage[pdf]{graphviz}
+
+% math
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{titling}
+\usepackage{listings}
+
+% graph and chart drawing
+\usepackage{tikz}
+\usetikzlibrary{automata,arrows,positioning,calc}
+
+% citation
+\usepackage{biblatex}
+\addbibresource{proposal.bib}
+
+% MACROS
+\newcommand*{\QED}{\hfill\ensuremath{\square}}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+
+\newcommand{\subtitle}[1]{%
+  \posttitle{%
+    \par\end{center}
+  \begin{center}\large#1\end{center}
+  \vskip0.5em}%
+}
+
+\newcommand*{\oh}{\frac{1}{2}}
+% title
+\title{Bayesian parameter synthesis of Markov population models}
+\subtitle{Master Thesis proposal on Modeling of Complex, Self-organizing systems}
+\author{Huy Phung\\University of Konstanz}
+\date{\today}
+
+\setlength{\headheight}{23pt}
+\setlength{\parindent}{0.0in}
+\setlength{\parskip}{0.0in}
+
+
+\begin{document}
+\maketitle
+\pagebreak
+\tableofcontents
+\pagebreak
+
+
+\end{document}
