@@ -1,14 +1,14 @@
-\chapter{Literature review} 
-{\color{red}
+\chapter{Literature review}
+ {\color{red}
   \begin{itemize}
-  \item Probabilistic model checking: basic building blocks from Katoen and his
-    fellas.
-  \item Parameter synthesis: important papers and concepts
-  \item Bayesian parameter synthesis: Polgreen paper
-  \item Bayesian property checking: Jha paper
-  \item Tools: mention PRISM and STORM
+    \item Probabilistic model checking: basic building blocks from Katoen and his
+          fellas.
+    \item Parameter synthesis: important papers and concepts
+    \item Bayesian parameter synthesis: Polgreen paper
+    \item Bayesian property checking: Jha paper
+    \item Tools: mention PRISM and STORM
   \end{itemize}
-}
+ }
 
 
 \section{Probabilistic model checking}
@@ -21,13 +21,13 @@
 %% Parameter lifting
 
 \section{Bayesian model checking}
-In the paper (Polgreen), the authors proposed an algorithm to decompose 
+In the paper (Polgreen), the authors proposed an algorithm to decompose
 
 %% Jha
 In the paper (Jha) \cite{}, the authors proposed an algorithm to statistically check
 for (PB)LTL properties.
-The advantage of the algorithm is that 
-The disadvantage of the algorithm is that it does 
+The advantage of the algorithm is that
+The disadvantage of the algorithm is that it does
 
 
 
@@ -35,3 +35,18 @@ The disadvantage of the algorithm is that it does
 %% Symbolic model checking: PRISM
 
 %% Symbolic model checking with factorization of rational function: STORM
+
+The definition and model checking of DTMC and pMC is studied by
+\cite{baier2008principles}, \cite{hutschenreiter2017parametric}, and \cite{katoen2016probabilistic}.\\
+Bayesian inference of pMC parameters is studied in \cite{polgreen2016data} and
+\cite{jha2009bayesian}. In \cite{polgreen2016data}, the authors developed
+methods to synthesize parameters to satisfy a given set of PCTL properties. In
+\cite{jha2009bayesian}, the authors presented methods to perform model checking
+of biological system using Bayesian statistic. The authors in
+\cite{jha2009bayesian} uses a Bayesian hypothesis test, where $H_0$ is the null
+hypothesis that the model satisfies a PCTL $P$, and alternative hypothesis $H_1$
+is that the system does not satisfies $P$. Similar approach to the parameter
+estimation in this project is described by \cite{hussain2015automated}.\\
+In this project, we use bee colony model semantics from \cite{hajnal2019data}.
+The methods and implementation in this project is designed to extend the results
+of \cite{hajnal2019data} and its tool \textit{DiPS}.

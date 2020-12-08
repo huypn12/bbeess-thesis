@@ -1,7 +1,7 @@
 \documentclass[12pt]{report}
 
+\usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-
 % Math
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -25,13 +25,16 @@
 \usepackage{biblatex}
 \addbibresource{thesis.bib}
 
-
 \begin{document}
 \include{title_page}
 \tableofcontents
-\include{sections/acknowledgement}
-\include{sections/abstract}
-\include{sections/introduction}
-\include{sections/preliminaries}
-\include{sections/literature_review}
+
+\include{acknowledgement}
+\include{abstract}
+\include{introduction}
+\include{preliminaries}
+\include{literature_review}
+
+\printbibliography
+
 \end{document}
