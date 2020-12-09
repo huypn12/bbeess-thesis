@@ -2,6 +2,7 @@
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
+
 % Math
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -21,11 +22,29 @@
 \usepackage{tikz}
 \usetikzlibrary{automata,arrows,positioning,calc}
 
-
+% Bibliotheq
 \usepackage{biblatex}
 \addbibresource{thesis.bib}
 
+% MACROS
+\newcommand*{\QED}{\hfill\ensuremath{\square}}
+\newcommand{\stirlingii}{\genfrac{\{}{\}}{0pt}{}}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+
+\newcommand{\subtitle}[1]{%
+  \posttitle{%
+    \par\end{center}
+  \begin{center}\large#1\end{center}
+  \vskip0.5em}%
+}
+
 \begin{document}
+
 \include{title_page}
 \tableofcontents
 
@@ -33,7 +52,10 @@
 \include{abstract}
 \include{introduction}
 \include{preliminaries}
-\include{literature_review}
+\include{related_works}
+\include{method}
+\include{case_study}
+\include{conclusion}
 
 \printbibliography
 
