@@ -4,37 +4,49 @@
       \item transition system
       \item markov property
       \item discrete-time markov chain and parametric dtmc
-      \item continuous-time markov chain
-      \item bayesian inference
-      \item metropolis-hastings algorithm
+      \item bayesian inference fuck this
   \end{itemize}
  }
 
 \section{Probabilistic model checking}
-%% DEFINE temporal logic and kripke structure 
-Temporal logic
-
-%% DEFINE CTL property
-
-
-%% DEFINE PCTL property
-
+\subsection{Discrete-time probabilistic models}
 %% DEFINE Markov chain 
+\begin{definition}[Discrete Time Markov Chain]
+    A Discrete Time Markov Chain (DTMC) is a tuple $(S,\mathbf{P}, S_{init}, AP,
+        L)$ \cite{baier2008principles}
+    \begin{itemize}
+        \item $S$ is a countable non-emty set of \textit{states}
+        \item $\mathbf{P}:S\times S \rightarrow [0,1]$ is the \textit{transition probability}
+              function, s.t $$\sum_{s'\in S}\mathbf{P}(s, s') = 1$$
+        \item $S_{init}: S \rightarrow [0,1]$ is the \textit{initial distribution},
+              s.t  $$\sum_{s'\in S}S_{init}(s') = 1$$
+        \item $AP$ is a set of \textit{atomic propositions}
+        \item $L: S \rightarrow 2^{AP}$ is the labelling function on states.
+    \end{itemize}
+\end{definition}
 
 %% DEFINE Probabilistic model checking of LTL and CTL properties
 
-\section{Parametric model and parameter synthesis}
-%% DEFINE Parametric Markov Chain
+\subsection{Temporal properties on probabilistic models}
+%% DEFINE CTL property
+Over CTL properties, we define the set of PCTL properties, in which we ask the probability to have a CTL property satisfied.
+%% DEFINE PCTL property
+\begin{definition}[PCTL syntax] The syntax of PCTL is defined as follow
+    \begin{align*}
+        \Phi & ::== \text{true} \;|\; a \;|\; \Phi \;|\; \Phi \wedge \Phi \;|\; \Phi \vee \Phi \;|\;  P_{\sim  p}[\phi] \\
+        \phi & ::== X\Phi \;|\; \Phi U \Phi
+    \end{align*}
+\end{definition}
 
-\section{Probabilistic Model Checking}
+\subsection{Parametric model and parameter synthesis}
 
 
 \section{Bayesian Inference}
-\subsection{Bayesian formula}
+\subsection{Bayes' theorem}
 \subsection{Posterior conjugation}
 \subsection{Metropolis-Hastings algorithm}
 \subsection{Selection of prior distribution}
 The selection of prior distribution has strong effect on the result [what result
         specifically?] of a Bayesian inference {\color{red}[Citation needed]}.
 
-\section{Bayesian }
+\section{Bayesian verification}
