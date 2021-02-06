@@ -1,0 +1,127 @@
+\documentclass{beamer}
+
+\usepackage{biblatex}
+\addbibresource{smc.bib}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+
+\usetheme{Copenhagen}
+\usecolortheme{default}
+\setbeamertemplate{items}[triangle]
+\setbeamertemplate{sections/subsections in toc}[square]
+
+%Information to be included in the title page:
+\title{Statistical Model Checking}
+\author{Nhat-Huy Phung}
+\institute{University of Constance}
+\date{2021}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}
+    \frametitle{Model checking}
+    \begin{block}{Definition}
+        Model checking is an automated technique that, given a finite-state model of a system and a formal property,systematically checks whether this property holds for (a given state in) that model
+    \end{block}
+    Since we are interested in probabilistic model checking, our models encompasses probabilistic behaviours.
+    \begin{examples}[Probabilistic models]
+        \begin{itemize}
+            \item DTMC
+            \item CTMC
+            \item MDP
+            \item etc.
+        \end{itemize}
+    \end{examples}
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Properties}
+    Properties are specified by temporal logics
+    \begin{examples}
+        \begin{itemize}
+            \item PCTL
+            \item CSL
+            \item LTL
+            \item etc.
+        \end{itemize}
+    \end{examples}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Complexity}
+    In general, model checking is undecidable. The verification of a model against a temporal logic formula is of \textit{polynomial time} to the number of states on the model.
+    \begin{block}{State explosion}
+        The number of states needed to model the system increases exponentially to the state of the system.
+    \end{block}
+    State explosion is widely surveyed in the research of model checking. \cite{clarke2011model}
+\end{frame}
+
+\begin{frame}
+    \begin{examples}[Concurrent system]
+        A concurrent system consists of many interacting agents. A global state is the tuple of states of all agents and communication channels, thus the number of possible global states increases exponentially to the number of agents and communication channels. In case of asynchronous channels, the number of state may increases even faster.
+    \end{examples}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Statistical model checking}
+    Statistical Model Checking (SMC) is a formal verification technique that combines simulation and statistical methods for the analysis of stochastic systems. \footnotemark[1] Statistical Model Checking verifies a system $S$ property $\phi$ over a finite set of \textit{traces}, acquired through simulating the system of concern $S$.
+    \begin{block}{Advantages}
+        \begin{itemize}
+            \item \textbf{Scalability}: avoid state space explosion issues.
+        \end{itemize}
+    \end{block}
+    \footnotetext[1]{\href{https://www-verimag.imag.fr/Statistical-Model-Checking-814.html}{}}
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Statistical model checking}
+    Given a model $M$ of a system $S$ and a temporal property $\phi$. Let $p:=Pr\{M \models \phi \}$ be the probability that the model $M$ satisfies the property $\phi$. \footnotemark[1]
+    \begin{block}{Verification}
+        \begin{itemize}
+            \item \textbf{Quantitative}: Estimate $p$
+            \item \textbf{Qualitative}: Given a threshold $\theta$, test the hypothesis $H := $
+        \end{itemize}
+    \end{block}
+    \footnotetext[1]{\href{https://www-verimag.imag.fr/Statistical-Model-Checking-814.html}{}}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Statistical model checking}
+    \begin{block}{Quantitative}
+        Estimate $p:=Pr\{M \models \phi \}$ wrt. precision $\delta$ and confidence level $\alpha$
+    \end{block}
+    The estimation is described in detail in \cite{agha2018survey}. We calculate $\hat{p}$ as an estimation of $p$ such that
+    \begin{align*}
+        Pr\{ |p - \hat{p}| < \delta \} = 1 - \alpha
+    \end{align*}
+    $\hat{p}$ can be estimated using different bounds, such as Chernoff-Hoeffding bound \cite{hoeffding1963probability}, Okamoto bound \cite{okamoto1959some} or Massart bound \cite{massart1990tight}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Statistical model checking}
+    \begin{block}{Quantitative}
+        Let $p:=Pr\{M \models \phi \}$ and a threshold $\theta \in [0,1]$. Compare $p$ and $\theta$
+    \end{block}
+    The general approach is to do hypothesis test \cite{younes2005verification} given a confidential level $\alpha$
+    \begin{itemize}
+        \item $H_0: p >= \theta$
+        \item $H_1: p < \theta$
+    \end{itemize}
+    More details can be found at \cite{wald1945sequential}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Case study with PRISM}
+    PRISM \cite{kwiatkowska2002prism} is a model checking tool that support discrete event simulation and statistical model checking.
+    For an example of how to use PRISM for statistical model checking please follow \href{https://www.prismmodelchecker.org/manual/RunningPRISM/StatisticalModelChecking}{this link}.
+\end{frame}
+
+\begin{frame}[allowframebreaks]{References}
+    \printbibliography
+\end{frame}
+
+\end{document}
