@@ -1,0 +1,215 @@
+\chapter{Bayesian inference}
+ {\color{red}
+  \begin{itemize}
+        \item Bayesian formula: posterior, prior, likelihood
+        \item Bayesian parameter estimation: credible set, Highest density posterior
+        \item Approximation of posterior: tractability and sampling method Monte Carlo (Naive MC, MH, Sequential MC).
+  \end{itemize}
+ }
+
+\section{Bayesian inference}
+\subsection{Bayesian formula}
+Let $D$ be observed data. In statistical inference, we assume that the observed
+data has a probability distribution of unknown parameter $\theta$, i.e
+$D \sim P(D|\theta)$. In frequentist approach, the estimation
+of $\theta$ based on long-run property, that is, given a large enough sample
+size, expected value of parameter estimation $\hat{\theta}$ is equal to
+$\theta$. Therefore, frequentist approach requires to gather a large amount of
+data to deliver a close estimation $\hat{\theta}$. In Bayesian approach, we
+reuse the information \textit{beliefs} gained from observed data to enhance the
+accuracy of the estimation of $\hat{\theta}$. The main advantage of Bayesian
+approach over frequentist approach is that it require less data to obtain an
+estimation $\hat{\theta}$.\\
+The beliefs obtained from prior knowledge of model parameter $\theta$ is
+represented by \textit{prior distribution} $\pi(\theta)$.\\
+Also, we have probability distribution of observed data, given parameter
+$\theta$, $P(D|\theta)$. This is also called \textit{likelihood function}.\\
+With Bayesian formula, we have
+\begin{align*}
+      \pi(\theta | D) = \frac{P(D|\theta)\pi(\theta)}{\int_\theta P(D|\theta)\pi(\theta)d\theta}
+\end{align*}
+$\int_\theta P(D|\theta)\pi(\theta)d\theta$ is called \textit{marginal
+      distribution}. $\pi(\theta | D)$ is called \textit{posterior distribution}.
+Computing posterior distribution is the essential part of Bayesian inference,
+since it gives us the estimation of parameter $\theta$.
+
+\subsection{Bayesian parameter estimation}
+With posterior distribution $\pi(\theta|D)$ we estimate the parameter $\hat{\theta}$ using Bayesian posterior mean
+\begin{align*}
+      \hat{\theta} = \mathbf{E}[\theta] = \int_\theta \theta \pi(\theta|D) d\theta
+\end{align*}
+In case we have samples from posterior distribution, for example the $Trace$
+from Metropolis-Hastings algorithm, for example when we use MH algorithm, the
+discrete form of posterior mean is used:
+\begin{align*}
+      \hat{\theta} = \mathbf{E}[\theta] = \sum_\theta \theta \pi(\theta|D)
+\end{align*}
+
+\begin{definition}[Bayesian Credible Set]
+      Set C is a $(1 − \alpha )100\%$ credible set for the parameter $\theta$ if the posterior
+      probability for $\theta$ to belong to C equals $(1 − \alpha)$.
+      \begin{align*}
+            P(\theta \in C | D) = \int_C \pi(\theta|D) d\theta = 1 - \alpha
+      \end{align*}
+\end{definition}
+In this thesis, we use by default $0.95$ credible set, which corresponds to $\alpha=0.05$
+
+\begin{definition}[Highest Posterior Density credible set]
+      Highest Posterior Density $(1-\alpha)100\%$ credible set (HPD for short) is the
+      interval with minimum length over all Bayesian $(1-\alpha)100\%$ Credible Set.
+\end{definition}
+
+In this research, the HPD is calculated using algorithm from \textit{PyMC3}
+library \cite{salvatier2016pymc3}. For simplicity, we assume that in all cases which we concern,
+HPD is computed for unimodal distribution.
+\begin{algorithm}[H]
+      \caption{Compute Highest Posterior Density Interval}\label{mhalg}
+      \hspace*{\algorithmicindent} \textbf{Input:} $S$ is samples from a distribution. \\
+      \hspace*{\algorithmicindent} \textbf{Input:} $0\leq \alpha \leq 1$ \\
+      \hspace*{\algorithmicindent} \textbf{Output:} HPD interval
+      \begin{algorithmic}[1]
+            \Procedure{Compute HPD}{$S$}
+            \State Compute interval width $w = |S| * \alpha$
+            \State Find modal (peak) of sample points.
+            \State Return minimal interval of size $|S| - w$ which contains the modal.
+            \EndProcedure
+      \end{algorithmic}
+\end{algorithm}
+
+\subsection{Selection of prior distribution}
+Theoretically, prior can be of any distribution family. However, a selection of
+prior distribution that is too different than the actual distribution of
+parameter can leads to a false propagation of beliefs and degrade inference
+results.\\
+It is suggested by \cite{polgreen2016data} that in case of no prior knowledge
+exists to help the selection of prior distribution, Uniform distribution is
+preferable since it is less likely to propagate false beliefs to the
+inference.\\
+A systematic inference to select prior distribution family and prior
+distribution parameter (hyperparameters) is possible with \textit{Hierarchical Bayes Models} \cite{allenby2005hierarchical}.
+
+\subsection{Estimation of posterior distribution}
+\subsubsection{Posterior conjugation}
+Conjugated posteriors are special cases of Bayesian inference, in which the
+prior and posterior distribution belongs to the same family of distribution.
+Conjugated posteriors give us significant benefits
+\begin{enumerate}
+      \item Tractability: we have analytical form of posterior distribution.
+      \item Computationally effective: updating model parameter is of linear time to
+            the dimension of parameter.
+\end{enumerate}
+We consider two conjugated posterior: Binomial-Beta and Dirichlet-Multinomial
+\begin{lemma}[Binomial-Beta Conjugation]
+      Binomial distribution is conjugated to beta distribution.
+\end{lemma}
+\begin{proof}
+      The observed data $D=(x_1,\ldots,x_n)$ is sampled from $Binomial(k, \theta)$ function
+      \begin{align*}
+            P(D|\theta) = \prod_{i=1}^n{k\choose x_i}\theta^{x_i}(1-\theta)^{k-x_i}
+      \end{align*}
+      The parameter $\theta$ is of $Beta(\alpha, \beta)$ distribution
+      \begin{align*}
+            \pi(\theta) = \theta^{\alpha-1}(1-\theta)^{\beta -1}
+      \end{align*}
+      We obtained:
+      \begin{align*}
+            \pi(\theta|D) & \sim P(D|\theta)\pi(\theta)                                                                             \\
+                          & \sim \theta^{\sum_{i=1}^n x_i}(1-\theta)^{nk -\sum_{i=1}^n x_i} \theta^{\alpha -1} (1-\theta)^{\beta-1} \\
+                          & = \theta^{\alpha - 1 + \sum_{i=1}^n x_i}(1-\theta)^{\beta - 1 + nk -\sum_{i=1}^n x_i}
+      \end{align*}
+      Thus, the posterior is $Beta(\alpha + \sum_{i=1}^n x_i, \beta + nk -\sum_{i=1}^n x_i)$
+\end{proof}
+Generalize this conjugation, we also have Multinomial-Dirichlet conjugation.
+\begin{lemma}[Multinomial-Dirichlet Conjugation]
+      Multinomial distribution is conjugated to Dirichlet distribution.
+\end{lemma}
+\begin{proof}
+      The observed data $D=(x_1,\ldots,x_n)$ is sampled from $Multinomial(n; \theta_1,\ldots,\theta_n)$ function
+      \begin{align*}
+            P(x_1,\ldots,x_n | N, \theta_0,\ldots,\theta_n) & = \frac{n!}{x_1!\ldots x_n!} \prod_{i=1}^n\theta_i^{x_i}
+      \end{align*}
+      The parameter $(\theta_1,\ldots,\theta_n)$ is
+      $Dirichlet(\alpha_1,\ldots,\alpha_n)$
+      \begin{align*}
+            \pi(\theta_1,\ldots,\theta_n) = \frac{1}{\mathbf{B}(\alpha_1,\ldots,\alpha_n)}\prod_{i=1}^n\theta_i^{\alpha_i - 1}
+      \end{align*}
+      We obtain
+      \begin{align*}
+            \pi(\theta_1,\ldots,\theta_n|D) & \sim P(D|\theta)\pi(\theta)                                           \\
+                                            & \sim \prod_{i=1}^n\theta_i^{x_i} \prod_{i=1}^n\theta_i^{\alpha_i - 1} \\
+                                            & \sim \prod_{i=1}^n\theta_i^{\alpha_i - 1 + \sum_{i=1}^n x_i}
+      \end{align*}
+      Thus, the posterior is $Dirichlet(\alpha_1 +  x_1,\ldots,\alpha_n
+            +  x_n)$
+\end{proof}
+More detailed description in these cases can be found in \cite{tu2014dirichlet}
+and \cite{baron2019probability}. We summarize the necessary results in the following table:
+\begin{table}[H]
+      \begin{tabular}{lllll}
+            \cline{1-3}
+            \multicolumn{1}{|l|}{Likelihood}                                 & \multicolumn{1}{l|}{Prior}                                 & \multicolumn{1}{l|}{Posterior parameters}                         &  & \\ \cline{1-3}
+            \multicolumn{1}{|l|}{$Binomial(n, k)$}                           & \multicolumn{1}{l|}{$Beta(\alpha, \beta)$}                 & \multicolumn{1}{l|}{\begin{tabular}[x]{@{}c@{}}$\alpha' = \alpha + \sum_{i=1}^n x_i$\\$\beta' = \beta + nk -\sum_{i=1}^n x_i$\end{tabular}}                   &  & \\ \cline{1-3}
+            \multicolumn{1}{|l|}{$Multinomial(n; \theta_1,\ldots,\theta_n)$} & \multicolumn{1}{l|}{$Dirichlet(\alpha_1,\ldots,\alpha_n)$} & \multicolumn{1}{l|}{$\alpha_i' =\alpha_i + x_i, 1 \leq i \leq n$} &  & \\ \cline{1-3}
+                                                                             &                                                            &                                                                   &  &
+      \end{tabular}
+\end{table}
+However, posterior conjugation is applicable to a subset of prior and likelihood functions. In Bayesian inference, it is usual that the posterior distribution has no analytical form or its analytical form is difficult to directly sample from. In these cases, we can several different sampling and optimization methods to approximate the posterior distribution. In the following section we discuss different approaches for posterior distribution approximation:
+\begin{itemize}
+      \item Markov chain Monte-Carlo.
+      \item Sequential Monte-Carlo.
+      \item Approximate Bayesian Computation.
+\end{itemize}
+
+\subsection{Markov chain Monte-Carlo}
+In case the posterior distribution has no analytical form or its analytical form
+is difficult to sample from directly, we use \textit{Metropolis-Hastings}
+algorithm (\textit{MH} in short).\\
+Metropolis-Hastings algorithm is a \textit{Monte Carlo Markov Chain} algorithm.
+In its essential, Metropolis-Hastings algorithm draws sample from an unknown distribution.
+Using the MH algorithm, we can estimate the parameter by posterior mean, without
+knowing the analytical form of posterior distribution itself.
+
+\begin{algorithm}[H]
+      \caption{Metropolis-Hastings Algorithm}\label{mhalg}
+      \hspace*{\algorithmicindent} \textbf{Input:} $D$ is the observation data, \\
+      \hspace*{\algorithmicindent} \textbf{Output:} $Trace$ is the set of accepted
+      sampling point.
+      \begin{algorithmic}[1]
+            \Procedure{Metropolis-Hastings}{$D$, maxIteration}
+            \State Select a proposal distribution $\pi(\theta)$
+            \State Draw a random initial point $\theta$
+            \State Init empty trace $Trace$
+            \While{maxIteration not reached}
+            \State $L \leftarrow P(D|\theta)$
+            \State Draw a point $\theta' $ from the proposal distribution.
+            \State $L' \leftarrow P(D|\theta')$
+            \If{ $\ln(L') - \ln(L) > 0$ }
+            \State Add $\theta'$ to $Trace$
+            \State $\theta = \theta'$
+            \Else
+            \State Draw a random number $x$ from $Uniform(0,1)$
+            \If{$x \leq \xi$, ($\xi$ very small, e.g $10^{-8}$)}
+            \State Add $\theta'$ to $Trace$ (avoiding local maxima)
+            \State $\theta = \theta'$
+            \EndIf
+            \EndIf
+            \EndWhile
+            \EndProcedure
+      \end{algorithmic}
+\end{algorithm}
+The likelihood function can be implemented as log-likelihood to avoid underflow
+error. Proposal distribution defines how do we proceed to the next parameter
+value on the parameter space; it can be of any distribution family.\\
+There are two advantages of using Markov Chain Monte Carlo in Bayesian inference:
+\begin{enumerate}
+      \item Parameter transition only needs the computation of likelihood function.
+            Therefore, Monte Carlo Markov Chain can be used in general Bayesian inference,
+            in which we are not guaranteed to have an analytical form of posterior.
+      \item Specifically in Metropolis-Hastings algorithm, marginal distribution is
+            cancelled out, thus make Metropolis-Hastings a computationally efficient algorithm.
+\end{enumerate}
+However, MH algorithm also has a drawback; its convergence becomes slower as the
+dimension of parameter $\theta$ increases.
+
+\subsection{Sequential Monte-Carlo}
+here \cite{daviet2018inference} \cite{silk2012optimizing}

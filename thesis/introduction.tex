@@ -1,22 +1,31 @@
 \chapter{Introduction}
 \section{Motivation}
 
-Markov population model.
+Markov population model is widely used in modeling several systems, for example
+\begin{itemize}
+      \item Number of online nodes in a distributed system.
+      \item Number of surviving individuals in an epidemic model.
+\end{itemize}
 
-In order to incorporate unknown features of the system, we introduce \textit{parametric models}. Parameter synthesis is a relatively new research area \cite{katoen2016probabilistic}
+A limit of Markov population models, such as Discrete-time Markov chain, is that all transition probabilities are known a-priori. In order to formalize unknown attributes of a system, we introduce parameter, hence we have parametric Markov population models. In this thesis, we work with parametric discrete-time Markov chain, specifically data-driven parameter synthesis for problem on discrete-time Markov chain.\\
 
-This thesis is structured as follow.
+Parameter synthesis is an emerging research direction on probabilistic model checking. Parameter synthesis problem is to find a set of parameter values to satisfy a certain reachability property \cite{katoen2016probabilistic}. The question this thesis answers is that, given a parametric discrete-time
+
+
+
+\section{Contribution}
+This thesis surveys the parameter synthesis of discrete time markov population model towards a certain property.
+We model a system discrete time model of a system.
 
 \section{Structure of the thesis}
+
 \begin{itemize}
-  \item \textbf{Chapter 1} introduces motivations and background for the research topic.
-  \item \textbf{Chapter 2} describes the most important definitions and
-        theoretical background. In this chapter, we defines Discrete-Time Markov Chain
-        formally. A brief introduction to Bayesian Inference is also included.
-  \item \textbf{Chapter 3} reviews the state-of-the-art works of other researchers
-        on the problem of parameter synthesis.
-  \item \textbf{Chapter 4} describes the method.
-  \item \textbf{Chapter 5} describes the benchmark.
-  \item \textbf{Chapter 6} conclusion and future work.
+      \item \textbf{Chapter 1} introduces motivations and background for the research topic.
+      \item \textbf{Chapter 2} presents the theoretical background on probabilistic model checking, include discrete stochastic models and their corresponding temporal logics.
+      \item \textbf{Chapter 3} reviews the state-of-the-art works of other researchers
+            on the problem of parameter synthesis.
+      \item \textbf{Chapter 4} describes the method.
+      \item \textbf{Chapter 5} describes the benchmark.
+      \item \textbf{Chapter 6} conclusion and future work.
 \end{itemize}
 

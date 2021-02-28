@@ -1,0 +1,111 @@
+\chapter{Probabilistic model checking}
+ {\color{red}
+  \begin{itemize}
+      \item Discrete time Markov chain
+      \item Continuous time Markov chain, conversion to discrete time chain
+      \item Probabilistic Temporal logics
+      \item Probabilistic model checking
+      \item Statistical model checking
+      \item Parametric Discre time Markov chain
+      \item Parameter synthesis problem
+  \end{itemize}
+ }
+
+In this thesis, we model stochastic systems. Thus, we use probabilistic models, in our case we mostly use Discrete time markov chain, and also have a
+
+\section{Markov chain}
+\subsection{Discrete Time Markov chain}
+Our definition of markov chain follows the definition on \cite{baier2008principles}.
+\begin{definition}[Discrete Time Markov Chain]
+    A Discrete-time Markov chain (DTMC) is a tuple $(S,\mathbf{P}, s_{init}, AP, L)$ where
+    \begin{itemize}
+        \item $S$ is a countable, non-emty set of \textit{states}
+        \item $\mathbf{P}:S\times S \rightarrow [0,1]$ is the \textit{transition probability}
+              function such that
+              \begin{align*}
+                  \forall s \in S : \sum_{s'\in S}\mathbf{P}(s, s') = 1
+              \end{align*}
+        \item $s_{init}: S \rightarrow [0,1]$ is the \textit{initial distribution} such that
+              \begin{align*}
+                  \sum_{s\in S}s_{init}(s) = 1
+              \end{align*}
+        \item $AP$ is a set of \textit{atomic propositions}
+        \item $L: S \rightarrow 2^{AP}$ is the labelling function on states.
+    \end{itemize}
+\end{definition}
+
+
+\subsection{Continuous-time Markov chain}
+The following definition of Contiuous-time Markov chain is based on \cite{baier2003model}
+\begin{definition}[Continuous-time Markov chain]
+    A Continuous-time Markov chain (CTMC) is a tuple $(S,\mathbf{P}, \mathbf{r}, S_{init}, AP, L)$ \cite{baier2003model}
+    \begin{itemize}
+        \item $S$ is a countable, non-emty set of \textit{states}
+        \item $\mathbf{P}:S\times S \rightarrow [0,1]$ is the \textit{transition probability}
+              function such that
+              \begin{align*}
+                  \forall s \in S : \sum_{s'\in S}\mathbf{P}(s, s') = 1
+              \end{align*}
+        \item $\mathbf{r}:S \rightarrow \mathbb{N}$ is the \textit{transition probability}
+              function such that
+              \begin{align*}
+                  \forall s \in S : \sum_{s'\in S}\mathbf{P}(s, s') = 1
+              \end{align*}
+        \item $s_{init}: S \rightarrow [0,1]$ is the \textit{initial distribution} such that
+              \begin{align*}
+                  \sum_{s\in S}s_{init}(s) = 1
+              \end{align*}
+        \item $AP$ is a set of \textit{atomic propositions}
+        \item $L: S \rightarrow 2^{AP}$ is the labelling function on states.
+    \end{itemize}
+\end{definition}
+
+
+\section{Probabilistic temporal logic}
+%% DEFINE CTL property
+Over CTL properties, we define the set of PCTL properties, in which we ask the probability to have a CTL property satisfied.
+%% DEFINE PCTL property
+\begin{definition}[PCTL syntax] The syntax of PCTL is defined as follow
+    \begin{align*}
+        \Phi & ::== \text{true} \;|\; a \;|\; \Phi \;|\; \Phi \wedge \Phi \;|\; \Phi \vee \Phi \;|\;  P_{\sim  p}[\phi] \\
+        \phi & ::== X\Phi \;|\; \Phi U \Phi
+    \end{align*}
+\end{definition}
+
+
+\section{Parametric model}
+We introduce parameters to formalize unknown attributes of the system.
+\begin{definition}[Polynomial ring]
+    Given a tuple $\mathbf{x}=(x_1,\ldots,x_n)$ be a tuple
+\end{definition}
+
+\begin{definition}{Rational functions}
+    Let $\mathbf{x}=\{x_1,\ldots,x_n\}$ be a variable.\\
+    Let $\mathbf{Pol}[\mathbf{x}]$ be the set of all polynomial functions over $\mathbf{x}$.\\
+    Given $f,g\in\mathbf{Pol}[\mathbf{x}]$, then $h:=\frac{f(\mathbf{x})}{g(\mathbf{x})}, g{\mathbf{x}}\neq 0$ is a rational function over $\mathbf{x}$.\\
+    We denote $\mathbb{Q}(\mathbf{x})$ the set of rational functions over $\mathbf{x}$.
+\end{definition}
+
+
+\subsection{Parametric Discrete Time Markov chain}
+With the set of rational functions formally defined, we define parametric Discrete-time Markov chain based the definition on \cite{junges2019parameter}.
+\begin{definition}[Discrete Time Markov Chain]
+    A Discrete-time Markov chain (DTMC) is a tuple $(S, \mathbf{x}, \mathbf{P}, s_{init}, AP, L)$ where
+    \begin{itemize}
+        \item $S$ is a countable, non-emty set of \textit{states}
+        \item $\mathbf{x} \in \mathbb{R}^n, n \in \mathbb{N}$ as the set of $n$ real parameters.
+        \item $\mathbf{P}:S\times S \rightarrow \mathbb{Q}(\mathbf{x})$ is the \textit{transition probability}
+              function such that
+              \begin{align*}
+                  \forall s \in S : \sum_{s'\in S}\mathbf{P}(s, s') = 1
+              \end{align*}
+        \item $s_{init}: S \rightarrow [0,1]$ is the \textit{initial distribution} such that
+              \begin{align*}
+                  \sum_{s\in S}s_{init}(s) = 1
+              \end{align*}
+        \item $AP$ is a set of \textit{atomic propositions}
+        \item $L: S \rightarrow 2^{AP}$ is the labelling function on states.
+    \end{itemize}
+\end{definition}
+
+Given a parametric Discrete-time Markov chain $M_p$. A concrete assignment of parameter $\mathbf{x}$ \textit{instantiate} a non-parametric Discrete-time Markov chain if $f{\mathbf{x}}$ evaluates to a real value for all $f\in\mathbf{P}$.
