@@ -36,6 +36,14 @@ Our definition of markov chain follows the definition on \cite{baier2008principl
 
 
 \subsection{Continuous-time Markov chain}
+Continous-time Markov chain also satisfies memoryless property
+\begin{definition}[Continuous-time Markov property]
+    Let X be a continuous random variable of exponentially distribution. X has memoryless property if and only if
+    \begin{align*}
+        Pr\{X > t + \delta | X > t\} = Pr\{X > \delta\} \forall t,\delta\in\mathbb{R}_{\geq 0}
+    \end{align*}
+\end{definition}
+
 The following definition of Contiuous-time Markov chain is based on \cite{baier2003model}
 \begin{definition}[Continuous-time Markov chain]
     A Continuous-time Markov chain (CTMC) is a tuple $(S,\mathbf{P}, \mathbf{r}, S_{init}, AP, L)$ \cite{baier2003model}
