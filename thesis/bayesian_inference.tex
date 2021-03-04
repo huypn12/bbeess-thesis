@@ -89,15 +89,16 @@ A systematic inference to select prior distribution family and prior
 distribution parameter (hyperparameters) is possible with \textit{Hierarchical Bayes Models} \cite{allenby2005hierarchical}.
 
 \subsection{Estimation of posterior distribution}
-\subsubsection{Posterior conjugation}
-Conjugated posteriors are special cases of Bayesian inference, in which the
-prior and posterior distribution belongs to the same family of distribution.
-Conjugated posteriors give us significant benefits
+In posterior estimation the following factors are important:
 \begin{enumerate}
     \item Tractability: we have analytical form of posterior distribution.
     \item Computationally effective: updating model parameter is of linear time to
           the dimension of parameter.
 \end{enumerate}
+
+\subsubsection{Posterior conjugation}
+Conjugated posteriors are special cases of Bayesian inference, in which the
+prior and posterior distribution belongs to the same family of distribution.
 We consider two conjugated posterior: Binomial-Beta and Dirichlet-Multinomial
 \begin{lemma}[Binomial-Beta Conjugation]
     Binomial distribution is conjugated to beta distribution.
@@ -171,7 +172,10 @@ knowing the analytical form of posterior distribution itself.
 
 \begin{algorithm}[H]
     \caption{Metropolis-Hastings Algorithm}\label{mhalg}
-    \hspace*{\algorithmicindent} \textbf{Input:} $D$ is the observation data, \\
+    \hspace*{\algorithmicindent} \textbf{Input:}
+    \begin{itemize}
+        \item $D$ is the observation data
+    \end{itemize}
     \hspace*{\algorithmicindent} \textbf{Output:} $Trace$ is the set of accepted
     sampling point.
     \begin{algorithmic}[1]
@@ -215,6 +219,33 @@ dimension of parameter $\theta$ increases.
 here \cite{daviet2018inference} \cite{silk2012optimizing}
 
 \subsection{Approximate Bayesian computation}
+The methods mentioned before is used with an assumption that the likelihood $P(D|\theta)$ has an analytical form; the analytical can be evaluated without introducing computational burden. However there are situations in which the likelihood has no analytical form, or the analytical form is expensive to be evaluated. In such cases, a class of different methods, dubbed \textit{likelihood-free} methods, are used. Likelihood-free methods in Bayesian inference means that instead of compute the likelihood $P(D|\theta)$, we estimate it or replace it by other measures. Approximate Bayesian Computation is a widely used likelihood-free method for approximating posterior distribution. Instead of estimating the likelihood $P(D|\theta)$ directly, we sample a observable data set $\hat{D}$ and define a distance measure $\delta(D, \hat{D})$. Approximate Bayesian Computation accepts a set of tuples $(\hat{\theta}, \hat{D})$, each satisfies that $\delta(D, \hat{D}) < \epsilon, \epsilon\in\mathbf{R}_{\leq 0}$.
+\begin{algorithm}[H]
+    \caption{Approximate Bayesian Computation}
+    \label{abcalg}
+    \hspace*{\algorithmicindent} \textbf{Input:}
+    \begin{itemize}
+        \item $D_{obs}$: observed data for Bayesian inference or its summary statistic $S_{obs}$
+        \item $\theta=(\theta_1,\ldots,\theta_k)$: $k$-dimensional model parameter.
+        \item $\pi(\theta)$: prior distribution on $\theta$.
+        \item $N$: number of particles (parameter samples).
+        \item $\epsilon$: absolute error threshold.
+    \end{itemize}
+    \hspace*{\algorithmicindent} \textbf{Output:}
+    \begin{itemize}
+        \item $(\theta_1,\ldots,\theta_N)$: $N$ sampled particles.
+        \item $(\omega_1,\ldots,\omega_N)$: corresponding weights of sampled particles.
+    \end{itemize}
+    \begin{algorithmic}[1]
+        \Procedure{Approximate-Bayesian-Computation}{$D$, $\theta$, $\pi(\theta)$, $N$, $\epsilon$}
+        \State $t:=0$
+        \While{$t \leq N$}
+        \EndWhile
+        \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
 
 
-In the following chapter we propose a data-driven approach for parameter synthesis combining Approximate Bayesian computation, Sequential Monte Carlo, and Statistical Model Checking.
+
+\section{Conclusion}
+We present a set of optimization and approximation methods which are essentials to Bayesian Inference. In the following chapter we propose a data-driven approach for parameter synthesis combining Approximate Bayesian computation, Sequential Monte Carlo, and Statistical Model Checking.

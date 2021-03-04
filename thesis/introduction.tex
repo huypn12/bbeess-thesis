@@ -1,30 +1,34 @@
 \chapter{Introduction}
 \section{Motivation}
 
-Markov population model is widely used in modeling several systems, for example
+In different areas of research and application, the objects are to investigate how the number of individuals changes under a certain set of assumptions. For instance
 \begin{itemize}
       \item Number of online nodes in a distributed system.
       \item Number of surviving individuals in an epidemic model.
 \end{itemize}
-
-A limit of Markov population models, such as Discrete-time Markov chain, is that all transition probabilities are known a-priori. In order to formalize unknown attributes of a system, we introduce parameter, hence we have parametric Markov population models. In this thesis, we work with parametric discrete-time Markov chain, specifically data-driven parameter synthesis for problem on discrete-time Markov chain.\\
-
-Parameter synthesis is an emerging research direction on probabilistic model checking. Parameter synthesis problem is to find a set of parameter values to satisfy a certain reachability property \cite{katoen2016probabilistic}. The question this thesis answers is that, given a parametric discrete-time
-
-
+Markov population models \cite{kingman1969markov} are finite state-space, stochastic models that is widely used in modeling complex and dynamic systems. In a Markov population model, each state represents the number of individuals. Formally, in a Markov population model whose state space is $S=(s_1,\ldots,s_n)$, there is a map $f:S\rightarrow\{0,1,\ldots,N-1,N\}$ where $N\in\mathbf{N}^*$ is the maximum number of individuals in the system.\\
+In a Markov population models, such as Discrete-time Markov Chain, initial and transition probabilities are known a-priori. In order to formalize unknown attributes of a system, we introduce \textit{parametric Markov population models}. In a parametric Markov population model, each transition is a function of parameters. As unknown features of the system are represented by parameters, the following research questions are raised
+\begin{itemize}
+      \item Given a set of data collected by observing the system, how can we know about its parameters?
+      \item Which values of parameters warrant that a certain property holds on our model?
+\end{itemize}
+In this thesis, we work with a specific parametric Markov population model, that is \textit{parametric Discrete-time Markov Chain}. In order to answer the aforementioned research questions, we presents a data-driven approach for parameter synthesis of parametric Discrete-time Markov Chain.Parameter synthesis is an emerging research direction on probabilistic model checking. Parameter synthesis problem is to find a set of parameter values to satisfy a certain reachability property \cite{katoen2016probabilistic}.
 
 \section{Contribution}
-This thesis surveys the parameter synthesis of discrete time markov population model towards a certain property.
-We model a system discrete time model of a system.
+Contributions of this thesis are
+\begin{itemize}
+      \item Investigate a data-driven approach on parameter synthesis of parametric Discrete-time Markov Chain.
+      \item Evaluate the scalability of the approach in cases of closed-form solution available and simulation.
+      \item Compare the performances of optimization methods used to approximate posterior distribution.
+\end{itemize}
 
 \section{Structure of the thesis}
 
 \begin{itemize}
-      \item \textbf{Chapter 1} introduces motivations and background for the research topic.
-      \item \textbf{Chapter 2} presents the theoretical background on probabilistic model checking, include discrete stochastic models and their corresponding temporal logics.
-      \item \textbf{Chapter 3} reviews the state-of-the-art works of other researchers
-            on the problem of parameter synthesis.
-      \item \textbf{Chapter 4} describes the method.
+      \item \textbf{Chapter 1} introduces motivations for the research topic.
+      \item \textbf{Chapter 2} presents the theoretical background on probabilistic model checking, include discrete stochastic models and their  corresponding temporal logics.
+      \item \textbf{Chapter 3}
+      \item \textbf{Chapter 4} reviews the state-of-the-art works of other researchers on the problem of parameter synthesis.
       \item \textbf{Chapter 5} describes the benchmark.
       \item \textbf{Chapter 6} conclusion and future work.
 \end{itemize}
