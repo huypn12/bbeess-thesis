@@ -7,7 +7,44 @@
 \subsection{Properties}
 \subsection{Evaluation}
 
-\section{SIR model}
+\section{Bees colony}
+We study the collective behavior of a bee colony. Each bee in a colony
+possibly stings after observing a threat in the surrounding environment, and
+warn other bees by releasing a special substance, pheromone. By sensing the
+pheromone released in the environment, other bees in the colony may also
+sting. However, since stinging leads to the termination of an individual bee,
+it reduces the total defense capability as well. With parametric Discrete-time
+Markov chain as the model, we study how the actions of a single bee change
+with regarding to the colony size of and pheromone amount. This project
+propose and discuss Bayesian methods to estimate parameters of bees population
+models. It shows that the proposed methods is scalable and can deliver
+estimations of model parameters. Assume that each bee in a colony decides its next action (to sting or not to
+sting) based only on the current state of the environment, and the number of
+bees who sting or not sting can be modeled as a Markov process. To reduce the
+complexity of the model, we make another assumption that the states of the bees
+colony are observed after uniform time duration, hence the model is of
+discrete-time.There are 3 assumptions on the system:
+\begin{enumerate}
+    \item Each bee release an unit amount of pheromone immediately after stinging.
+    \item A bee dies after stinging and releasing pheromone. In the other words, no
+          bee can sting more than once.
+    \item Stinging behaviour only depends on the concentration of pheromone in the
+          environment.
+\end{enumerate}
+Under these assumption, a bee colony can be viewed as a set of agents (bees)
+interact with each other in a closed environment with the appearance of a factor
+\textit{pheromone}. Afterward, the agent has probability to commit an action, namely \textit{sting}.
+The agent is eliminated from environment after stinging.
+Assume that we have a colony of $n$ bees initially. As aforementioned, an individual bee
+is terminated after it stings. Thus, at the end of experiment, the number of
+bees is $n'\in\{0,1,\ldots,n\}$. We model the bee colony with a DTMC
+$\mathcal{M}=(S,\mathbf{P}, S_{init}, AP,L)$, such that
+\begin{itemize}
+    \item $|S_{init}|=1$
+    \item There exists $n+1$ tSCCs which encode the population at the end of the experiment.
+\end{itemize}
+Semantics of Markov population models for bees colony are developed by
+\cite{hajnal2019data}.
 \subsection{System}
 \subsection{Data}
 \subsection{Model}
@@ -15,7 +52,7 @@
 \subsection{Evaluation}
 
 
-\section{Bees colony}
+\section{SIR model}
 \subsection{System}
 \subsection{Data}
 \subsection{Model}
