@@ -1,5 +1,4 @@
 \chapter{Case study}
-
 \section{Zeroconf}
 \subsection{System}
 \subsection{Data}
@@ -8,6 +7,7 @@
 \subsection{Evaluation}
 
 \section{Bees colony}
+\subsection{System}
 We study the collective behavior of a bee colony. Each bee in a colony
 possibly stings after observing a threat in the surrounding environment, and
 warn other bees by releasing a special substance, pheromone. By sensing the
@@ -15,10 +15,10 @@ pheromone released in the environment, other bees in the colony may also
 sting. However, since stinging leads to the termination of an individual bee,
 it reduces the total defense capability as well. With parametric Discrete-time
 Markov chain as the model, we study how the actions of a single bee change
-with regarding to the colony size of and pheromone amount. This project
-propose and discuss Bayesian methods to estimate parameters of bees population
-models. It shows that the proposed methods is scalable and can deliver
-estimations of model parameters. Assume that each bee in a colony decides its next action (to sting or not to
+with regarding to the colony size of and pheromone amount. 
+
+\subsection{Model}
+Assume that each bee in a colony decides its next action (to sting or not to
 sting) based only on the current state of the environment, and the number of
 bees who sting or not sting can be modeled as a Markov process. To reduce the
 complexity of the model, we make another assumption that the states of the bees
@@ -45,17 +45,105 @@ $\mathcal{M}=(S,\mathbf{P}, S_{init}, AP,L)$, such that
 \end{itemize}
 Semantics of Markov population models for bees colony are developed by
 \cite{hajnal2019data}.
-\subsection{System}
-\subsection{Data}
-\subsection{Model}
 \subsection{Properties}
 \subsection{Evaluation}
 
 
 \section{SIR model}
 \subsection{System}
+\textit{SIR} model  is a population model, which is widely used in modeling epidemics. In a \text{SIR} model, each individual is of one among three types:
+\begin{itemize}
+    \item \textit{Susceptible (S)}
+    \item \textit{Infected (S)}
+    \item \textit{Recovered (S)}
+\end{itemize}
+\begin{align*}
+    S + I \xrightarrow{\alpha} 2I \\
+    I \xrightarrow{\beta} R
+\end{align*}
+
 \subsection{Data}
 \subsection{Model}
+Example of an SIR CTMC model with initial population $(S_0, I_0, R_0) = (3,1,0)$
+\begin{figure}
+    \centering
+    \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=3cm]
+        \tikzstyle{every state}=[fill=white,draw=black,thick,text=black]
+        \node[state]    (Init)                      {$(3,1,0)$};
+        \node[state]    (S_301)[below of=Init]      {$(3,0,1)$};
+        \node[state]    (S_220)[right of=Init]      {$(2,2,0)$};
+        \node[state]    (D)[right of=S_220]         {$(3,1,0)$};
+        \node[state]    (E)[below of=D]         {$(3,1,0)$};
+        \node[state]    (F)[below of=E]         {$(3,1,0)$};
+        \node[state]    (G)[right of=D]         {$(3,1,0)$};
+        \node[state]    (H)[below of=G]         {$(3,1,0)$};
+        \node[state]    (I)[below of=H]         {$(3,1,0)$};
+        \node[state]    (J)[below of=I]         {$(3,1,0)$};
+        \node[state]    (K)[right of=H]         {$(3,1,0)$};
+        \node[state]    (L)[right of=I]         {$(3,1,0)$};
+        \node[state]    (M)[right of=K]         {$(3,1,0)$};
+        \path
+        (Init) edge node{$\alpha + \beta$} (S_301)
+            edge node{$\alpha + \beta$} (S_220)
+        (S_301) edge [in=240,out=300,loop]  ()
+        (S_220) edge node{$\alpha + \beta$} (D)
+            edge node{$\alpha + \beta$} (F)
+        (D) edge node{$\alpha + \beta$} (G)
+            edge node{$\alpha + \beta$} (H)
+        (E) edge node{$\alpha + \beta$} (H)
+            edge node{$\alpha + \beta$} (I)
+        (F) edge node{$\alpha + \beta$} (I)
+            edge node{$\alpha + \beta$} (J)
+        (H) edge node{$\alpha + \beta$} (K)
+            edge node{$\alpha + \beta$} (I)
+        (I) edge node{$\alpha + \beta$} (L)
+            edge node{$\alpha + \beta$} (J)
+        (K) edge node{$\alpha + \beta$} (M)
+            edge node{$\alpha + \beta$} (L);
+        \end{tikzpicture}
+    \caption{$SIR(3,1,0)$ CTMC model with parameters$(\alpha, \beta)$}
+\end{figure}
+
+Uniformize the chain with uniformization rate $(3\alpha + 4\beta)$, we derive the following uniformized DTMC:
+\begin{figure}
+    \centering
+    \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=3cm]
+        \tikzstyle{every state}=[fill=white,draw=black,thick,text=black]
+        \node[state]    (Init)                      {$(3,1,0)$};
+        \node[state]    (S_301)[below of=Init]      {$(3,0,1)$};
+        \node[state]    (S_220)[right of=Init]      {$(2,2,0)$};
+        \node[state]    (D)[right of=S_220]         {$(3,1,0)$};
+        \node[state]    (E)[below of=D]         {$(3,1,0)$};
+        \node[state]    (F)[below of=E]         {$(3,1,0)$};
+        \node[state]    (G)[right of=D]         {$(3,1,0)$};
+        \node[state]    (H)[below of=G]         {$(3,1,0)$};
+        \node[state]    (I)[below of=H]         {$(3,1,0)$};
+        \node[state]    (J)[below of=I]         {$(3,1,0)$};
+        \node[state]    (K)[right of=H]         {$(3,1,0)$};
+        \node[state]    (L)[right of=I]         {$(3,1,0)$};
+        \node[state]    (M)[right of=K]         {$(3,1,0)$};
+        \path
+        (Init) edge node{$\alpha + \beta$} (S_301)
+            edge node{$\alpha + \beta$} (S_220)
+        (S_301) edge [in=240,out=300,loop]  ()
+        (S_220) edge node{$\alpha + \beta$} (D)
+            edge node{$\alpha + \beta$} (F)
+        (D) edge node{$\alpha + \beta$} (G)
+            edge node{$\alpha + \beta$} (H)
+        (E) edge node{$\alpha + \beta$} (H)
+            edge node{$\alpha + \beta$} (I)
+        (F) edge node{$\alpha + \beta$} (I)
+            edge node{$\alpha + \beta$} (J)
+        (H) edge node{$\alpha + \beta$} (K)
+            edge node{$\alpha + \beta$} (I)
+        (I) edge node{$\alpha + \beta$} (L)
+            edge node{$\alpha + \beta$} (J)
+        (K) edge node{$\alpha + \beta$} (M)
+            edge node{$\alpha + \beta$} (L);
+        \end{tikzpicture}
+    \caption{$SIR(3,1,0)$ CTMC model with parameters$(\alpha, \beta)$}
+\end{figure}
 \subsection{Properties}
 \subsection{Evaluation}
+
 
