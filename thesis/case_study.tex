@@ -15,7 +15,7 @@ pheromone released in the environment, other bees in the colony may also
 sting. However, since stinging leads to the termination of an individual bee,
 it reduces the total defense capability as well. With parametric Discrete-time
 Markov chain as the model, we study how the actions of a single bee change
-with regarding to the colony size of and pheromone amount. 
+with regarding to the colony size of and pheromone amount.
 
 \subsection{Model}
 Assume that each bee in a colony decides its next action (to sting or not to
@@ -72,76 +72,150 @@ Example of an SIR CTMC model with initial population $(S_0, I_0, R_0) = (3,1,0)$
         \node[state]    (Init)                      {$(3,1,0)$};
         \node[state]    (S_301)[below of=Init]      {$(3,0,1)$};
         \node[state]    (S_220)[right of=Init]      {$(2,2,0)$};
-        \node[state]    (D)[right of=S_220]         {$(3,1,0)$};
-        \node[state]    (E)[below of=D]         {$(3,1,0)$};
-        \node[state]    (F)[below of=E]         {$(3,1,0)$};
-        \node[state]    (G)[right of=D]         {$(3,1,0)$};
-        \node[state]    (H)[below of=G]         {$(3,1,0)$};
-        \node[state]    (I)[below of=H]         {$(3,1,0)$};
-        \node[state]    (J)[below of=I]         {$(3,1,0)$};
-        \node[state]    (K)[right of=H]         {$(3,1,0)$};
-        \node[state]    (L)[right of=I]         {$(3,1,0)$};
-        \node[state]    (M)[right of=K]         {$(3,1,0)$};
+        \node[state]    (S_211)[below of=S_220]     {$(2,1,1)$};
+        \node[state]    (S_202)[below of=S_211]     {$(2,0,2)$};
+        \node[state]    (S_130)[right of=S_220]     {$(1,3,0)$};
+        \node[state]    (S_121)[below of=S_130]     {$(1,2,1)$};
+        \node[state]    (S_112)[below of=S_121]     {$(1,1,2)$};
+        \node[state]    (S_103)[below of=S_112]     {$(1,0,3)$};
+        \node[state]    (S_040)[right of=S_130]     {$(0,4,0)$};
+        \node[state]    (S_031)[below of=S_040]     {$(0,3,1)$};
+        \node[state]    (S_022)[below of=S_031]     {$(0,2,2)$};
+        \node[state]    (S_013)[below of=S_022]     {$(0,1,3)$};
+        \node[state]    (S_004)[below of=S_013]     {$(0,0,4)$};
         \path
-        (Init) edge node{$\alpha + \beta$} (S_301)
-            edge node{$\alpha + \beta$} (S_220)
-        (S_301) edge [in=240,out=300,loop]  ()
-        (S_220) edge node{$\alpha + \beta$} (D)
-            edge node{$\alpha + \beta$} (F)
-        (D) edge node{$\alpha + \beta$} (G)
-            edge node{$\alpha + \beta$} (H)
-        (E) edge node{$\alpha + \beta$} (H)
-            edge node{$\alpha + \beta$} (I)
-        (F) edge node{$\alpha + \beta$} (I)
-            edge node{$\alpha + \beta$} (J)
-        (H) edge node{$\alpha + \beta$} (K)
-            edge node{$\alpha + \beta$} (I)
-        (I) edge node{$\alpha + \beta$} (L)
-            edge node{$\alpha + \beta$} (J)
-        (K) edge node{$\alpha + \beta$} (M)
-            edge node{$\alpha + \beta$} (L);
-        \end{tikzpicture}
+        (Init)
+        edge node{$\beta$} (S_301)
+        edge node{$3\alpha$} (S_220)
+
+        (S_220)
+        edge node{$2\alpha$} (S_130)
+        edge node{$\beta$} (S_211)
+
+        (S_130)
+        edge node{$\alpha$} (S_040)
+        edge node{$3\beta$} (S_121)
+
+        (S_040)
+        edge node{$4\beta$} (S_031)
+
+        (S_031)
+        edge node{$3\beta$} (S_022)
+
+        (S_022)
+        edge node{$2\beta$} (S_013)
+
+        (S_013)
+        edge node{$\beta$} (S_004)
+
+        (S_121)
+        edge node{$\alpha$} (S_031)
+        edge node{$\beta$} (S_112)
+
+        (S_112)
+        edge node{$\alpha$} (S_022)
+        edge node{$\beta$} (S_103)
+
+        (S_211)
+        edge node{$2\alpha$} (S_121)
+        edge node{$\beta$} (S_202)
+
+        (S_301)
+        edge [in=240,out=300,loop]  ()
+
+        (S_202)
+        edge [in=240,out=300,loop]  ()
+
+        (S_103)
+        edge [in=240,out=300,loop]  ()
+
+        (S_004)
+        edge [in=240,out=300,loop]  ();
+
+    \end{tikzpicture}
     \caption{$SIR(3,1,0)$ CTMC model with parameters$(\alpha, \beta)$}
 \end{figure}
 
 Uniformize the chain with uniformization rate $(3\alpha + 4\beta)$, we derive the following uniformized DTMC:
 \begin{figure}
     \centering
-    \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=3cm]
+    \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=3.5cm]
         \tikzstyle{every state}=[fill=white,draw=black,thick,text=black]
         \node[state]    (Init)                      {$(3,1,0)$};
         \node[state]    (S_301)[below of=Init]      {$(3,0,1)$};
         \node[state]    (S_220)[right of=Init]      {$(2,2,0)$};
-        \node[state]    (D)[right of=S_220]         {$(3,1,0)$};
-        \node[state]    (E)[below of=D]         {$(3,1,0)$};
-        \node[state]    (F)[below of=E]         {$(3,1,0)$};
-        \node[state]    (G)[right of=D]         {$(3,1,0)$};
-        \node[state]    (H)[below of=G]         {$(3,1,0)$};
-        \node[state]    (I)[below of=H]         {$(3,1,0)$};
-        \node[state]    (J)[below of=I]         {$(3,1,0)$};
-        \node[state]    (K)[right of=H]         {$(3,1,0)$};
-        \node[state]    (L)[right of=I]         {$(3,1,0)$};
-        \node[state]    (M)[right of=K]         {$(3,1,0)$};
-        \path
-        (Init) edge node{$\alpha + \beta$} (S_301)
-            edge node{$\alpha + \beta$} (S_220)
-        (S_301) edge [in=240,out=300,loop]  ()
-        (S_220) edge node{$\alpha + \beta$} (D)
-            edge node{$\alpha + \beta$} (F)
-        (D) edge node{$\alpha + \beta$} (G)
-            edge node{$\alpha + \beta$} (H)
-        (E) edge node{$\alpha + \beta$} (H)
-            edge node{$\alpha + \beta$} (I)
-        (F) edge node{$\alpha + \beta$} (I)
-            edge node{$\alpha + \beta$} (J)
-        (H) edge node{$\alpha + \beta$} (K)
-            edge node{$\alpha + \beta$} (I)
-        (I) edge node{$\alpha + \beta$} (L)
-            edge node{$\alpha + \beta$} (J)
-        (K) edge node{$\alpha + \beta$} (M)
-            edge node{$\alpha + \beta$} (L);
-        \end{tikzpicture}
-    \caption{$SIR(3,1,0)$ CTMC model with parameters$(\alpha, \beta)$}
+        \node[state]    (S_211)[below of=S_220]     {$(2,1,1)$};
+        \node[state]    (S_202)[below of=S_211]     {$(2,0,2)$};
+        \node[state]    (S_130)[right of=S_220]     {$(1,3,0)$};
+        \node[state]    (S_121)[below of=S_130]     {$(1,2,1)$};
+        \node[state]    (S_112)[below of=S_121]     {$(1,1,2)$};
+        \node[state]    (S_103)[below of=S_112]     {$(1,0,3)$};
+        \node[state]    (S_040)[right of=S_130]     {$(0,4,0)$};
+        \node[state]    (S_031)[below of=S_040]     {$(0,3,1)$};
+        \node[state]    (S_022)[below of=S_031]     {$(0,2,2)$};
+        \node[state]    (S_013)[below of=S_022]     {$(0,1,3)$};
+        \node[state]    (S_004)[below of=S_013]     {$(0,0,4)$};
+        \path[->, every loop/.style={looseness=3}]
+        (Init)
+        edge node{$\frac{\beta}{3\alpha + 3\beta}$}   (S_301)
+        edge node{$\frac{3\alpha}{3\alpha + 3\beta}$} (S_220)
+        edge[in=150,out=105,loop] node[above]{$\frac{3\beta}{3\alpha + 3\beta}$} ()
+
+        (S_220)
+        edge node{$\frac{2\alpha}{3\alpha + 3\beta}$} (S_130)
+        edge node{$\frac{\beta}{3\alpha + 3\beta}$} (S_211)
+        edge[in=150,out=105,loop] node[above]{$\frac{\alpha+3\beta}{3\alpha + 3\beta}$} ()
+
+        (S_130)
+        edge node{$\frac{\alpha}{3\alpha + 3\beta}$} (S_040)
+        edge node{$\frac{3\beta}{3\alpha + 3\beta}$} (S_121)
+        edge[in=150,out=105,loop] node[above]{$\frac{2\alpha+\beta}{3\alpha + 3\beta}$} ()
+
+        (S_040)
+        edge node{$\frac{4\beta}{3\alpha + 3\beta}$} (S_031)
+        edge[in=150,out=105,loop] node[above]{$\frac{3\alpha}{3\alpha + 3\beta}$} ()
+
+        (S_031)
+        edge node{$\frac{3\beta}{3\alpha + 3\beta}$} (S_022)
+        edge[in=150,out=105,loop] node[above]{$\frac{3\alpha+\beta}{3\alpha + 3\beta}$} ()
+
+        (S_022)
+        edge node{$\frac{2\beta}{3\alpha + 3\beta}$} (S_013)
+        edge[in=150,out=105,loop] node[above]{$\frac{3\alpha + 2\beta}{3\alpha + 3\beta}$} ()
+
+        (S_013)
+        edge node{$\frac{\beta}{3\alpha + 3\beta}$} (S_004)
+        edge[in=150,out=105,loop] node[above]{$\frac{3\alpha + 3\beta}{3\alpha + 3\beta}$} ()
+
+        (S_121)
+        edge node{$\frac{\alpha}{3\alpha + 3\beta}$} (S_031)
+        edge node{$\frac{\beta}{3\alpha + 3\beta}$} (S_112)
+        edge[in=150,out=105,loop] node[above]{$\frac{2\alpha + 3\beta}{3\alpha + 3\beta}$} ()
+
+        (S_112)
+        edge node{$\frac{\alpha}{3\alpha + 3\beta}$} (S_022)
+        edge node{$\frac{\beta}{3\alpha + 3\beta}$} (S_103)
+        edge[in=150,out=105,loop] node[above]{$\frac{2\alpha+3\beta}{3\alpha + 3\beta}$} ()
+
+        (S_211)
+        edge node{$\frac{2\alpha}{3\alpha + 3\beta}$} (S_121)
+        edge node{$\frac{\beta}{3\alpha + 3\beta}$} (S_202)
+        edge[in=150,out=105,loop] node[above]{$\frac{\alpha+3\beta}{3\alpha + 3\beta}$} ()
+
+        (S_301)
+        edge [in=240,out=300,loop]  ()
+
+        (S_202)
+        edge [in=240,out=300,loop]  ()
+
+        (S_103)
+        edge [in=240,out=300,loop]  ()
+
+        (S_004)
+        edge [in=240,out=300,loop]  ();
+
+    \end{tikzpicture}
+    \caption{$SIR(3,1,0)$ Uniformized DTMC model with parameters$(\alpha, \beta)$ and uniformization rate $(3\alpha + 4\beta)$}
 \end{figure}
 \subsection{Properties}
 \subsection{Evaluation}
