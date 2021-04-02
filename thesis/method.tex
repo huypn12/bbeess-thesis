@@ -1,6 +1,53 @@
 \chapter{Framework for parameter synthesis.}
-\section{Model construction}
+\section{With rational functions}
+\begin{algorithm}[H]
+    \caption{Sequential Monte-Carlo with rational functions}
+    \label{smcrf-alg}
+    \hspace*{\algorithmicindent} \textbf{Input:}
+    \begin{itemize}
+        \item $\pi(\theta)$: prior distribution on $\theta$.
+        \item $N$: number of particles.
+        \item $M$: Metro
+        \item \item $D_{obs}$: observed data for Bayesian inference or its summary statistic $S_{obs}$
+    \end{itemize}
+    \hspace*{\algorithmicindent} \textbf{Output:}
+    \begin{itemize}
+        \item $(\theta_1,\ldots,\theta_N)$: $N$ sampled particles.
+        \item $(w_1,\ldots,w_N)$: corresponding weights of sampled particles.
+    \end{itemize}
+    \begin{algorithmic}[1]
+        \Procedure{Approximate-Bayesian-Computation}{$D$, $\theta$, $\pi(\theta)$, $N$, $\epsilon$}
+        \State $t:=0$
+        \While{$t \leq N$}
+        \EndWhile
+        \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
 
 
-\section{Framework}
+\section{Without rational functions}
+\begin{algorithm}[H]
+    \caption{Sequential Monte-Carlo with Approximate Bayesian Computation and Statiscal Model Checking}
+    \label{smcabcsmc-alg}
+    \hspace*{\algorithmicindent} \textbf{Input:}
+    \begin{itemize}
+        \item $D_{obs}$: observed data for Bayesian inference or its summary statistic $S_{obs}$
+        \item $\theta=(\theta_1,\ldots,\theta_k)$: $k$-dimensional model parameter.
+        \item $\pi(\theta)$: prior distribution on $\theta$.
+        \item $N$: number of particles (parameter samples).
+        \item $\epsilon$: absolute error threshold.
+    \end{itemize}
+    \hspace*{\algorithmicindent} \textbf{Output:}
+    \begin{itemize}
+        \item $(\theta_1,\ldots,\theta_N)$: $N$ sampled particles.
+        \item $(\omega_1,\ldots,\omega_N)$: corresponding weights of sampled particles.
+    \end{itemize}
+    \begin{algorithmic}[1]
+        \Procedure{Approximate-Bayesian-Computation}{$D$, $\theta$, $\pi(\theta)$, $N$, $\epsilon$}
+        \State $t:=0$
+        \While{$t \leq N$}
+        \EndWhile
+        \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
 
