@@ -1,5 +1,5 @@
-\chapter{Framework for parameter synthesis.}
-\section{With rational functions}
+\chapter{Bayesian frameworks for parameter synthesis.}
+\section{Sequential Monte-Carlo without rational functions}
 \begin{algorithm}[H]
     \caption{Sequential Monte-Carlo with rational functions}
     \label{smcrf-alg}
@@ -7,8 +7,9 @@
     \begin{itemize}
         \item $\pi(\theta)$: prior distribution on $\theta$.
         \item $N$: number of particles.
-        \item $M$: Metro
-        \item \item $D_{obs}$: observed data for Bayesian inference or its summary statistic $S_{obs}$
+        \item $M$: number of pertubation functions.
+        \item $N_{MH}$: number of particles for Metropolis-Hastings in each pertubation.
+        \item $D_{obs}$: observed data for Bayesian inference or its summary statistic $S_{obs}$
     \end{itemize}
     \hspace*{\algorithmicindent} \textbf{Output:}
     \begin{itemize}
@@ -25,22 +26,37 @@
 \end{algorithm}
 
 
-\section{Without rational functions}
+\section{Sequential Monte-Carlo without rational functions}
+Without the availability of analytical form of observational and interested properties, we face the
+following obstacles:
+\begin{itemize}
+    \item \textbf{Absence of likelihood functions:} As the rational functions for properties are not
+    available, we do not have the analytical form of likelihood. The abscence of likelihood suggests
+    to exploit \textit{likelihood-free methods}. In this framework we use \textit{Approximate
+    Bayesian Computation} in combination with \textit{Sequential Monte-Carlo method}.
+    \item \textbf{Absence of rational function for verification of bounded path property:} the
+    satisfaction of an instantiated model to a bounded path property cannot be computed. In the case
+    that the number of states is too large, we use \textit{Statistical Model Checking}.
+\end{itemize}
+
+
 \begin{algorithm}[H]
     \caption{Sequential Monte-Carlo with Approximate Bayesian Computation and Statiscal Model Checking}
     \label{smcabcsmc-alg}
     \hspace*{\algorithmicindent} \textbf{Input:}
     \begin{itemize}
-        \item $D_{obs}$: observed data for Bayesian inference or its summary statistic $S_{obs}$
-        \item $\theta=(\theta_1,\ldots,\theta_k)$: $k$-dimensional model parameter.
         \item $\pi(\theta)$: prior distribution on $\theta$.
-        \item $N$: number of particles (parameter samples).
-        \item $\epsilon$: absolute error threshold.
+        \item $N$: number of particles.
+        \item $M$: number of pertubation functions.
+        \item $N_{MH}$: number of particles for Metropolis-Hastings in each pertubation.
+        \item $D_{obs}$: observed data for Bayesian inference or its summary statistic $S_{obs}$
+        \item $\epsilon$: distance threshold for Approximate Bayesian Computation step.
+        \item $\alpha$: confidence interval for Statistical Model Checking step.
     \end{itemize}
     \hspace*{\algorithmicindent} \textbf{Output:}
     \begin{itemize}
         \item $(\theta_1,\ldots,\theta_N)$: $N$ sampled particles.
-        \item $(\omega_1,\ldots,\omega_N)$: corresponding weights of sampled particles.
+        \item $(w_1,\ldots,w_N)$: corresponding weights of sampled particles.
     \end{itemize}
     \begin{algorithmic}[1]
         \Procedure{Approximate-Bayesian-Computation}{$D$, $\theta$, $\pi(\theta)$, $N$, $\epsilon$}
@@ -51,3 +67,6 @@
     \end{algorithmic}
 \end{algorithm}
 
+\section{Selection of pertubation kernel}
+Selection of pertubation kernel is mentioned in \cite{filippi2013optimality}. In this thesis, we use
+component-wise uniform kernel:
