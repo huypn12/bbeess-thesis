@@ -18,49 +18,33 @@
 
 
 \begin{document}
-
 \frame{\titlepage}
 
 \begin{frame}
-    \frametitle{Model checking}
+    \begin{center}
+        \Huge Bayesian framework for parameter synthesis.
+    \end{center}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Framework}
+    %% General framework
     \begin{block}{Definition}
         Model checking is an automated technique that, given a finite-state model of a system and a formal property,systematically checks whether this property holds for (a given state in) that model
     \end{block}
+
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Model checking step}
+    Properties are specified by temporal logics
     Since we are interested in probabilistic model checking, our models encompasses probabilistic behaviours.
     \begin{examples}[Probabilistic models]
         \begin{itemize}
             \item Rational fucntion evaluation
             \item Statistical model checking
         \end{itemize}
-    \end{examples}
-\end{frame}
-
-
-\begin{frame}
-    \frametitle{Properties}
-    Properties are specified by temporal logics
-    \begin{examples}
-        \begin{itemize}
-            \item PCTL
-            \item CSL
-            \item LTL
-            \item etc.
-        \end{itemize}
-    \end{examples}
-\end{frame}
-
-\begin{frame}
-    \frametitle{Complexity}
-    In general, model checking is undecidable. The verification of a model against a temporal logic formula is of \textit{polynomial time} to the number of states on the model.
-    \begin{block}{State explosion}
-        The number of states needed to model the system increases exponentially to the state of the system.
-    \end{block}
-    State explosion is widely surveyed in the research of model checking. \cite{clarke2011model}
-\end{frame}
-
-\begin{frame}
-    \begin{examples}[Concurrent system]
-        A concurrent system consists of many interacting agents. A global state is the tuple of states of all agents and communication channels, thus the number of possible global states increases exponentially to the number of agents and communication channels. In case of asynchronous channels, the number of state may increases even faster.
     \end{examples}
 \end{frame}
 
@@ -114,7 +98,7 @@
 \end{frame}
 
 \begin{frame}
-    \frametitle{Case study with PRISM}
+    \frametitle{Case study}
     PRISM \cite{kwiatkowska2002prism} is a model checking tool that support discrete event simulation and statistical model checking.
     For an example of how to use PRISM for statistical model checking please follow \href{https://www.prismmodelchecker.org/manual/RunningPRISM/StatisticalModelChecking}{this link}.
 \end{frame}

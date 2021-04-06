@@ -162,7 +162,9 @@ Monte-Carlo method \textit{SMC-ABC-SMC} framework.
         \item $N_{MH}$: number of particles in each Metropolis-Hastings step.
         \item $Q_t(\theta^t|\theta^{t-1}), 1 \leq t \leq N_{MH}$: transition kernel for Metropolis-Hastings step.
         \item $D_{obs}$: observed data for Bayesian inference or its summary statistic $S_{obs}$
-        \item $P(D_{obs}|\theta):$ likelihood function.
+        \item $P(D_{obs}|\theta)$: likelihood function.
+        \item $\epsilon$: threshold for Approximate Bayesian Computation.
+        \item $\delta, \alpha$: indifference and $\alpha$-level for Statistical Model Checking using SPRT method.
     \end{itemize}
     \hspace*{\algorithmicindent} \textbf{Output:}
     \begin{itemize}
@@ -194,10 +196,25 @@ Monte-Carlo method \textit{SMC-ABC-SMC} framework.
             \State $(\theta_1,\ldots,\theta_N) \leftarrow (\theta'_1,\ldots,\theta'_N)$ 
             \State $i \leftarrow 1$
             \While{$i \leq N$} \algorithmiccomment {SMC pertubation step}
-                \State Draw $\hat{\theta}^t_i$ from $F_t(\theta^t | \theta^{t-1}_1,\ldots,\theta^{t-1}_N), 1\leq t \leq M$
-                \State $(\theta^*_1,\ldots,\theta^*_{N_{MH}}), (w^*_1,\ldots,w^*_{N_{MH}}) \leftarrow RF-MCMC(\hat{\theta}^t_i)$
-                \State $\theta_i \leftarrow \theta^*_{N_{MH}}$
-                \State $w_i \leftarrow w^*_{N_{MH}}$
+                \State $rejected \leftarrow True$
+                \While{$rejected == True$}
+                    \State $sat \leftarrow False $
+                    \While{$sat = False$}
+                        \State Draw $\hat{\theta}^t_i$ from $F_t(\theta^t | \theta^{t-1}_1,\ldots,\theta^{t-1}_N), 1\leq t \leq M$
+                        \State Do SPRT Statistical Model Checking on instantiated model $\mathcal{M}_{\hat{\theta}^t}$
+                        \If{$\mathcal{M}_{\hat{\theta}^t}\models\Phi$}
+                            \State $sat \leftarrow True$
+                        \EndIf
+                    \EndWhile
+                    \State $D_{sim} \leftarrow Simulate(\mathcal{M}_{\hat{\theta}^t})$
+                    \State $d = Distance(D_{sim}, D_{obs})$
+                    \If{$d < \epsilon$}
+                        \State $rejected \leftarrow False$
+                        \State $\theta_i \leftarrow \hat{\theta}^t$
+                        \State $w_i \leftarrow d$
+                    \EndIf
+                    
+                \EndWhile
             \EndWhile
         \EndWhile
         \State Return $(\theta_1,\ldots,\theta_{N})$, $(w_1,\ldots,w_{N})$
