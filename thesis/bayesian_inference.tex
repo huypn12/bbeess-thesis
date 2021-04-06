@@ -63,7 +63,8 @@ In this research, the HPD is calculated using algorithm from \textit{PyMC3}
 library \cite{salvatier2016pymc3}. For simplicity, we assume that in all cases which we concern,
 HPD is computed for unimodal distribution.
 \begin{algorithm}[H]
-    \caption{Compute Highest Posterior Density Interval}\label{mhalg}
+    \caption{Compute Highest Posterior Density Interval}
+    \label{mh}
     \hspace*{\algorithmicindent} \textbf{Input:} $S$ is samples from a distribution. \\
     \hspace*{\algorithmicindent} \textbf{Input:} $0\leq \alpha \leq 1$ \\
     \hspace*{\algorithmicindent} \textbf{Output:} HPD interval
@@ -77,29 +78,28 @@ HPD is computed for unimodal distribution.
 \end{algorithm}
 
 \subsection{Selection of prior distribution}
-Theoretically, prior can be of any distribution family. However, a selection of
-prior distribution that is too different than the actual distribution of
-parameter can leads to a false propagation of beliefs and degrade inference
-results.\\
-It is suggested by \cite{polgreen2016data} that in case of no prior knowledge
-exists to help the selection of prior distribution, Uniform distribution is
-preferable since it is less likely to propagate false beliefs to the
-inference.\\
-A systematic inference to select prior distribution family and prior
-distribution parameter (hyperparameters) is possible with \textit{Hierarchical Bayes Models} \cite{allenby2005hierarchical}.
+Theoretically, prior can be of any distribution family. However, a selection of prior distribution
+that is too different than the actual distribution of parameter can leads to a false propagation of
+beliefs and degrade inference results.\\
+It is suggested by \cite{polgreen2016data} that in case of no prior knowledge exists to help the
+selection of prior distribution, Uniform distribution is preferable since it is less likely to
+propagate false beliefs to the inference.\\
+A systematic inference to select prior distribution family and prior distribution parameter
+(hyperparameters) is possible with \textit{Hierarchical Bayes Models}
+\cite{allenby2005hierarchical}.
 
 \subsection{Estimation of posterior distribution}
 In posterior estimation the following factors are important:
 \begin{enumerate}
     \item Tractability: we have analytical form of posterior distribution.
-    \item Computationally effective: updating model parameter is of linear time to
-          the dimension of parameter.
+    \item Computationally effective: updating model parameter is of linear time to the dimension of
+          parameter.
 \end{enumerate}
 
 \subsubsection{Posterior conjugation}
-Conjugated posteriors are special cases of Bayesian inference, in which the
-prior and posterior distribution belongs to the same family of distribution.
-We consider two conjugated posterior: Binomial-Beta and Dirichlet-Multinomial
+Conjugated posteriors are special cases of Bayesian inference, in which the prior and posterior
+distribution belongs to the same family of distribution. We consider two conjugated posterior:
+Binomial-Beta and Dirichlet-Multinomial
 \begin{lemma}[Binomial-Beta Conjugation]
     Binomial distribution is conjugated to beta distribution.
 \end{lemma}
@@ -154,7 +154,11 @@ and \cite{baron2019probability}. We summarize the necessary results in the follo
                                                                          &                                                            &                                                                   &  &
     \end{tabular}
 \end{table}
-However, posterior conjugation is applicable to a subset of prior and likelihood functions. In Bayesian inference, it is usual that the posterior distribution has no analytical form or its analytical form is difficult to directly sample from. In these cases, we can several different sampling and optimization methods to approximate the posterior distribution. In the following section we discuss different approaches for posterior distribution approximation:
+However, posterior conjugation is applicable to a subset of prior and likelihood functions. In
+Bayesian inference, it is usual that the posterior distribution has no analytical form or its
+analytical form is difficult to directly sample from. In these cases, we can several different
+sampling and optimization methods to approximate the posterior distribution. In the following
+section we discuss different approaches for posterior distribution approximation:
 \begin{itemize}
     \item Markov chain Monte-Carlo.
     \item Sequential Monte-Carlo.
@@ -216,15 +220,27 @@ However, MH algorithm also has a drawback; its convergence becomes slower as the
 dimension of parameter $\theta$ increases.
 
 \subsection{Sequential Monte-Carlo}
-Sequential Monte-Carlo method is firstly proposed by \cite{del2006sequential}.  Instead of having one particle moving in its parameter space,
-Sequential Monte-Carlo estimates by using $N$ particles moving independently. Therefore Sequential Monte-Carlo method has a significant advantage of easily parallelizable.
+Sequential Monte-Carlo method is firstly proposed by \cite{del2006sequential}.  Instead of having
+one particle moving in its parameter space, Sequential Monte-Carlo estimates by using $N$ particles
+moving independently. Therefore Sequential Monte-Carlo method has a significant advantage of easily
+parallelizable.
 
 here \cite{daviet2018inference}
 
 Selection of kernel function for SMC is mentioned in \cite{silk2012optimizing}.
 
 \subsection{Approximate Bayesian computation}
-The methods mentioned before is used with an assumption that the likelihood $P(D|\theta)$ has an analytical form; the analytical can be evaluated without introducing computational burden. However there are situations in which the likelihood has no analytical form, or the analytical form is expensive to be evaluated. In such cases, a class of different methods, dubbed \textit{likelihood-free} methods, are used. Likelihood-free methods in Bayesian inference means that instead of compute the likelihood $P(D|\theta)$, we estimate it or replace it by other measures. Approximate Bayesian Computation is a widely used likelihood-free method for approximating posterior distribution. Instead of estimating the likelihood $P(D|\theta)$ directly, we sample a observable data set $\hat{D}$ and define a distance measure $\delta(D, \hat{D})$. Approximate Bayesian Computation accepts a set of tuples $(\hat{\theta}, \hat{D})$, each satisfies that $\delta(D, \hat{D}) < \epsilon, \epsilon\in\mathbf{R}_{\leq 0}$.
+The methods mentioned before is used with an assumption that the likelihood $P(D|\theta)$ has an
+analytical form; the analytical can be evaluated without introducing computational burden. However
+there are situations in which the likelihood has no analytical form, or the analytical form is
+expensive to be evaluated. In such cases, a class of different methods, dubbed
+\textit{likelihood-free} methods, are used. Likelihood-free methods in Bayesian inference means that
+instead of compute the likelihood $P(D|\theta)$, we estimate it or replace it by other measures.
+Approximate Bayesian Computation is a widely used likelihood-free method for approximating posterior
+distribution. Instead of estimating the likelihood $P(D|\theta)$ directly, we sample a observable
+data set $\hat{D}$ and define a distance measure $\delta(D, \hat{D})$. Approximate Bayesian
+Computation accepts a set of tuples $(\hat{\theta}, \hat{D})$, each satisfies that $\delta(D,
+\hat{D}) < \epsilon, \epsilon\in\mathbf{R}_{\leq 0}$.
 \begin{algorithm}[H]
     \caption{Approximate Bayesian Computation}
     \label{abcalg}
@@ -243,14 +259,13 @@ The methods mentioned before is used with an assumption that the likelihood $P(D
     \end{itemize}
     \begin{algorithmic}[1]
         \Procedure{Approximate-Bayesian-Computation}{$D$, $\theta$, $\pi(\theta)$, $N$, $\epsilon$}
-        \State $t:=0$
-        \While{$t \leq N$}
-        \EndWhile
-        \EndProcedure
+        \State $t:=0$ \While{$t \leq N$} \EndWhile \EndProcedure
     \end{algorithmic}
 \end{algorithm}
 
 
 
 \section{Conclusion}
-We present a set of optimization and approximation methods which are essentials to Bayesian Inference. In the following chapter we propose a data-driven approach for parameter synthesis combining Approximate Bayesian computation, Sequential Monte Carlo, and Statistical Model Checking.
+We present a set of optimization and approximation methods which are essentials to Bayesian
+Inference. In the following chapter we propose a data-driven approach for parameter synthesis
+combining Approximate Bayesian computation, Sequential Monte Carlo, and Statistical Model Checking.
