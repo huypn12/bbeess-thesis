@@ -49,21 +49,7 @@
 \end{frame}
 
 \begin{frame}
-    \frametitle{Model checking step}
-    A property $\Phi$ is
-    \begin{itemize}
-        \item a bounded reachability property and
-        \item specified by PCTL.
-    \end{itemize}
-    Checking a model $\mathcal{M}_\theta$ against $\Phi$
-    \begin{itemize}
-        \item Rational fucntion evaluation
-        \item Statistical model checking
-    \end{itemize}
-\end{frame}
-
-\begin{frame}
-    \frametitle{Parameter synthesis step}    
+    \frametitle{Parameter synthesis step}
     \begin{algorithm}[H]
         \caption{Markov Chain Monte-Carlo with rational functions}
         \label{rf-mcmc-alg}
@@ -72,11 +58,11 @@
             \State Init $\theta$ from prior distribution $\pi(\theta)$.
             \State $i \leftarrow 1$
             \While{$i \leq N$}
-                \State Draw $\theta_{cand}$ from $Q(\theta|\theta_1,\ldots,\theta_i)$
-                \If{$P(D_{obs}|\theta_{cand}) > P(D_{obs}|\theta_i)$}
-                    \State Accept $\theta_{cand}$ if $\mathcal{M}_{\theta_{cand}} \models \Phi$
-                    \State $i \leftarrow i + 1$
-                \EndIf
+            \State Draw $\theta_{cand}$ from $Q(\theta|\theta_1,\ldots,\theta_i)$
+            \If{$P(D_{obs}|\theta_{cand}) > P(D_{obs}|\theta_i)$}
+            \State Accept $\theta_{cand}$ if $\mathcal{M}_{\theta_{cand}} \models \Phi$
+            \State $i \leftarrow i + 1$
+            \EndIf
             \EndWhile
             \State Return $(\theta_1,\ldots,\theta_N)$
             \EndProcedure
@@ -86,7 +72,7 @@
 
 
 \begin{frame}
-    \frametitle{Parameter synthesis step}    
+    \frametitle{Parameter synthesis step}
     \begin{algorithm}[H]
         \caption{Sequential Monte-Carlo with rational functions}
         \label{rf-smc-alg}
@@ -95,11 +81,11 @@
             \State Init $\theta_1,\ldots,\theta_N$ from prior distribution $\pi(\theta)$.
             \State Set  $w_i \leftarrow P(D_{obs}|\theta_i), 1\leq i\leq N$
             \For{$t \in (1,\ldots,M)$}
-                \State Normalize $w^t_1,\ldots,w^t_N$
-                \State Sample with replacement $\theta^t_1,\ldots,\theta^t_N$ from $\theta^{t-1}_1,\ldots,\theta^{t-1}_N$
-                \For{$\theta_i \in (\theta^t_1,\ldots,\theta^t_N)$}
-                    \State $\theta_i \leftarrow MCMC-RF(\theta_i)$, $Q = F_i(\theta|\theta^{t-1}_1,\ldots,\theta^{t-1}_N)$
-                \EndFor
+            \State Normalize $w^t_1,\ldots,w^t_N$
+            \State Sample with replacement $\theta^t_1,\ldots,\theta^t_N$ from $\theta^{t-1}_1,\ldots,\theta^{t-1}_N$
+            \For{$\theta_i \in (\theta^t_1,\ldots,\theta^t_N)$}
+            \State $\theta_i \leftarrow MCMC-RF(\theta_i)$, $Q = F_i(\theta|\theta^{t-1}_1,\ldots,\theta^{t-1}_N)$
+            \EndFor
             \EndFor
             \State Return $(\theta_1,\ldots,\theta_N)$
             \EndProcedure
@@ -108,7 +94,7 @@
 \end{frame}
 
 \begin{frame}
-    \frametitle{Parameter synthesis step}    
+    \frametitle{Parameter synthesis step}
     \begin{algorithm}[H]
         \caption{Sequential Monte-Carlo with simulations}
         \label{smc-abc-smc-alg}
@@ -116,16 +102,16 @@
             \Procedure{RF-SMC}{}
             \State Init $\theta_1,\ldots,\theta_N$ from prior distribution $\pi(\theta)$.
             \For{$t \in (1,\ldots,M)$}
-                \State Sample with replacement $\theta^t_1,\ldots,\theta^t_N$ from $\theta^{t-1}_1,\ldots,\theta^{t-1}_N$
-                \For{$\theta_i \in (\theta^t_1,\ldots,\theta^t_N)$}
-                    \State Draw $\theta_{cand}$ from $F_i(\theta|\theta^{t-1}_1,\ldots,\theta^{t-1}_N)$
-                    \If{Statistical Model Checking $\mathcal{M}_{\theta_{cand}} \models \Phi$}
-                        \State Simulate $D_{sim}$ from $\mathcal{M}_{\theta_{cand}}$
-                        \If{$Distance(D_{sim}, D_{obs} < \epsilon)$}
-                            \State Update $\theta_i \leftarrow \theta_{cand}$
-                        \EndIf
-                    \EndIf
-                \EndFor
+            \State Sample with replacement $\theta^t_1,\ldots,\theta^t_N$ from $\theta^{t-1}_1,\ldots,\theta^{t-1}_N$
+            \For{$\theta_i \in (\theta^t_1,\ldots,\theta^t_N)$}
+            \State Draw $\theta_{cand}$ from $F_i(\theta|\theta^{t-1}_1,\ldots,\theta^{t-1}_N)$
+            \If{Statistical Model Checking $\mathcal{M}_{\theta_{cand}} \models \Phi$}
+            \State Simulate $D_{sim}$ from $\mathcal{M}_{\theta_{cand}}$
+            \If{$Distance(D_{sim}, D_{obs} < \epsilon)$}
+            \State Update $\theta_i \leftarrow \theta_{cand}$
+            \EndIf
+            \EndIf
+            \EndFor
             \EndFor
             \State Return $(\theta_1,\ldots,\theta_N)$
             \EndProcedure
@@ -133,18 +119,6 @@
     \end{algorithm}
 \end{frame}
 
-
-
-\begin{frame}
-    \frametitle{Evaluation}
-    Statistical Model Checking (SMC) is a formal verification technique that combines simulation and statistical methods for the analysis of stochastic systems. \footnotemark[1] Statistical Model Checking verifies a system $S$ property $\phi$ over a finite set of \textit{traces}, acquired through simulating the system of concern $S$.
-    \begin{block}{Advantages}
-        \begin{itemize}
-            \item \textbf{Scalability}: avoid state space explosion issues.
-        \end{itemize}
-    \end{block}
-    \footnotetext[1]{\href{https://www-verimag.imag.fr/Statistical-Model-Checking-814.html}{}}
-\end{frame}
 
 
 
