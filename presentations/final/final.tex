@@ -1,14 +1,22 @@
 \documentclass{beamer}
 
 \usepackage{biblatex}
-\addbibresource{smc.bib}
+\addbibresource{final.bib}
 \usepackage{hyperref}
 \usepackage[utf8]{inputenc}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\makeatletter
+\algrenewcommand\ALG@beginalgorithmic{\footnotesize}
+\makeatother
 
 \usetheme{Copenhagen}
 \usecolortheme{default}
 \setbeamertemplate{items}[triangle]
 \setbeamertemplate{sections/subsections in toc}[square]
+
+
 
 %Information to be included in the title page:
 \title{Bayesian parameter synthesis for markov population model.}
@@ -22,34 +30,113 @@
 
 \begin{frame}
     \begin{center}
-        \Huge Bayesian framework for parameter synthesis.
+        \Huge Bayesian framework for data-informed parameter synthesis.
     \end{center}
 \end{frame}
 
 \begin{frame}
-    \frametitle{Framework}
-    %% General framework
-    \begin{block}{Definition}
-        Model checking is an automated technique that, given a finite-state model of a system and a formal property,systematically checks whether this property holds for (a given state in) that model
-    \end{block}
-
+    \frametitle{Model checking step}
+    A property $\Phi$ is
+    \begin{itemize}
+        \item a bounded reachability property and
+        \item specified by PCTL.
+    \end{itemize}
+    Checking a model $\mathcal{M}_\theta$ against $\Phi$
+    \begin{itemize}
+        \item Rational fucntion evaluation
+        \item Statistical model checking
+    \end{itemize}
 \end{frame}
-
 
 \begin{frame}
     \frametitle{Model checking step}
-    Properties are specified by temporal logics
-    Since we are interested in probabilistic model checking, our models encompasses probabilistic behaviours.
-    \begin{examples}[Probabilistic models]
-        \begin{itemize}
-            \item Rational fucntion evaluation
-            \item Statistical model checking
-        \end{itemize}
-    \end{examples}
+    A property $\Phi$ is
+    \begin{itemize}
+        \item a bounded reachability property and
+        \item specified by PCTL.
+    \end{itemize}
+    Checking a model $\mathcal{M}_\theta$ against $\Phi$
+    \begin{itemize}
+        \item Rational fucntion evaluation
+        \item Statistical model checking
+    \end{itemize}
 \end{frame}
 
 \begin{frame}
-    \frametitle{Statistical model checking}
+    \frametitle{Parameter synthesis step}    
+    \begin{algorithm}[H]
+        \caption{Markov Chain Monte-Carlo with rational functions}
+        \label{rf-mcmc-alg}
+        \begin{algorithmic}[1]
+            \Procedure{MCMC-RF}{}
+            \State Init $\theta$ from prior distribution $\pi(\theta)$.
+            \State $i \leftarrow 1$
+            \While{$i \leq N$}
+                \State Draw $\theta_{cand}$ from $Q(\theta|\theta_1,\ldots,\theta_i)$
+                \If{$P(D_{obs}|\theta_{cand}) > P(D_{obs}|\theta_i)$}
+                    \State Accept $\theta_{cand}$ if $\mathcal{M}_{\theta_{cand}} \models \Phi$
+                    \State $i \leftarrow i + 1$
+                \EndIf
+            \EndWhile
+            \State Return $(\theta_1,\ldots,\theta_N)$
+            \EndProcedure
+        \end{algorithmic}
+    \end{algorithm}
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Parameter synthesis step}    
+    \begin{algorithm}[H]
+        \caption{Sequential Monte-Carlo with rational functions}
+        \label{rf-smc-alg}
+        \begin{algorithmic}[1]
+            \Procedure{SMC-RF}{}
+            \State Init $\theta_1,\ldots,\theta_N$ from prior distribution $\pi(\theta)$.
+            \State Set  $w_i \leftarrow P(D_{obs}|\theta_i), 1\leq i\leq N$
+            \For{$t \in (1,\ldots,M)$}
+                \State Normalize $w^t_1,\ldots,w^t_N$
+                \State Sample with replacement $\theta^t_1,\ldots,\theta^t_N$ from $\theta^{t-1}_1,\ldots,\theta^{t-1}_N$
+                \For{$\theta_i \in (\theta^t_1,\ldots,\theta^t_N)$}
+                    \State $\theta_i \leftarrow MCMC-RF(\theta_i)$, $Q = F_i(\theta|\theta^{t-1}_1,\ldots,\theta^{t-1}_N)$
+                \EndFor
+            \EndFor
+            \State Return $(\theta_1,\ldots,\theta_N)$
+            \EndProcedure
+        \end{algorithmic}
+    \end{algorithm}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Parameter synthesis step}    
+    \begin{algorithm}[H]
+        \caption{Sequential Monte-Carlo with simulations}
+        \label{smc-abc-smc-alg}
+        \begin{algorithmic}[1]
+            \Procedure{RF-SMC}{}
+            \State Init $\theta_1,\ldots,\theta_N$ from prior distribution $\pi(\theta)$.
+            \For{$t \in (1,\ldots,M)$}
+                \State Sample with replacement $\theta^t_1,\ldots,\theta^t_N$ from $\theta^{t-1}_1,\ldots,\theta^{t-1}_N$
+                \For{$\theta_i \in (\theta^t_1,\ldots,\theta^t_N)$}
+                    \State Draw $\theta_{cand}$ from $F_i(\theta|\theta^{t-1}_1,\ldots,\theta^{t-1}_N)$
+                    \If{Statistical Model Checking $\mathcal{M}_{\theta_{cand}} \models \Phi$}
+                        \State Simulate $D_{sim}$ from $\mathcal{M}_{\theta_{cand}}$
+                        \If{$Distance(D_{sim}, D_{obs} < \epsilon)$}
+                            \State Update $\theta_i \leftarrow \theta_{cand}$
+                        \EndIf
+                    \EndIf
+                \EndFor
+            \EndFor
+            \State Return $(\theta_1,\ldots,\theta_N)$
+            \EndProcedure
+        \end{algorithmic}
+    \end{algorithm}
+\end{frame}
+
+
+
+\begin{frame}
+    \frametitle{Evaluation}
     Statistical Model Checking (SMC) is a formal verification technique that combines simulation and statistical methods for the analysis of stochastic systems. \footnotemark[1] Statistical Model Checking verifies a system $S$ property $\phi$ over a finite set of \textit{traces}, acquired through simulating the system of concern $S$.
     \begin{block}{Advantages}
         \begin{itemize}
@@ -60,48 +147,6 @@
 \end{frame}
 
 
-\begin{frame}
-    \frametitle{Statistical model checking}
-    Given a model $M$ of a system $S$ and a temporal property $\phi$. Let $p:=Pr\{M \models \phi \}$ be the probability that the model $M$ satisfies the property $\phi$. \footnotemark[1]
-    \begin{block}{Verification}
-        \begin{itemize}
-            \item \textbf{Quantitative}: Estimate $p$
-            \item \textbf{Qualitative}: Given a threshold $\theta$, test the hypothesis $H := $
-        \end{itemize}
-    \end{block}
-    \footnotetext[1]{\href{https://www-verimag.imag.fr/Statistical-Model-Checking-814.html}{}}
-\end{frame}
-
-\begin{frame}
-    \frametitle{Statistical model checking}
-    \begin{block}{Quantitative}
-        Estimate $p:=Pr\{M \models \phi \}$ wrt. precision $\delta$ and confidence level $\alpha$
-    \end{block}
-    The estimation is described in detail in \cite{agha2018survey}. We calculate $\hat{p}$ as an estimation of $p$ such that
-    \begin{align*}
-        Pr\{ |p - \hat{p}| < \delta \} = 1 - \alpha
-    \end{align*}
-    $\hat{p}$ can be estimated using different bounds, such as Chernoff-Hoeffding bound \cite{hoeffding1963probability}, Okamoto bound \cite{okamoto1959some} or Massart bound \cite{massart1990tight}
-\end{frame}
-
-\begin{frame}
-    \frametitle{Statistical model checking}
-    \begin{block}{Quantitative}
-        Let $p:=Pr\{M \models \phi \}$ and a threshold $\theta \in [0,1]$. Compare $p$ and $\theta$
-    \end{block}
-    The general approach is to do hypothesis test \cite{younes2005verification} given a confidential level $\alpha$
-    \begin{itemize}
-        \item $H_0: p >= \theta$
-        \item $H_1: p < \theta$
-    \end{itemize}
-    More details can be found at \cite{wald1945sequential}
-\end{frame}
-
-\begin{frame}
-    \frametitle{Case study}
-    PRISM \cite{kwiatkowska2002prism} is a model checking tool that support discrete event simulation and statistical model checking.
-    For an example of how to use PRISM for statistical model checking please follow \href{https://www.prismmodelchecker.org/manual/RunningPRISM/StatisticalModelChecking}{this link}.
-\end{frame}
 
 \begin{frame}[allowframebreaks]{References}
     \printbibliography

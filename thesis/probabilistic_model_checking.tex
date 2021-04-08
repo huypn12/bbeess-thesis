@@ -7,11 +7,12 @@
       \item Probabilistic model checking
       \item Statistical model checking
       \item Parametric Discre time Markov chain
-      \item Parameter synthesis problem: approaches: bayesian, hhgfhghhh Abate paper on bayesian hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhjjjhhhhhhh
+      \item Parameter synthesis problem: approaches: bayesian, Abate paper on bayesian
   \end{itemize}
  }
 
-In this thesis, we model stochastic systems. Thus, we use probabilistic models, in our case we mostly use Discrete time markov chain, and also have a
+In this thesis, we model stochastic systems. Thus, we use probabilistic models, in our case we
+mostly use Discrete time markov chain, and also have a
 
 \section{Markov chain}
 \subsection{Discrete Time Markov chain}
@@ -38,7 +39,8 @@ Our definition of markov chain follows the definition on \cite{baier2008principl
 \subsection{Continuous-time Markov chain}
 Continous-time Markov chain also satisfies memoryless property
 \begin{definition}[Continuous-time Markov property]
-    Let X be a continuous random variable of exponentially distribution. X has memoryless property if and only if
+    Let X be a continuous random variable of exponentially distribution. X has memoryless property
+    if and only if
     \begin{align*}
         Pr\{X > t + \delta | X > t\} = Pr\{X > \delta\} \forall t,\delta\in\mathbb{R}_{\geq 0}
     \end{align*}
@@ -46,7 +48,8 @@ Continous-time Markov chain also satisfies memoryless property
 
 The following definition of Contiuous-time Markov chain is based on \cite{baier2003model}
 \begin{definition}[Continuous-time Markov chain]
-    A Continuous-time Markov chain (CTMC) is a tuple $(S,\mathbf{P}, \mathbf{r}, S_{init}, AP, L)$ \cite{baier2003model}
+    A Continuous-time Markov chain (CTMC) is a tuple $(S,\mathbf{P}, \mathbf{r}, S_{init}, AP, L)$
+    \cite{baier2003model}
     \begin{itemize}
         \item $S$ is a countable, non-emty set of \textit{states}
         \item $\mathbf{P}:S\times S \rightarrow [0,1]$ is the \textit{transition probability}
@@ -54,8 +57,8 @@ The following definition of Contiuous-time Markov chain is based on \cite{baier2
               \begin{align*}
                   \forall s \in S : \sum_{s'\in S}\mathbf{P}(s, s') = 1
               \end{align*}
-        \item $\mathbf{r}:S \rightarrow \mathbb{N}$ is the \textit{transition probability}
-              function such that
+        \item $\mathbf{r}:S \rightarrow \mathbb{N}$ is the \textit{transition probability} function
+              such that
               \begin{align*}
                   \forall s \in S : \sum_{s'\in S}\mathbf{P}(s, s') = 1
               \end{align*}
@@ -71,7 +74,8 @@ The following definition of Contiuous-time Markov chain is based on \cite{baier2
 
 \section{Probabilistic temporal logic}
 %% DEFINE CTL property
-Over CTL properties, we define the set of PCTL properties, in which we ask the probability to have a CTL property satisfied.
+Over CTL properties, we define the set of PCTL properties, in which we ask the probability to have a
+CTL property satisfied.
 %% DEFINE PCTL property
 \begin{definition}[PCTL syntax] The syntax of PCTL is defined as follow
     \begin{align*}
@@ -91,20 +95,23 @@ We introduce parameters to formalize unknown attributes of the system.
 \begin{definition}{Rational functions}
     Let $\mathbf{x}=\{x_1,\ldots,x_n\}$ be a variable.\\
     Let $\mathbf{Pol}[\mathbf{x}]$ be the set of all polynomial functions over $\mathbf{x}$.\\
-    Given $f,g\in\mathbf{Pol}[\mathbf{x}]$, then $h:=\frac{f(\mathbf{x})}{g(\mathbf{x})}, g{\mathbf{x}}\neq 0$ is a rational function over $\mathbf{x}$.\\
+    Given $f,g\in\mathbf{Pol}[\mathbf{x}]$, then $h:=\frac{f(\mathbf{x})}{g(\mathbf{x})},
+    g{\mathbf{x}}\neq 0$ is a rational function over $\mathbf{x}$.\\
     We denote $\mathbb{Q}(\mathbf{x})$ the set of rational functions over $\mathbf{x}$.
 \end{definition}
 
 
 \subsection{Parametric Discrete Time Markov chain}
-With the set of rational functions formally defined, we define parametric Discrete-time Markov chain based the definition on \cite{junges2019parameter}.
+With the set of rational functions formally defined, we define parametric Discrete-time Markov chain
+based the definition on \cite{junges2019parameter}.
 \begin{definition}[Discrete Time Markov Chain]
-    A Discrete-time Markov chain (DTMC) is a tuple $(S, \mathbf{x}, \mathbf{P}, s_{init}, AP, L)$ where
+    A Discrete-time Markov chain (DTMC) is a tuple $(S, \mathbf{x}, \mathbf{P}, s_{init}, AP, L)$
+    where
     \begin{itemize}
         \item $S$ is a countable, non-emty set of \textit{states}
         \item $\mathbf{x} \in \mathbb{R}^n, n \in \mathbb{N}$ as the set of $n$ real parameters.
-        \item $\mathbf{P}:S\times S \rightarrow \mathbb{Q}(\mathbf{x})$ is the \textit{transition probability}
-              function such that
+        \item $\mathbf{P}:S\times S \rightarrow \mathbb{Q}(\mathbf{x})$ is the \textit{transition
+              probability} function such that
               \begin{align*}
                   \forall s \in S : \sum_{s'\in S}\mathbf{P}(s, s') = 1
               \end{align*}
@@ -117,4 +124,6 @@ With the set of rational functions formally defined, we define parametric Discre
     \end{itemize}
 \end{definition}
 
-Given a parametric Discrete-time Markov chain $M_p$. A concrete assignment of parameter $\mathbf{x}$ \textit{instantiate} a non-parametric Discrete-time Markov chain if $f{\mathbf{x}}$ evaluates to a real value for all $f\in\mathbf{P}$.
+Given a parametric Discrete-time Markov chain $M_p$. A concrete assignment of parameter $\mathbf{x}$
+\textit{instantiate} a non-parametric Discrete-time Markov chain if $f{\mathbf{x}}$ evaluates to a
+real value for all $f\in\mathbf{P}$.

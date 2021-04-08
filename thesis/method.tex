@@ -102,6 +102,7 @@ We can also use Sequential Monte-Carlo sampling method.
             \State Draw $\theta$ from $\pi(\theta)$
             \State $\theta_i \leftarrow \theta$
             \State $w_i \leftarrow P(D_{obs}|\theta_i)$
+            \State $i \leftarrow i + 1$
         \EndWhile
     \algstore{algctx}
 \end{algorithmic}
@@ -154,15 +155,13 @@ Monte-Carlo method \textit{SMC-ABC-SMC} framework.
     \begin{itemize}
         \item $\mathcal{M}_\theta$: parametric Discrete-Time Markov chain of parameter $\theta$
         \item $\Phi$: bounded reachability property of interest.
-        \item $RF_\Phi(\theta)$: rational function of target property.
         \item $\pi(\theta)$: prior distribution on $\theta$.
         \item $N$: number of particles in the Sequential Monte-Carlo trace.
         \item $M$: number of pertubation kernels
-        \item $F_t(\theta^t | \theta^{t-1}_1,\ldots,\theta^{t-1}_N), 1\leq t \leq M$: pertubation kernels
+        \item $F_t(\theta^t | \theta^{t-1}_1,\ldots,\theta^{t-1}_N), 1\leq t \leq M$
         \item $N_{MH}$: number of particles in each Metropolis-Hastings step.
         \item $Q_t(\theta^t|\theta^{t-1}), 1 \leq t \leq N_{MH}$: transition kernel for Metropolis-Hastings step.
         \item $D_{obs}$: observed data for Bayesian inference or its summary statistic $S_{obs}$
-        \item $P(D_{obs}|\theta)$: likelihood function.
         \item $\epsilon$: threshold for Approximate Bayesian Computation.
         \item $\delta, \alpha$: indifference and $\alpha$-level for Statistical Model Checking using SPRT method.
     \end{itemize}
@@ -177,8 +176,9 @@ Monte-Carlo method \textit{SMC-ABC-SMC} framework.
         \While{$i \leq N$} \algorithmiccomment {SMC initialization}
             \State Draw $\theta$ from $\pi(\theta)$
             \State $\theta_i \leftarrow \theta$
-            \State $w_i \leftarrow P(D_{obs}|\theta_i)$
+            \State $w_i \leftarrow 1$
         \EndWhile
+
     \algstore{algctx}
 \end{algorithmic}
 \end{algorithm}
@@ -201,7 +201,7 @@ Monte-Carlo method \textit{SMC-ABC-SMC} framework.
                     \State $sat \leftarrow False $
                     \While{$sat = False$}
                         \State Draw $\hat{\theta}^t_i$ from $F_t(\theta^t | \theta^{t-1}_1,\ldots,\theta^{t-1}_N), 1\leq t \leq M$
-                        \State Do SPRT Statistical Model Checking on instantiated model $\mathcal{M}_{\hat{\theta}^t}$
+                        \State Do SPRT SMC on $\mathcal{M}_{\hat{\theta}^t}$ and $\Phi$
                         \If{$\mathcal{M}_{\hat{\theta}^t}\models\Phi$}
                             \State $sat \leftarrow True$
                         \EndIf
