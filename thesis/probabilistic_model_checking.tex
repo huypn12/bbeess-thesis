@@ -11,8 +11,8 @@
   \end{itemize}
  }
 
-In this thesis, we model stochastic systems. Thus, we use probabilistic models, in our case we
-mostly use Discrete time markov chain, and also have a
+We use Discrete-time Markov chain as the formalism to model stochastic population process.
+
 
 \section{Markov chain}
 \subsection{Discrete Time Markov chain}
@@ -35,6 +35,18 @@ Our definition of markov chain follows the definition on \cite{baier2008principl
     \end{itemize}
 \end{definition}
 
+In the scope of this thesis we interest in a special set of states, namely BSCC.
+\begin{definition}[Connected Components]
+
+\end{definition}
+\begin{definition}[Strongly Connected Components]
+
+\end{definition}
+\begin{definition}[Bottom Strongly Connected Components]
+
+\end{definition}
+
+%% Example: knuth die
 
 \subsection{Continuous-time Markov chain}
 Continous-time Markov chain also satisfies memoryless property
@@ -45,6 +57,7 @@ Continous-time Markov chain also satisfies memoryless property
         Pr\{X > t + \delta | X > t\} = Pr\{X > \delta\} \forall t,\delta\in\mathbb{R}_{\geq 0}
     \end{align*}
 \end{definition}
+
 
 The following definition of Contiuous-time Markov chain is based on \cite{baier2003model}
 \begin{definition}[Continuous-time Markov chain]
@@ -71,6 +84,11 @@ The following definition of Contiuous-time Markov chain is based on \cite{baier2
     \end{itemize}
 \end{definition}
 
+%% Example: ctmc queue job
+
+%% Uniformization of CTMC
+
+%% Theorem: uniformization preserves satisfaction 
 
 \section{Probabilistic temporal logic}
 %% DEFINE CTL property
@@ -84,7 +102,20 @@ CTL property satisfied.
     \end{align*}
 \end{definition}
 
-\section{Model checking PCTL properties}
+\subsection{Model checking PCTL properties}
+
+\subsection{State exlosion problem}
+
+
+\section{Statistical Model checking}
+Statistical model checking is a simulation-based approach to model check a statistical model
+$\mathcal{M}$ against a property $\Phi$
+\section{Statistical model checking of unbounded properties.}
+Estimation method, Chernoff-Hoeffding bound.
+
+
+\section{Statistical model checking of bounded properties.}
+Hypothesis test,     SPRT method.
 
 \section{Parametric model}
 We introduce parameters to formalize unknown attributes of the system.
@@ -96,7 +127,7 @@ We introduce parameters to formalize unknown attributes of the system.
     Let $\mathbf{x}=\{x_1,\ldots,x_n\}$ be a variable.\\
     Let $\mathbf{Pol}[\mathbf{x}]$ be the set of all polynomial functions over $\mathbf{x}$.\\
     Given $f,g\in\mathbf{Pol}[\mathbf{x}]$, then $h:=\frac{f(\mathbf{x})}{g(\mathbf{x})},
-    g{\mathbf{x}}\neq 0$ is a rational function over $\mathbf{x}$.\\
+        g{\mathbf{x}}\neq 0$ is a rational function over $\mathbf{x}$.\\
     We denote $\mathbb{Q}(\mathbf{x})$ the set of rational functions over $\mathbf{x}$.
 \end{definition}
 
@@ -111,7 +142,7 @@ based the definition on \cite{junges2019parameter}.
         \item $S$ is a countable, non-emty set of \textit{states}
         \item $\mathbf{x} \in \mathbb{R}^n, n \in \mathbb{N}$ as the set of $n$ real parameters.
         \item $\mathbf{P}:S\times S \rightarrow \mathbb{Q}(\mathbf{x})$ is the \textit{transition
-              probability} function such that
+                  probability} function such that
               \begin{align*}
                   \forall s \in S : \sum_{s'\in S}\mathbf{P}(s, s') = 1
               \end{align*}
@@ -127,3 +158,10 @@ based the definition on \cite{junges2019parameter}.
 Given a parametric Discrete-time Markov chain $M_p$. A concrete assignment of parameter $\mathbf{x}$
 \textit{instantiate} a non-parametric Discrete-time Markov chain if $f{\mathbf{x}}$ evaluates to a
 real value for all $f\in\mathbf{P}$.
+
+\subsection{Rational functions}
+
+\subsection{Parameter synthesis of pDTMC}
+
+\section{Statistical Model checking}
+

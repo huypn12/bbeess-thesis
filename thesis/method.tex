@@ -1,6 +1,58 @@
 \chapter{Bayesian frameworks for parameter synthesis.}
+We present frameworks for data-informed parameter synthesis of pDTMC. The frameworks are designed to
+synthesize a set of parameter values so that for each value, the instantiated model satisfies the interested property, as
 
-\section{Bayesian frameworks with rational functions}
+Given a pDTMC model $\mathcal{M}_\theta$, a PCTL property $\Phi$, and observed data $D_{obs}$, the
+frameworks synthesize a set of $N$ parameters $(\theta_1,\ldots,\theta_N)$ such that
+\begin{align*}
+    \forall i \in [1,N]: \mathcal{M}_{\theta_i} \models \Phi
+\end{align*}
+Eac
+
+\section{Model checking of parametric models}
+\subsection{Rational function evaluation}
+\begin{algorithm}[H]
+    \caption{Markov chain Monte-Carlo with rational functions}
+    \label{rf-mcmc-alg}
+    \hspace*{\algorithmicindent} \textbf{Input:}
+    \begin{itemize}
+        \item $\mathcal{M}_\theta$: parametric Discrete-Time Markov chain of parameter $\theta$
+        \item $\Phi$: bounded reachability property of interest.
+    \end{itemize}
+    \hspace*{\algorithmicindent} \textbf{Output:}
+    \begin{itemize}
+        \item $(\theta_1,\ldots,\theta_{N_{MH}})$: $N_{MH}$ sampled particles.
+        \item $(w_1,\ldots,w_{N_{MH}})$: corresponding weights of sampled particles.
+    \end{itemize}
+    \begin{algorithmic}[1]
+        \Procedure{RF-MCMC}{}
+
+        \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+
+
+\subsection{Statistical model checking}
+
+\begin{algorithm}[H]
+    \caption{Markov chain Monte-Carlo with rational functions}
+    \label{rf-mcmc-alg}
+    \hspace*{\algorithmicindent} \textbf{Input:}
+    \begin{itemize}
+        \item $\mathcal{M}_\theta$: parametric Discrete-Time Markov chain of parameter $\theta$
+        \item $\Phi$: bounded reachability property of interest.
+    \end{itemize}
+    \hspace*{\algorithmicindent} \textbf{Output:}
+    \begin{itemize}
+        \item $(\theta_1,\ldots,\theta_{N_{MH}})$: $N_{MH}$ sampled particles.
+        \item $(w_1,\ldots,w_{N_{MH}})$: corresponding weights of sampled particles.
+    \end{itemize}
+    \begin{algorithmic}[1]
+        \Procedure{RF-MCMC}{}
+        \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+\section{Bayesian parameter synthesis with rational functions}
 \newpage
 As we have analytical form for both target property and likelihood function, we can propose a Markov
 chain Monte-Carlo algorithm. In this case we use Metropolis-Hastings algorithm, with rational
@@ -12,7 +64,6 @@ function evaluation and model checking is performed before the calculation of ac
     \begin{itemize}
         \item $\mathcal{M}_\theta$: parametric Discrete-Time Markov chain of parameter $\theta$
         \item $\Phi$: bounded reachability property of interest.
-        \item $RF_\Phi(\theta)$: rational function of target property.
         \item $\pi(\theta)$: prior distribution on $\theta$.
         \item $N_{MH}$: length of particle trace.
         \item $Q(\theta^t|\theta^{t-1})$: transition kernel.
@@ -28,43 +79,43 @@ function evaluation and model checking is performed before the calculation of ac
         \Procedure{RF-MCMC}{}
         \State $sat \leftarrow False$
         \While{$sat = False$}
-            \State Draw $\theta_{cand}$ from $\pi(\theta)$
-            \State Evaluate $val \leftarrow RF_{\Phi}(\theta)$
-            \If{$val$ satisfies the boundary of $\Phi$}
-                \State $sat \leftarrow True$
-            \EndIf
+        \State Draw $\theta_{cand}$ from $\pi(\theta)$
+        \State Evaluate $val \leftarrow RF_{\Phi}(\theta)$
+        \If{$val$ satisfies the boundary of $\Phi$}
+        \State $sat \leftarrow True$
+        \EndIf
         \EndWhile
         \State $\theta_1 \leftarrow  \theta_{cand}$
         \State $w_1 \leftarrow  \ln(P(D_{obs}|\theta_{cand}))$
         \algstore{algctx}
-\end{algorithmic}
+    \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}                     
-\begin{algorithmic}[H]
-\algrestore{algctx}
+\begin{algorithm}
+    \begin{algorithmic}[H]
+        \algrestore{algctx}
         \State $i \leftarrow 2$
         \While{$i \leq N_{MH}$}
-            \State $sat \leftarrow False $
-            \While{$sat = False$}
-                \State Draw $\theta_{cand}$ from $Q(\theta'|\theta_{i-1})$
-                \State Evaluate $val \leftarrow RF_{\Phi}(\theta)$
-                \If{$val$ satisfies the boundary of $\Phi$}
-                    \State $sat \leftarrow True$
-                \EndIf
-            \EndWhile
-            \If{ $\ln(P(D_{obs}|\theta_{cand})) - \ln(P(D_{obs}|\theta_{i-1})) > 0$ }
-                \State $\theta_i \leftarrow \theta_{cand}$
-                \State $w_i \leftarrow \ln(P(D_{obs}|\theta_{cand}))$
-                \State $i \leftarrow i + 1$
-            \Else
-                \State Draw a random number $u$ from $Uniform(0,1)$
-                \If{$u \leq \xi$, ($\xi$ small, e.g $10^{-2}$)}
-                    \State $\theta_i \leftarrow \theta_{cand}$
-                    \State $w_i \leftarrow \ln(P(D_{obs}|\theta_{cand}))$
-                    \State $i \leftarrow i + 1$
-                \EndIf
-            \EndIf
+        \State $sat \leftarrow False $
+        \While{$sat = False$}
+        \State Draw $\theta_{cand}$ from $Q(\theta'|\theta_{i-1})$
+        \State Evaluate $val \leftarrow RF_{\Phi}(\theta)$
+        \If{$val$ satisfies the boundary of $\Phi$}
+        \State $sat \leftarrow True$
+        \EndIf
+        \EndWhile
+        \If{ $\ln(P(D_{obs}|\theta_{cand})) - \ln(P(D_{obs}|\theta_{i-1})) > 0$ }
+        \State $\theta_i \leftarrow \theta_{cand}$
+        \State $w_i \leftarrow \ln(P(D_{obs}|\theta_{cand}))$
+        \State $i \leftarrow i + 1$
+        \Else
+        \State Draw a random number $u$ from $Uniform(0,1)$
+        \If{$u \leq \xi$, ($\xi$ small, e.g $10^{-2}$)}
+        \State $\theta_i \leftarrow \theta_{cand}$
+        \State $w_i \leftarrow \ln(P(D_{obs}|\theta_{cand}))$
+        \State $i \leftarrow i + 1$
+        \EndIf
+        \EndIf
         \EndWhile
         \State Return $(\theta_1,\ldots,\theta_{N_{MH}})$, $(w_1,\ldots,w_{N_{MH}})$
         \EndProcedure
@@ -80,7 +131,6 @@ We can also use Sequential Monte-Carlo sampling method.
     \begin{itemize}
         \item $\mathcal{M}_\theta$: parametric Discrete-Time Markov chain of parameter $\theta$
         \item $\Phi$: bounded reachability property of interest.
-        \item $RF_\Phi(\theta)$: rational function of target property.
         \item $\pi(\theta)$: prior distribution on $\theta$.
         \item $N$: number of particles in the Sequential Monte-Carlo trace.
         \item $M$: number of pertubation kernels
@@ -99,33 +149,33 @@ We can also use Sequential Monte-Carlo sampling method.
         \Procedure{RF-SMC}{}
         \State $i \leftarrow 1$
         \While{$i \leq N$} \algorithmiccomment {SMC initialization}
-            \State Draw $\theta$ from $\pi(\theta)$
-            \State $\theta_i \leftarrow \theta$
-            \State $w_i \leftarrow P(D_{obs}|\theta_i)$
-            \State $i \leftarrow i + 1$
+        \State Draw $\theta$ from $\pi(\theta)$
+        \State $\theta_i \leftarrow \theta$
+        \State $w_i \leftarrow P(D_{obs}|\theta_i)$
+        \State $i \leftarrow i + 1$
         \EndWhile
-    \algstore{algctx}
-\end{algorithmic}
+        \algstore{algctx}
+    \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}                     
-\begin{algorithmic}[H]
-    \algrestore{algctx}
+\begin{algorithm}
+    \begin{algorithmic}[H]
+        \algrestore{algctx}
         \State $t \leftarrow 1$
         \While{$t \leq M$}
-            \State $i \leftarrow 1$ \algorithmiccomment{SMC correction step}
-            \While{$i \leq N$}
-                \State $w'_i \leftarrow \frac{w_i}{\sum_{i=1}^N w_i} $
-            \EndWhile
-            \State Sample with replacement $(\theta'_1,\ldots,\theta'_N)$ \algorithmiccomment{SMC selection step} \\\hspace{1.5cm} from $(\theta_1,\ldots,\theta_N)$ with probabilities $(w'_1,\ldots,w'_N)$ 
-            \State $(\theta_1,\ldots,\theta_N) \leftarrow (\theta'_1,\ldots,\theta'_N)$ 
-            \State $i \leftarrow 1$
-            \While{$i \leq N$} \algorithmiccomment {SMC pertubation step}
-                \State Draw $\hat{\theta}^t_i$ from $F_t(\theta^t | \theta^{t-1}_1,\ldots,\theta^{t-1}_N), 1\leq t \leq M$
-                \State $(\theta^*_1,\ldots,\theta^*_{N_{MH}}), (w^*_1,\ldots,w^*_{N_{MH}}) \leftarrow RF-MCMC(\hat{\theta}^t_i)$
-                \State $\theta_i \leftarrow \theta^*_{N_{MH}}$
-                \State $w_i \leftarrow w^*_{N_{MH}}$
-            \EndWhile
+        \State $i \leftarrow 1$ \algorithmiccomment{SMC correction step}
+        \While{$i \leq N$}
+        \State $w'_i \leftarrow \frac{w_i}{\sum_{i=1}^N w_i} $
+        \EndWhile
+        \State Sample with replacement $(\theta'_1,\ldots,\theta'_N)$ \algorithmiccomment{SMC selection step} \\\hspace{1.5cm} from $(\theta_1,\ldots,\theta_N)$ with probabilities $(w'_1,\ldots,w'_N)$
+        \State $(\theta_1,\ldots,\theta_N) \leftarrow (\theta'_1,\ldots,\theta'_N)$
+        \State $i \leftarrow 1$
+        \While{$i \leq N$} \algorithmiccomment {SMC pertubation step}
+        \State Draw $\hat{\theta}^t_i$ from $F_t(\theta^t | \theta^{t-1}_1,\ldots,\theta^{t-1}_N), 1\leq t \leq M$
+        \State $(\theta^*_1,\ldots,\theta^*_{N_{MH}}), (w^*_1,\ldots,w^*_{N_{MH}}) \leftarrow RF-MCMC(\hat{\theta}^t_i)$
+        \State $\theta_i \leftarrow \theta^*_{N_{MH}}$
+        \State $w_i \leftarrow w^*_{N_{MH}}$
+        \EndWhile
         \EndWhile
         \State Return $(\theta_1,\ldots,\theta_{N})$, $(w_1,\ldots,w_{N})$
         \EndProcedure
@@ -138,12 +188,12 @@ Without the availability of analytical form of observational and interested prop
 following obstacles:
 \begin{itemize}
     \item \textbf{Absence of likelihood functions:} As the rational functions for properties are not
-    available, we do not have the analytical form of likelihood. The abscence of likelihood suggests
-    to exploit \textit{likelihood-free methods}. In this framework we use \textit{Approximate
-    Bayesian Computation} in combination with \textit{Sequential Monte-Carlo method}.
+          available, we do not have the analytical form of likelihood. The abscence of likelihood suggests
+          to exploit \textit{likelihood-free methods}. In this framework we use \textit{Approximate
+              Bayesian Computation} in combination with \textit{Sequential Monte-Carlo method}.
     \item \textbf{Absence of rational function for verification of bounded path property:} the
-    satisfaction of an instantiated model to a bounded path property cannot be computed. In the case
-    that the number of states is too large, we use \textit{Statistical Model Checking}.
+          satisfaction of an instantiated model to a bounded path property cannot be computed. In the case
+          that the number of states is too large, we use \textit{Statistical Model Checking}.
 \end{itemize}
 For this case we present Statistical Model Checking, Approximate Bayesian Computation - Sequential
 Monte-Carlo method \textit{SMC-ABC-SMC} framework.
@@ -174,48 +224,48 @@ Monte-Carlo method \textit{SMC-ABC-SMC} framework.
         \Procedure{SMC-ABC-SMC}{}
         \State $i \leftarrow 1$
         \While{$i \leq N$} \algorithmiccomment {SMC initialization}
-            \State Draw $\theta$ from $\pi(\theta)$
-            \State $\theta_i \leftarrow \theta$
-            \State $w_i \leftarrow 1$
+        \State Draw $\theta$ from $\pi(\theta)$
+        \State $\theta_i \leftarrow \theta$
+        \State $w_i \leftarrow 1$
         \EndWhile
 
-    \algstore{algctx}
-\end{algorithmic}
+        \algstore{algctx}
+    \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}                     
-\begin{algorithmic}[H]
-    \algrestore{algctx}
+\begin{algorithm}
+    \begin{algorithmic}[H]
+        \algrestore{algctx}
         \State $t \leftarrow 1$
         \While{$t \leq M$}
-            \State $i \leftarrow 1$ \algorithmiccomment{SMC correction step}
-            \While{$i \leq N$}
-                \State $w'_i \leftarrow \frac{w_i}{\sum_{i=1}^N w_i} $
-            \EndWhile
-            \State Sample with replacement $(\theta'_1,\ldots,\theta'_N)$ \algorithmiccomment{SMC selection step} \\\hspace{1.5cm} from $(\theta_1,\ldots,\theta_N)$ with probabilities $(w'_1,\ldots,w'_N)$ 
-            \State $(\theta_1,\ldots,\theta_N) \leftarrow (\theta'_1,\ldots,\theta'_N)$ 
-            \State $i \leftarrow 1$
-            \While{$i \leq N$} \algorithmiccomment {SMC pertubation step}
-                \State $rejected \leftarrow True$
-                \While{$rejected == True$}
-                    \State $sat \leftarrow False $
-                    \While{$sat = False$}
-                        \State Draw $\hat{\theta}^t_i$ from $F_t(\theta^t | \theta^{t-1}_1,\ldots,\theta^{t-1}_N), 1\leq t \leq M$
-                        \State Do SPRT SMC on $\mathcal{M}_{\hat{\theta}^t}$ and $\Phi$
-                        \If{$\mathcal{M}_{\hat{\theta}^t}\models\Phi$}
-                            \State $sat \leftarrow True$
-                        \EndIf
-                    \EndWhile
-                    \State $D_{sim} \leftarrow Simulate(\mathcal{M}_{\hat{\theta}^t})$
-                    \State $d = Distance(D_{sim}, D_{obs})$
-                    \If{$d < \epsilon$}
-                        \State $rejected \leftarrow False$
-                        \State $\theta_i \leftarrow \hat{\theta}^t$
-                        \State $w_i \leftarrow d$
-                    \EndIf
-                    
-                \EndWhile
-            \EndWhile
+        \State $i \leftarrow 1$ \algorithmiccomment{SMC correction step}
+        \While{$i \leq N$}
+        \State $w'_i \leftarrow \frac{w_i}{\sum_{i=1}^N w_i} $
+        \EndWhile
+        \State Sample with replacement $(\theta'_1,\ldots,\theta'_N)$ \algorithmiccomment{SMC selection step} \\\hspace{1.5cm} from $(\theta_1,\ldots,\theta_N)$ with probabilities $(w'_1,\ldots,w'_N)$
+        \State $(\theta_1,\ldots,\theta_N) \leftarrow (\theta'_1,\ldots,\theta'_N)$
+        \State $i \leftarrow 1$
+        \While{$i \leq N$} \algorithmiccomment {SMC pertubation step}
+        \State $rejected \leftarrow True$
+        \While{$rejected == True$}
+        \State $sat \leftarrow False $
+        \While{$sat = False$}
+        \State Draw $\hat{\theta}^t_i$ from $F_t(\theta^t | \theta^{t-1}_1,\ldots,\theta^{t-1}_N), 1\leq t \leq M$
+        \State Do SPRT SMC on $\mathcal{M}_{\hat{\theta}^t}$ and $\Phi$
+        \If{$\mathcal{M}_{\hat{\theta}^t}\models\Phi$}
+        \State $sat \leftarrow True$
+        \EndIf
+        \EndWhile
+        \State $D_{sim} \leftarrow Simulate(\mathcal{M}_{\hat{\theta}^t})$
+        \State $d = Distance(D_{sim}, D_{obs})$
+        \If{$d < \epsilon$}
+        \State $rejected \leftarrow False$
+        \State $\theta_i \leftarrow \hat{\theta}^t$
+        \State $w_i \leftarrow d$
+        \EndIf
+
+        \EndWhile
+        \EndWhile
         \EndWhile
         \State Return $(\theta_1,\ldots,\theta_{N})$, $(w_1,\ldots,w_{N})$
         \EndProcedure

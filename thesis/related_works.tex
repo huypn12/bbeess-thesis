@@ -1,30 +1,35 @@
 \chapter{Related works}
 
-%% Probabilistic model checking and parameter synthesis
-The current research progress on probabilistic model checking is studied thoroughly by Katoen and Baier et al \cite{baier2008principles}. Katoen et al. \cite{katoen2016probabilistic} briefly summarized important aspect of probabilistic model checking.
+%% Frameworks from molyneux
+\cite{jha2009bayesian} \cite{polgreen2016data}
+
+\cite{molyneux2019bayesian} \cite{molyneux2020abc}
 
 %% Bayesian verification
 Polgreen et al \cite{polgreen2016data} presents a method for bayesian inference of pMC parameters in
+\cite{haesaert2015data}
+%% Bayesian inference: optimzation methodds
 
 %% Tools: PRISM and STORM
+\cite{kwiatkowska2011prism}
 
-The definition and model checking of DTMC and pMC is studied by
-\cite{baier2008principles}, \cite{hutschenreiter2017parametric}, and \cite{katoen2016probabilistic}.\\
+The definition and model checking of DTMC and pMC is studied by \cite{baier2008principles},
+\cite{hutschenreiter2017parametric}, and \cite{katoen2016probabilistic}.\\
 Bayesian inference of pMC parameters is studied in \cite{polgreen2016data} and
-\cite{jha2009bayesian}. In \cite{polgreen2016data}, the authors developed
-methods to synthesize parameters to satisfy a given set of PCTL properties. In
-\cite{jha2009bayesian}, the authors presented methods to perform model checking
-of biological system using Bayesian statistic. The authors in
-\cite{jha2009bayesian} uses a Bayesian hypothesis test, where $H_0$ is the null
-hypothesis that the model satisfies a PCTL $P$, and alternative hypothesis $H_1$
-is that the system does not satisfies $P$. Similar approach to the parameter
-estimation in this project is described by \cite{hussain2015automated}.\\
-In this project, we use bee colony model semantics from \cite{hajnal2019data}.
-The methods and implementation in this project is designed to extend the results
-of \cite{hajnal2019data} and its tool \textit{DiPS}
+. In , the authors developed methods to synthesize
+parameters to satisfy a given set of PCTL properties. In \cite{jha2009bayesian}, the authors
+presented methods to perform model checking of biological system using Bayesian statistic. The
+authors in \cite{jha2009bayesian} uses a Bayesian hypothesis test, where $H_0$ is the null
+hypothesis that the model satisfies a PCTL $P$, and alternative hypothesis $H_1$ is that the system
+does not satisfies $P$. Similar approach to the parameter estimation in this project is described by
+\cite{hussain2015automated}.\\
+In this project, we use bee colony model semantics from \cite{hajnal2019data}. The methods and
+implementation in this project is designed to extend the results of \cite{hajnal2019data} and its
+tool \textit{DiPS}
 
 storm drawback: it does not support
 
 %% CITE some comparision between storm and prism
 
-In \cite{molyneux2020abc} the author introduces the same approach but it is to use on CSL properties and CTMC.
+In \cite{molyneux2020abc} the author introduces the same approach but it is to use on CSL properties
+and CTMC.

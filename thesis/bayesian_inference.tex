@@ -229,18 +229,18 @@ here \cite{daviet2018inference}
 
 Selection of kernel function for SMC is mentioned in \cite{silk2012optimizing}.
 
-\subsection{Approximate Bayesian computation}
-The methods mentioned before is used with an assumption that the likelihood $P(D|\theta)$ has an
-analytical form; the analytical can be evaluated without introducing computational burden. However
-there are situations in which the likelihood has no analytical form, or the analytical form is
-expensive to be evaluated. In such cases, a class of different methods, dubbed
+\subsection{Approximate Bayesian Computation}
+The methods mentioned before is used with an assumption that the likelihood $P(D_{obs}|\theta)$ has
+an analytical form; the analytical can be evaluated without introducing computational burden.
+However there are situations in which the likelihood has no analytical form, or the analytical form
+is expensive to be evaluated. In such cases, a class of different methods, dubbed
 \textit{likelihood-free} methods, are used. Likelihood-free methods in Bayesian inference means that
 instead of compute the likelihood $P(D|\theta)$, we estimate it or replace it by other measures.
 Approximate Bayesian Computation is a widely used likelihood-free method for approximating posterior
 distribution. Instead of estimating the likelihood $P(D|\theta)$ directly, we sample a observable
 data set $\hat{D}$ and define a distance measure $\delta(D, \hat{D})$. Approximate Bayesian
-Computation accepts a set of tuples $(\hat{\theta}, \hat{D})$, each satisfies that $\delta(D,
-\hat{D}) < \epsilon, \epsilon\in\mathbf{R}_{\leq 0}$.
+Computation accepts a set of tuples $(\hat{\theta}, \hat{D})$, each satisfies that
+$\delta(D_{obs},D_{sim}) < \epsilon, \epsilon\in\mathbf{R}_{\leq 0}$.
 \begin{algorithm}[H]
     \caption{Approximate Bayesian Computation}
     \label{abcalg}
