@@ -44,10 +44,37 @@
         \Huge Preliminaries
     \end{center}
 \end{frame}
+
+
 %% 5 frames
 %% DTMC
 %% PCTL
 %% pDTMC and parameter synthesis problem
+\begin{frame}
+    \frametitle{Parameter synthesis}
+    Katoen \cite{katoen2016probabilistic} definition
+    \begin{definition}[Parameter synthesis]
+        Given a finite-state parametric Markov model, find the parameter values for which a given
+        reachability property exceeds (or is below) a given threshold $\beta$.
+    \end{definition}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Parameter synthesis}
+    Katoen \cite{katoen2016probabilistic} definition
+    \begin{definition}[Parameter synthesis]
+        Given a finite-state parametric Markov model, find the parameter values for which a given
+        reachability property exceeds (or is below) a given threshold $\beta$.
+    \end{definition}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Parameter synthesis vs. inference}
+    Synthesis: input: model $\mathcal{M}_\theta$ and property $\Phi$, output is the set of satisfying parameters $\theta$
+    Inference: input: model $\mathcal{M}_\theta$ and observed data $D_{obs}$, output is the set of parameter estimation $\hat{\theta}$
+    This thesis: combines parameter inference and synthesis into data-informed, Bayesian parameter synthesis frameworks.
+\end{frame}
+
 %% Bayesian inference: tractability and optimization
 
 \section{Problem description}
