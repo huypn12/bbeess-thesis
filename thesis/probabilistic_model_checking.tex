@@ -1,15 +1,4 @@
 \chapter{Probabilistic model checking}
- {\color{red}
-  \begin{itemize}
-      \item Discrete time Markov chain
-      \item Continuous time Markov chain, conversion to discrete time chain
-      \item Probabilistic Temporal logics
-      \item Probabilistic model checking
-      \item Statistical model checking
-      \item Parametric Discre time Markov chain
-      \item Parameter synthesis problem: approaches: bayesian, Abate paper on bayesian
-  \end{itemize}
- }
 
 We use Discrete-time Markov chain as the formalism to model stochastic population process. In this
 chapter, we present essential concepts on probabilistic model checking, including probabilistic
@@ -18,7 +7,9 @@ a specific temporal logic, namely PCTL. Since it is not always efficient in term
 to apply deterministic model checking algorithm, we also present a simulation based model checking,
 namely \textit{statistical model checking} for bounded and unbounded path property which relies
 only. Since statistical model checking relies only on simulation of stochastic models, it is
-advantageous for checking models with large space size.
+advantageous for checking models with large space size. We also introduce definitions of parametric
+model and parameter synthesis problems, as well as the symbolic computing approach to verify
+parametric models.
 
 
 \section{Markov chain}
@@ -43,16 +34,21 @@ Our definition of markov chain follows the definition on \cite{baier2008principl
 \end{definition}
 
 In the scope of this thesis we interest in a special set of states, namely BSCC.
-\begin{definition}[Connected Components]
-
+\begin{definition}[Strongly Connected Component]
+    Let $\mathcal{M}=(S,\mathbf{P}, S_{init}, AP,L)$ a DTMC. A subset $S'\subset
+        S$ is strongly connected if and only if for every pair $s_1,s_2\in S'$ there
+    is a path between $s_1$ and $s_2$ which consists of only of state in $S'$. If
+    there exist no $S''\subseteq S$, such that $S\subset S''$ and $S''$ is
+    strongly connected, then $S'$ is a \textit{Strongly Connected Component}, or
+    \textit{SCC} in short.
 \end{definition}
-\begin{definition}[Strongly Connected Components]
 
+\begin{definition}[Bottom Strongly Connected Component]
+    Let $\mathcal{M}=(S,\mathbf{P}, S_{init}, AP,L)$ a DTMC and $S'\in S$ a
+    Strongly Connected Component. $S'$ is also a \textit{Bottom Strongly Connected
+        Component}, or \textit{BSCC} for short, if and only if there exist no state
+    $s \in S\\S'$ that is reachable from any state in $S'$.
 \end{definition}
-\begin{definition}[Bottom Strongly Connected Components]
-
-\end{definition}
-
 %% Example: knuth die
 
 \subsection{Continuous-time Markov chain}
@@ -172,8 +168,8 @@ based the definition on \cite{junges2019parameter}.
     \end{itemize}
 \end{definition}
 
-Given a parametric Discrete-time Markov chain $M_p$. A concrete assignment of parameter $\mathbf{x}$
-\textit{instantiate} a non-parametric Discrete-time Markov chain if $f{\mathbf{x}}$ evaluates to a
+Given a parametric Discrete-time Markov chain $\mathcal{M}_\theta$. A concrete assignment of parameter $\theta$
+\textit{instantiates} a non-parametric Discrete-time Markov chain if $f{\theta}$ evaluates to a
 real value for all $f\in\mathbf{P}$.
 
 \subsection{Symbolic model checking of pDTMC}
@@ -189,8 +185,8 @@ real value for all $f\in\mathbf{P}$.
 
 \begin{example}
     Given a pDTMC of Knuth die $\mathcal{M}_{p}$ and a path property $\Phi = P_{\geq 0.2} [F
-                \texttt{"one"}]$, synthesize parameter $p$ so that $\mathcal{M}_{p} \models \Phi$. A
-    simple Monte-Carlo search on parameter space gives the following satisfying point:
+                \texttt{"one"}]$, synthesize parameter $p$ so that $\mathcal{M}_{p} \models \Phi$. A simple
+    Monte-Carlo search on parameter space gives the following satisfying point:
     %% Figures
 \end{example}
 \section{Statistical Model checking}

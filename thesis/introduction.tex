@@ -16,21 +16,24 @@ probabilities are known a-priori. In order to encompass unknown attributes of a 
 transition is a rational function of parameters. As unknown features of the system are represented
 by parameters, the following research questions are raised
 \begin{itemize}
-      \item \textit{Parameter inference:} Given a set of data collected by observing the system, how
-            can we know about its parameters?
-      \item \textit{Parameter synthesis:} Which values of parameters instantiate a model that
-            satisfies a certain bounded reachability property of interest?
+      \item Given a set of data collected by observing the system, how can we know about its
+            parameters?
+      \item  Which values of parameters instantiate a model that satisfies a certain property of
+            interest?
 \end{itemize}
-In this thesis, we presents data-driven frameworks for parameter synthesis of parametric
-Discrete-time Markov Chain. Parameter synthesis is an emerging research direction on probabilistic
-model checking. Parameter synthesis problem is to find a set of parameter values to satisfy a
-certain reachability property \cite{katoen2016probabilistic}. Contributions of the thesis are
+Parameter synthesis is an emerging research direction on probabilistic model checking. Katoen
+\cite{katoen2016probabilistic} define the parameter synthesis problem for pDTMC as to find a set of
+parameter values, which satisfy a given reachability property. In this thesis, we combines Bayesian
+parameter inference and parameter synthesis, so that the result parameters (1) satisfy the property
+of interest, and (2) likely to produce given steady-state data. Contributions of the thesis are
 \begin{itemize}
-      \item Proposing and implementing a data-driven frameworks on parameter synthesis of parametric
-            Discrete-time Markov Chain.
-      \item Evaluating the scalability of the frameworks with different sizes of model state-space.
+      \item Presenting and implementing a data-informed, Bayesian frameworks on parameter synthesis
+            of parametric Discrete-time Markov Chain with different case studies.
       \item Comparing the performances of optimization methods used to approximate posterior
-            distribution in cases of closed-form solution available and simulation.
+            distribution in both cases: closed-form solutions are available and only simulations are
+            possible.
+      \item Evaluating the scalability of the frameworks with different sizes of model state-space.
+
 \end{itemize}
 
 \begin{itemize}
@@ -41,8 +44,9 @@ certain reachability property \cite{katoen2016probabilistic}. Contributions of t
             and optimization algorithms.
       \item \textbf{Chapter 4} reviews the state-of-the-art works of other researchers on the
             problem of parameter synthesis.
-      \item \textbf{Chapter 5} describes case studies and benchmarks presented frameworks under
+      \item \textbf{Chapter 5} present Bayesian parameter synthesis frameworks.
+      \item \textbf{Chapter 6} describes case studies and benchmarks presented frameworks under
             different setups.
-      \item \textbf{Chapter 6} conclusion and possible future works.
+      \item \textbf{Chapter 7} conclusion and possible future works.
 \end{itemize}
 

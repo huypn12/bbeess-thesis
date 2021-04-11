@@ -9,29 +9,24 @@
 
 \section{Bayesian inference}
 \subsection{Bayesian formula}
-Let $D$ be observed data. In statistical inference, we assume that the observed
-data has a probability distribution of unknown parameter $\theta$, i.e
-$D \sim P(D|\theta)$. In frequentist approach, the estimation
-of $\theta$ based on long-run property, that is, given a large enough sample
-size, expected value of parameter estimation $\hat{\theta}$ is equal to
-$\theta$. Therefore, frequentist approach requires to gather a large amount of
-data to deliver a close estimation $\hat{\theta}$. In Bayesian approach, we
-reuse the information \textit{beliefs} gained from observed data to enhance the
-accuracy of the estimation of $\hat{\theta}$. The main advantage of Bayesian
-approach over frequentist approach is that it require less data to obtain an
-estimation $\hat{\theta}$.\\
-The beliefs obtained from prior knowledge of model parameter $\theta$ is
-represented by \textit{prior distribution} $\pi(\theta)$.\\
-Also, we have probability distribution of observed data, given parameter
-$\theta$, $P(D|\theta)$. This is also called \textit{likelihood function}.\\
-With Bayesian formula, we have
+Let $D_{obs}$ be observed data. In statistical inference, we assume that the observed data has a
+probability distribution of unknown parameter $\theta$, i.e $D_{obs} \sim P(D_{obs}|\theta)$. In
+frequentist approach, the estimation of $\theta$ based on long-run property, that is, given a large
+enough sample size, expected value of parameter estimation $\hat{\theta}$ is equal to $\theta$.
+Therefore, frequentist approach requires to gather a large amount of data to deliver a close
+estimation $\hat{\theta}$.  The main advantage of Bayesian approach over frequentist approach is
+that it require less data to obtain an estimation $\hat{\theta}$.\\
+In Bayesian approach, we use the information gained from previously observed data \textit{(beliefs)}
+to enhance the accuracy of the estimation of $\hat{\theta}$. The beliefs obtained from prior
+knowledge of model parameter $\theta$ is represented by \textit{prior distribution} $\pi(\theta)$.
+We have the \textit{likelihood} $P(D_{obs}|\theta)$ as the probability distribution over observed
+data, given parameter $\theta$. The Bayesian formula states that
 \begin{align*}
-    \pi(\theta | D) = \frac{P(D|\theta)\pi(\theta)}{\int_\theta P(D|\theta)\pi(\theta)d\theta}
+    \pi(\theta | D_{obs}) = \frac{P(D_{obs}|\theta)\pi(\theta)}{\int_\theta P(D_{obs}|\theta)\pi(\theta)d\theta}
 \end{align*}
-$\int_\theta P(D|\theta)\pi(\theta)d\theta$ is called \textit{marginal
-    distribution}. $\pi(\theta | D)$ is called \textit{posterior distribution}.
-Computing posterior distribution is the essential part of Bayesian inference,
-since it gives us the estimation of parameter $\theta$.
+$\int_\theta P(D_{obs}|\theta)\pi(\theta)d\theta$ is the \textit{marginal distribution}. $\pi(\theta
+    | D_{obs})$ is the \textit{posterior distribution}. To compute posterior distribution is the
+essential part of Bayesian inference, since it gives the estimation of parameter $\theta$.
 
 \subsection{Bayesian parameter estimation}
 With posterior distribution $\pi(\theta|D)$ we estimate the parameter $\hat{\theta}$ using Bayesian posterior mean
