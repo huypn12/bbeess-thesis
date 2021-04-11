@@ -11,7 +11,14 @@
   \end{itemize}
  }
 
-We use Discrete-time Markov chain as the formalism to model stochastic population process.
+We use Discrete-time Markov chain as the formalism to model stochastic population process. In this
+chapter, we present essential concepts on probabilistic model checking, including probabilistic
+models and properties. We also briefly present a general deterministic model checking algorithm for
+a specific temporal logic, namely PCTL. Since it is not always efficient in terms of time complexity
+to apply deterministic model checking algorithm, we also present a simulation based model checking,
+namely \textit{statistical model checking} for bounded and unbounded path property which relies
+only. Since statistical model checking relies only on simulation of stochastic models, it is
+advantageous for checking models with large space size.
 
 
 \section{Markov chain}
@@ -91,10 +98,17 @@ The following definition of Contiuous-time Markov chain is based on \cite{baier2
 %% Theorem: uniformization preserves satisfaction 
 
 \section{Probabilistic temporal logic}
-%% DEFINE CTL property
+
 Over CTL properties, we define the set of PCTL properties, in which we ask the probability to have a
 CTL property satisfied.
-%% DEFINE PCTL property
+
+\begin{definition}[PCTL* syntax] The syntax of PCTL* is defined as follow
+    \begin{align*}
+        \Phi & ::== \text{true} \;|\; a \;|\; \Phi \;|\; \Phi \wedge \Phi \;|\; \Phi \vee \Phi \;|\;  P_{\sim  p}[\phi] \\
+        \phi & ::== X\Phi \;|\; \Phi U \Phi
+    \end{align*}
+\end{definition}
+
 \begin{definition}[PCTL syntax] The syntax of PCTL is defined as follow
     \begin{align*}
         \Phi & ::== \text{true} \;|\; a \;|\; \Phi \;|\; \Phi \wedge \Phi \;|\; \Phi \vee \Phi \;|\;  P_{\sim  p}[\phi] \\
@@ -103,19 +117,22 @@ CTL property satisfied.
 \end{definition}
 
 \subsection{Model checking PCTL properties}
+Given a DTMC $\mathcal{M}$ and a PCTL property $\Phi$, general algorithm for checking
+$\mathcal{M}\models\Phi$ is described as following:
 
+%% Argues the complexity
 \subsection{State exlosion problem}
 
 
 \section{Statistical Model checking}
 Statistical model checking is a simulation-based approach to model check a statistical model
 $\mathcal{M}$ against a property $\Phi$
-\section{Statistical model checking of unbounded properties.}
+\subsection{Statistical model checking of unbounded properties.}
 Estimation method, Chernoff-Hoeffding bound.
 
 
-\section{Statistical model checking of bounded properties.}
-Hypothesis test,     SPRT method.
+\subsection{Statistical model checking of bounded properties.}
+We care about
 
 \section{Parametric model}
 We introduce parameters to formalize unknown attributes of the system.
@@ -159,9 +176,23 @@ Given a parametric Discrete-time Markov chain $M_p$. A concrete assignment of pa
 \textit{instantiate} a non-parametric Discrete-time Markov chain if $f{\mathbf{x}}$ evaluates to a
 real value for all $f\in\mathbf{P}$.
 
-\subsection{Rational functions}
+\subsection{Symbolic model checking of pDTMC}
+
+\begin{example}{Parametric Knuth's die}
+    We continue the example with Knuth die model $\mathcal{M}_{p}$. Assume the
+    \begin{align*}
+        x =
+    \end{align*}
+\end{example}
 
 \subsection{Parameter synthesis of pDTMC}
 
+\begin{example}
+    Given a pDTMC of Knuth die $\mathcal{M}_{p}$ and a path property $\Phi = P_{\geq 0.2} [F
+                \texttt{"one"}]$, synthesize parameter $p$ so that $\mathcal{M}_{p} \models \Phi$. A
+    simple Monte-Carlo search on parameter space gives the following satisfying point:
+    %% Figures
+\end{example}
 \section{Statistical Model checking}
+Statistical model checking must be performed on an instantiated Markov chain.
 

@@ -1,8 +1,6 @@
 \chapter{Introduction}
-\section{Motivation}
-
-In different areas of research and application, the objects are to investigate how the number of
-individuals changes under a certain set of assumptions. For instance
+In different areas of research and application, the objects are to study how the number of
+individuals in a closed environment develop under a certain set of assumptions. For instance
 \begin{itemize}
       \item Number of online nodes in a distributed system.
       \item Number of surviving individuals in an epidemic model.
@@ -10,47 +8,41 @@ individuals changes under a certain set of assumptions. For instance
 Markov population models \cite{kingman1969markov} are finite state-space, stochastic models that is
 widely used in modeling complex and dynamic systems. In a Markov population model, each state
 represents the number of individuals. Formally, in a Markov population model whose state space is
-$S=(s_1,\ldots,s_n)$, there is a map $f:S\rightarrow\{0,1,\ldots,N-1,N\}$ where $N\in\mathbf{N}^*$
-is the maximum number of individuals in the system.\\
-In a Markov population models, such as Discrete-time Markov Chain, initial and transition
-probabilities are known a-priori. In order to formalize unknown attributes of a system, we introduce
+$S=(s_1,\ldots,s_n)$, there is a map $f:S\rightarrow\{0,\ldots,N\}$ where $N\in\mathbf{N}^*$ is the
+maximum number of individuals in the system.\\
+In a Markov population models, for example Discrete-time Markov Chain, initial and transition
+probabilities are known a-priori. In order to encompass unknown attributes of a system, we introduce
 \textit{parametric Markov population models}. In a parametric Markov population model, each
-transition is a function of parameters. As unknown features of the system are represented by
-parameters, the following research questions are raised
+transition is a rational function of parameters. As unknown features of the system are represented
+by parameters, the following research questions are raised
 \begin{itemize}
-      \item Given a set of data collected by observing the system, how can we know about its
-            parameters?
-      \item Which values of parameters instantiate a model that satisfies a certain property of
-            interest?
+      \item \textit{Parameter inference:} Given a set of data collected by observing the system, how
+            can we know about its parameters?
+      \item \textit{Parameter synthesis:} Which values of parameters instantiate a model that
+            satisfies a certain bounded reachability property of interest?
 \end{itemize}
-In this thesis, we work with a specific parametric Markov population model, that is
-\textit{parametric Discrete-time Markov Chain}. In order to answer the aforementioned research
-questions, we presents a data-driven approach for parameter synthesis of parametric Discrete-time
-Markov Chain.Parameter synthesis is an emerging research direction on probabilistic model checking.
-Parameter synthesis problem is to find a set of parameter values to satisfy a certain reachability
-property \cite{katoen2016probabilistic}.
-
-\section{Contribution}
-Contributions of this thesis are
+In this thesis, we presents data-driven frameworks for parameter synthesis of parametric
+Discrete-time Markov Chain. Parameter synthesis is an emerging research direction on probabilistic
+model checking. Parameter synthesis problem is to find a set of parameter values to satisfy a
+certain reachability property \cite{katoen2016probabilistic}. Contributions of the thesis are
 \begin{itemize}
-      \item Investigate a data-driven approach on parameter synthesis of parametric Discrete-time
-            Markov Chain.
-      \item Evaluate the scalability of the approach in cases of closed-form solution available and
-            simulation.
-      \item Compare the performances of optimization methods used to approximate posterior
-            distribution.
+      \item Proposing and implementing a data-driven frameworks on parameter synthesis of parametric
+            Discrete-time Markov Chain.
+      \item Evaluating the scalability of the frameworks with different sizes of model state-space.
+      \item Comparing the performances of optimization methods used to approximate posterior
+            distribution in cases of closed-form solution available and simulation.
 \end{itemize}
 
-\section{Structure of the thesis}
-
 \begin{itemize}
-      \item \textbf{Chapter 1} introduces motivations for the research topic.
+      \item \textbf{Chapter 1} introduces motivations and goals of this research.
       \item \textbf{Chapter 2} presents the theoretical background on probabilistic model checking,
             include discrete stochastic models and their  corresponding temporal logics.
-      \item \textbf{Chapter 3}
+      \item \textbf{Chapter 3} presents essential concepts on Bayesian inference, including sampling
+            and optimization algorithms.
       \item \textbf{Chapter 4} reviews the state-of-the-art works of other researchers on the
             problem of parameter synthesis.
-      \item \textbf{Chapter 5} describes the benchmark.
-      \item \textbf{Chapter 6} conclusion and future work.
+      \item \textbf{Chapter 5} describes case studies and benchmarks presented frameworks under
+            different setups.
+      \item \textbf{Chapter 6} conclusion and possible future works.
 \end{itemize}
 
