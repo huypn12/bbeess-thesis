@@ -1,22 +1,33 @@
 \chapter{Probabilistic model checking}
-
 We use Discrete-time Markov chain as the formalism to model stochastic population process. In this
 chapter, we present essential concepts on probabilistic model checking, including probabilistic
 models and properties. We also briefly present a general deterministic model checking algorithm for
-a specific temporal logic, namely PCTL. Since it is not always efficient in terms of time complexity
-to apply deterministic model checking algorithm, we also present a simulation based model checking,
-namely \textit{statistical model checking} for bounded and unbounded path property which relies
-only. Since statistical model checking relies only on simulation of stochastic models, it is
-advantageous for checking models with large space size. We also introduce definitions of parametric
-model and parameter synthesis problems, as well as the symbolic computing approach to verify
-parametric models.
+a specific temporal logic, namely PCTL. Due to the state space explosion, applying deterministic
+model checking algorithm is possible to be computationally expensive. Therefore, we also present a
+simulation based model checking, namely \textit{statistical model checking} for bounded and
+unbounded path property. Since statistical model checking relies only on simulation of stochastic
+models, it is advantageous for checking models with large space size. We also introduce definitions
+of parametric model and parameter synthesis problems, as well as the symbolic computing approach to
+verify parametric models.
 
 
 \section{Markov chain}
 \subsection{Discrete Time Markov chain}
-Our definition of markov chain follows the definition on \cite{baier2008principles}.
+Markov models are stochastic models of discrete or continous time which satisfy memoryless property
+(Markov property).
+\begin{definition}[Discrete-time Markov property]
+    Let X be a continuous random variable of exponentially distribution. X has memoryless property
+    if and only if
+    \begin{align*}
+        Pr\{X > t + \delta | X > t\} = Pr\{X > \delta\} \forall t,\delta\in\mathbb{R}_{\geq 0}
+    \end{align*}
+\end{definition}
+Markov model can be non-deterministic \textit{Markov Decision Process}. However, in this thesis we
+consider only Markov models without non-determinism. The following definitions of discrete-time and
+continuous-time Markov chains follows the definitions presented by Baier \cite{baier2008principles}.
 \begin{definition}[Discrete Time Markov Chain]
-    A Discrete-time Markov chain (DTMC) is a tuple $(S,\mathbf{P}, s_{init}, AP, L)$ where
+    A Discrete-time Markov chain (DTMC) $\mathcal{M}$ is a tuple $(S,\mathbf{P}, s_{init}, AP, L)$,
+    in which
     \begin{itemize}
         \item $S$ is a countable, non-emty set of \textit{states}
         \item $\mathbf{P}:S\times S \rightarrow [0,1]$ is the \textit{transition probability}
@@ -26,31 +37,32 @@ Our definition of markov chain follows the definition on \cite{baier2008principl
               \end{align*}
         \item $s_{init}: S \rightarrow [0,1]$ is the \textit{initial distribution} such that
               \begin{align*}
-                  \sum_{s\in S}s_{init}(s) = 1
+                  \sum_{s\in S} s_{init}(s) = 1
               \end{align*}
-        \item $AP$ is a set of \textit{atomic propositions}
+        \item $AP$ is a set of \textit{atomic propositions}.
         \item $L: S \rightarrow 2^{AP}$ is the labelling function on states.
     \end{itemize}
 \end{definition}
 
-In the scope of this thesis we interest in a special set of states, namely BSCC.
+In the scope of this thesis we interest in a special set of states, namely \textit{Bottom Strongly
+    Connected Components}, or \text{BSCCs} in short.
 \begin{definition}[Strongly Connected Component]
-    Let $\mathcal{M}=(S,\mathbf{P}, S_{init}, AP,L)$ a DTMC. A subset $S'\subset
-        S$ is strongly connected if and only if for every pair $s_1,s_2\in S'$ there
-    is a path between $s_1$ and $s_2$ which consists of only of state in $S'$. If
-    there exist no $S''\subseteq S$, such that $S\subset S''$ and $S''$ is
-    strongly connected, then $S'$ is a \textit{Strongly Connected Component}, or
+    Let $\mathcal{M}=(S,\mathbf{P}, s_{init}, AP,L)$ a DTMC. A subset $S'\subset S$ is strongly
+    connected if and only if for every pair $s_1,s_2\in S'$ there is a path between $s_1$ and $s_2$
+    which consists of only of state in $S'$. If there exist no $S''\subseteq S$, such that $S\subset
+        S''$ and $S''$ is strongly connected, then $S'$ is a \textit{Strongly Connected Component}, or
     \textit{SCC} in short.
 \end{definition}
 
-\begin{definition}[Bottom Strongly Connected Component]
+\begin{definition}[ Strongly Connected Component]
     Let $\mathcal{M}=(S,\mathbf{P}, S_{init}, AP,L)$ a DTMC and $S'\in S$ a
     Strongly Connected Component. $S'$ is also a \textit{Bottom Strongly Connected
         Component}, or \textit{BSCC} for short, if and only if there exist no state
-    $s \in S\\S'$ that is reachable from any state in $S'$.
+    $s \in S\\S'$ that is reachable from any state in $S'$. If $|S'|=1$ then $S'$ is a \textit{trivial BSCC}.
 \end{definition}
 %% Example: knuth die
 
+The discrete-time memoryless property can also be extended into continuous-time memoryless property.
 \subsection{Continuous-time Markov chain}
 Continous-time Markov chain also satisfies memoryless property
 \begin{definition}[Continuous-time Markov property]
@@ -60,11 +72,9 @@ Continous-time Markov chain also satisfies memoryless property
         Pr\{X > t + \delta | X > t\} = Pr\{X > \delta\} \forall t,\delta\in\mathbb{R}_{\geq 0}
     \end{align*}
 \end{definition}
-
-
-The following definition of Contiuous-time Markov chain is based on \cite{baier2003model}
+Based on continuous-time memory less property, we introduce the definition of \textit{Continous-time Markov chain}.
 \begin{definition}[Continuous-time Markov chain]
-    A Continuous-time Markov chain (CTMC) is a tuple $(S,\mathbf{P}, \mathbf{r}, S_{init}, AP, L)$
+    A Continuous-time Markov chain (CTMC) is a tuple $(S,\mathbf{P}, \mathbf{r}, s_{init}, AP, L)$
     \cite{baier2003model}
     \begin{itemize}
         \item $S$ is a countable, non-emty set of \textit{states}
@@ -86,12 +96,24 @@ The following definition of Contiuous-time Markov chain is based on \cite{baier2
         \item $L: S \rightarrow 2^{AP}$ is the labelling function on states.
     \end{itemize}
 \end{definition}
+Continous-time Markov chain has a wide range of application on modeling distributed system [cite],
+verification of protocol [cite], chemical reaction network [cite].
+\begin{example}[CTMC model of queueing jobs]
 
-%% Example: ctmc queue job
+\end{example}
+The main research object of this thesis are discrete-time Markov models. Therefore, we do not use
+continuous-time Markov chain to model systems of interest directly. Instead, we do not use
+Continuous-time Markov models directly. Instead, we transform CTMCs into DTMCs through
+uniformization.
+\begin{definition}[CTMC Uniformization]
 
-%% Uniformization of CTMC
+\end{definition}
+We can assure that the property of interest retains through uniformization thanks to the followin
+theorem by \cite{baier2008principles}.
+\begin{theorem}
+    %% Theorem: uniformization preserves satisfaction 
+\end{theorem}
 
-%% Theorem: uniformization preserves satisfaction 
 
 \section{Probabilistic temporal logic}
 
@@ -128,7 +150,7 @@ Estimation method, Chernoff-Hoeffding bound.
 
 
 \subsection{Statistical model checking of bounded properties.}
-We care about
+%% 
 
 \section{Parametric model}
 We introduce parameters to formalize unknown attributes of the system.

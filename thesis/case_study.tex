@@ -5,7 +5,7 @@ Zero-configuration protocol (\textit{zeroconf} for short) is a protocol used in 
 allocate newly attached device an unique IP address without any intervention from network operators.
 
 \subsection{Model and properties}
-From the pseudocode of Zeroconf protocol 
+From the pseudocode of Zeroconf protocol
 \subsection{Evaluation}
 \subsection{Conclusion}
 
@@ -38,7 +38,7 @@ agent has probability to commit an action, namely \textit{sting}. The agent is e
 environment after stinging. Assume that we have a colony of $n$ bees initially. As aforementioned,
 an individual bee is terminated after it stings. Thus, at the end of experiment, the number of bees
 is $n'\in\{0,1,\ldots,n\}$. We model the bee colony with a DTMC $\mathcal{M}=(S,\mathbf{P},
-S_{init}, AP,L)$, such that
+    S_{init}, AP,L)$, such that
 \begin{itemize}
     \item $|S_{init}|=1$
     \item There exists $n+1$ tSCCs which encode the population at the end of the experiment.
@@ -218,10 +218,10 @@ Uniformize the chain with uniformization rate $(3\alpha + 4\beta)$, we derive th
     \caption{$SIR(3,1,0)$ Uniformized DTMC model with parameters$(\alpha, \beta)$ and uniformization rate $(3\alpha + 4\beta)$}
 \end{figure}
 
-\subsection{Properties}
-
 \subsection{Evaluation}
-
+\subsubsection{Accuracy}
+\subsubsection{Scalability}
+We evaluate different frameworks on different size of initial population
 \begin{figure}[!htb]
     \centering
     \includegraphics[width=0.45\linewidth]{figures/sir510_data.png}
@@ -263,15 +263,15 @@ Uniformize the chain with uniformization rate $(3\alpha + 4\beta)$, we derive th
 \begin{table}[!htb]
     \begin{tabular}{|l|c|l|}
         \hline
-        \multicolumn{1}{|c|}{\textbf{SIR(10,1,0)}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Rational function\\ SMC\end{tabular}}             & \begin{tabular}[c]{@{}l@{}}Statistical model checking\\ ABC-SMC\end{tabular} \\ \hline
-        True parameter                            & \multicolumn{2}{c|}{(0.01724649, 0.06778604)}                                          \\ \hline
-        Number of states                          & \multicolumn{2}{c|}{27}                                                                \\ \hline
-        Number of BSCCs                           & \multicolumn{2}{c|}{6}                                                                 \\ \hline
-        Target property                           & \multicolumn{2}{c|}{$P_{\geq 0.25} [!(i>2) U^{<6} (i=0)]$}                             \\ \hline
-        Synthetic data                            & \multicolumn{2}{c|}{(421,  834, 1126, 1362, 1851, 4406)}                               \\ \hline
-        Inferred parameter point                  & \multicolumn{1}{l|}{(0.02307652, 0.06481155)}              & (0.01758384, 0.06535699)  \\ \hline
-        L2 distance to true parameter             & \multicolumn{1}{l|}{0.006544985909916083}                  & 0.005519695496673707      \\ \hline
-        Run time (hh:mm:ss)                       & \multicolumn{1}{l|}{1:07:36.442146}                        & 3:05:22.61795             \\ \hline
+        \multicolumn{1}{|c|}{\textbf{SIR(10,1,0)}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Rational function\\ SMC\end{tabular}}            & \begin{tabular}[c]{@{}l@{}}Statistical model checking\\ ABC-SMC\end{tabular} \\ \hline
+        True parameter                             & \multicolumn{2}{c|}{(0.01724649, 0.06778604)}                                           \\ \hline
+        Number of states                           & \multicolumn{2}{c|}{27}                                                                 \\ \hline
+        Number of BSCCs                            & \multicolumn{2}{c|}{6}                                                                  \\ \hline
+        Target property                            & \multicolumn{2}{c|}{$P_{\geq 0.25} [!(i>2) U^{<6} (i=0)]$}                              \\ \hline
+        Synthetic data                             & \multicolumn{2}{c|}{(421,  834, 1126, 1362, 1851, 4406)}                                \\ \hline
+        Inferred parameter point                   & \multicolumn{1}{l|}{(0.02307652, 0.06481155)}              & (0.01758384, 0.06535699)   \\ \hline
+        L2 distance to true parameter              & \multicolumn{1}{l|}{0.006544985909916083}                  & 0.005519695496673707       \\ \hline
+        Run time (hh:mm:ss)                        & \multicolumn{1}{l|}{1:07:36.442146}                        & 3:05:22.61795              \\ \hline
     \end{tabular}
     \caption{SIR(5,1,0) parameter estimation results.}
 \end{table}
@@ -294,15 +294,15 @@ Uniformize the chain with uniformization rate $(3\alpha + 4\beta)$, we derive th
 \begin{table}[!htb]
     \begin{tabular}{|l|c|l|}
         \hline
-        \multicolumn{1}{|c|}{\textbf{SIR(15,1,0)}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Rational function\\ SMC\end{tabular}}             & \begin{tabular}[c]{@{}l@{}}Statistical model checking\\ ABC-SMC\end{tabular} \\ \hline
-        True parameter                            & \multicolumn{2}{c|}{(0.01724649, 0.06778604)}                                          \\ \hline
-        Number of states                          & \multicolumn{2}{c|}{27}                                                                \\ \hline
-        Number of BSCCs                           & \multicolumn{2}{c|}{6}                                                                 \\ \hline
-        Target property                           & \multicolumn{2}{c|}{$P_{\geq 0.25} [!(i>2) U^{<6} (i=0)]$}                             \\ \hline
-        Synthetic data                            & \multicolumn{2}{c|}{(421,  834, 1126, 1362, 1851, 4406)}                               \\ \hline
-        Inferred parameter point                  & \multicolumn{1}{l|}{(0.02307652, 0.06481155)}              & (0.01758384, 0.06535699)  \\ \hline
-        L2 distance to true parameter             & \multicolumn{1}{l|}{0.006544985909916083}                  & 0.005519695496673707      \\ \hline
-        Run time (hh:mm:ss)                       & \multicolumn{1}{l|}{1:07:36.442146}                        & 3:05:22.61795             \\ \hline
+        \multicolumn{1}{|c|}{\textbf{SIR(15,1,0)}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Rational function\\ SMC\end{tabular}}            & \begin{tabular}[c]{@{}l@{}}Statistical model checking\\ ABC-SMC\end{tabular} \\ \hline
+        True parameter                             & \multicolumn{2}{c|}{(0.01724649, 0.06778604)}                                           \\ \hline
+        Number of states                           & \multicolumn{2}{c|}{27}                                                                 \\ \hline
+        Number of BSCCs                            & \multicolumn{2}{c|}{6}                                                                  \\ \hline
+        Target property                            & \multicolumn{2}{c|}{$P_{\geq 0.25} [!(i>2) U^{<6} (i=0)]$}                              \\ \hline
+        Synthetic data                             & \multicolumn{2}{c|}{(421,  834, 1126, 1362, 1851, 4406)}                                \\ \hline
+        Inferred parameter point                   & \multicolumn{1}{l|}{(0.02307652, 0.06481155)}              & (0.01758384, 0.06535699)   \\ \hline
+        L2 distance to true parameter              & \multicolumn{1}{l|}{0.006544985909916083}                  & 0.005519695496673707       \\ \hline
+        Run time (hh:mm:ss)                        & \multicolumn{1}{l|}{1:07:36.442146}                        & 3:05:22.61795              \\ \hline
     \end{tabular}
     \caption{SIR(5,1,0) parameter estimation results.}
 \end{table}
@@ -325,15 +325,15 @@ Uniformize the chain with uniformization rate $(3\alpha + 4\beta)$, we derive th
 \begin{table}[!htb]
     \begin{tabular}{|l|c|l|}
         \hline
-        \multicolumn{1}{|c|}{\textbf{SIR(10,1,0)}, BSCC merged} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Rational function\\ SMC\end{tabular}}             & \begin{tabular}[c]{@{}l@{}}Statistical model checking\\ ABC-SMC\end{tabular} \\ \hline
-        True parameter                            & \multicolumn{2}{c|}{(0.01724649, 0.06778604)}                                          \\ \hline
-        Number of states                          & \multicolumn{2}{c|}{27}                                                                \\ \hline
-        Number of BSCCs                           & \multicolumn{2}{c|}{6}                                                                 \\ \hline
-        Target property                           & \multicolumn{2}{c|}{$P_{\geq 0.25} [!(i>2) U^{<6} (i=0)]$}                             \\ \hline
-        Synthetic data                            & \multicolumn{2}{c|}{(421,  834, 1126, 1362, 1851, 4406)}                               \\ \hline
-        Inferred parameter point                  & \multicolumn{1}{l|}{(0.02307652, 0.06481155)}              & (0.01758384, 0.06535699)  \\ \hline
-        L2 distance to true parameter             & \multicolumn{1}{l|}{0.006544985909916083}                  & 0.005519695496673707      \\ \hline
-        Run time (hh:mm:ss)                       & \multicolumn{1}{l|}{1:07:36.442146}                        & 3:05:22.61795             \\ \hline
+        \multicolumn{1}{|c|}{\textbf{SIR(10,1,0)}, BSCC merged} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Rational function\\ SMC\end{tabular}}            & \begin{tabular}[c]{@{}l@{}}Statistical model checking\\ ABC-SMC\end{tabular} \\ \hline
+        True parameter                                          & \multicolumn{2}{c|}{(0.01724649, 0.06778604)}                                           \\ \hline
+        Number of states                                        & \multicolumn{2}{c|}{27}                                                                 \\ \hline
+        Number of BSCCs                                         & \multicolumn{2}{c|}{6}                                                                  \\ \hline
+        Target property                                         & \multicolumn{2}{c|}{$P_{\geq 0.25} [!(i>2) U^{<6} (i=0)]$}                              \\ \hline
+        Synthetic data                                          & \multicolumn{2}{c|}{(421,  834, 1126, 1362, 1851, 4406)}                                \\ \hline
+        Inferred parameter point                                & \multicolumn{1}{l|}{(0.02307652, 0.06481155)}              & (0.01758384, 0.06535699)   \\ \hline
+        L2 distance to true parameter                           & \multicolumn{1}{l|}{0.006544985909916083}                  & 0.005519695496673707       \\ \hline
+        Run time (hh:mm:ss)                                     & \multicolumn{1}{l|}{1:07:36.442146}                        & 3:05:22.61795              \\ \hline
     \end{tabular}
     \caption{SIR(5,1,0) parameter estimation results.}
 \end{table}
@@ -356,15 +356,15 @@ Uniformize the chain with uniformization rate $(3\alpha + 4\beta)$, we derive th
 \begin{table}[!htb]
     \begin{tabular}{|l|c|l|}
         \hline
-        \multicolumn{1}{|c|}{\textbf{SIR(10,1,0)}, BSCC merged} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Rational function\\ SMC\end{tabular}}             & \begin{tabular}[c]{@{}l@{}}Statistical model checking\\ ABC-SMC\end{tabular} \\ \hline
-        True parameter                            & \multicolumn{2}{c|}{(0.01724649, 0.06778604)}                                          \\ \hline
-        Number of states                          & \multicolumn{2}{c|}{27}                                                                \\ \hline
-        Number of BSCCs                           & \multicolumn{2}{c|}{6}                                                                 \\ \hline
-        Target property                           & \multicolumn{2}{c|}{$P_{\geq 0.25} [!(i>2) U^{<6} (i=0)]$}                             \\ \hline
-        Synthetic data                            & \multicolumn{2}{c|}{(421,  834, 1126, 1362, 1851, 4406)}                               \\ \hline
-        Inferred parameter point                  & \multicolumn{1}{l|}{(0.02307652, 0.06481155)}              & (0.01758384, 0.06535699)  \\ \hline
-        L2 distance to true parameter             & \multicolumn{1}{l|}{0.006544985909916083}                  & 0.005519695496673707      \\ \hline
-        Run time (hh:mm:ss)                       & \multicolumn{1}{l|}{1:07:36.442146}                        & 3:05:22.61795             \\ \hline
+        \multicolumn{1}{|c|}{\textbf{SIR(10,1,0)}, BSCC merged} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Rational function\\ SMC\end{tabular}}            & \begin{tabular}[c]{@{}l@{}}Statistical model checking\\ ABC-SMC\end{tabular} \\ \hline
+        True parameter                                          & \multicolumn{2}{c|}{(0.01724649, 0.06778604)}                                           \\ \hline
+        Number of states                                        & \multicolumn{2}{c|}{27}                                                                 \\ \hline
+        Number of BSCCs                                         & \multicolumn{2}{c|}{6}                                                                  \\ \hline
+        Target property                                         & \multicolumn{2}{c|}{$P_{\geq 0.25} [!(i>2) U^{<6} (i=0)]$}                              \\ \hline
+        Synthetic data                                          & \multicolumn{2}{c|}{(421,  834, 1126, 1362, 1851, 4406)}                                \\ \hline
+        Inferred parameter point                                & \multicolumn{1}{l|}{(0.02307652, 0.06481155)}              & (0.01758384, 0.06535699)   \\ \hline
+        L2 distance to true parameter                           & \multicolumn{1}{l|}{0.006544985909916083}                  & 0.005519695496673707       \\ \hline
+        Run time (hh:mm:ss)                                     & \multicolumn{1}{l|}{1:07:36.442146}                        & 3:05:22.61795              \\ \hline
     \end{tabular}
     \caption{SIR(5,1,0) parameter estimation results.}
 \end{table}
@@ -383,3 +383,6 @@ Uniformize the chain with uniformization rate $(3\alpha + 4\beta)$, we derive th
         \caption{Sampled particles using Statiscal Model Checking ABC-SMC}
     \end{subfigure}
 \end{figure}
+
+\subsubsection{Uncertainty evaluation}
+
