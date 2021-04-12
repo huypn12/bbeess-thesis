@@ -11,12 +11,10 @@
 \algrenewcommand\ALG@beginalgorithmic{\footnotesize}
 \makeatother
 
-\usetheme{Copenhagen}
+\usetheme{Pittsburgh}
 \usecolortheme{default}
 \setbeamertemplate{items}[triangle]
 \setbeamertemplate{sections/subsections in toc}[square]
-
-
 
 %Information to be included in the title page:
 \title{Bayesian parameter synthesis for markov population model.}
@@ -53,9 +51,40 @@
 \begin{frame}
     \frametitle{Parameter synthesis}
     Katoen \cite{katoen2016probabilistic} definition
-    \begin{definition}[Parameter synthesis]
-        Given a finite-state parametric Markov model, find the parameter values for which a given
-        reachability property exceeds (or is below) a given threshold $\beta$.
+    \begin{definition}[Discrete-time Markov Chain]
+
+    \end{definition}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Parameter synthesis}
+    Katoen \cite{katoen2016probabilistic} definition
+    \begin{definition}[PCTL]
+
+    \end{definition}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Model checking PCTL}
+    Katoen \cite{katoen2016probabilistic} definition
+    \begin{definition}[PCTL]
+
+    \end{definition}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Model checking PCTL}
+    Katoen \cite{katoen2016probabilistic} definition
+    \begin{definition}[PCTL]
+
+    \end{definition}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Parameter synthesis}
+    Katoen \cite{katoen2016probabilistic} definition
+    \begin{definition}[Parametric Discrete-time Markov Chain]
+
     \end{definition}
 \end{frame}
 
@@ -69,7 +98,16 @@
 \end{frame}
 
 \begin{frame}
-    \frametitle{Parameter synthesis vs. inference}
+    \frametitle{Parameter synthesis and Parameter inference}
+    What are the differences between parameter inference and parameter synthesis?
+    \begin{table}[]
+        \begin{tabular}{|l|l|l|}
+            \hline
+                                       & Input                      & Ouput                      \\ \hline
+            \begin{tabular}[c]{@{}l@{}}Parameter\\ inference\end{tabular}  & \begin{tabular}[c]{@{}l@{}}Model $\mathcal{M}_\theta$\\ Observed data $D_{obs}$ \end{tabular}  & \begin{tabular}[c]{@{}l@{}}Parameter estimation\\ $\hat{\theta}$\end{tabular}  \\ \hline
+            \begin{tabular}[c]{@{}l@{}}Parameter\\ synthesis\end{tabular} & \begin{tabular}[c]{@{}l@{}}Model $\mathcal{M}_\theta$\\ Reachability property $\Phi$ \end{tabular} & \begin{tabular}[c]{@{}l@{}}$(\theta_1,\ldots,\theta_N)$ \\ $\forall \theta_i \in (\theta_1,\ldots,\theta_N): \mathcal{M}_{\theta_i}\models\Phi$\end{tabular} \\ \hline
+        \end{tabular}
+    \end{table}
     Synthesis: input: model $\mathcal{M}_\theta$ and property $\Phi$, output is the set of satisfying parameters $\theta$
     Inference: input: model $\mathcal{M}_\theta$ and observed data $D_{obs}$, output is the set of parameter estimation $\hat{\theta}$
     This thesis: combines parameter inference and synthesis into data-informed, Bayesian parameter synthesis frameworks.
@@ -109,6 +147,7 @@
 
 \begin{frame}
     \frametitle{Parameter synthesis step}
+    Monte-Carlo Markov chain framework, basically modified Metropolis-Hasting algorithm.
     \begin{algorithm}[H]
         \caption{Markov Chain Monte-Carlo with rational functions}
         \label{rf-mcmc-alg}
@@ -127,8 +166,12 @@
             \EndProcedure
         \end{algorithmic}
     \end{algorithm}
+    Pros: easy to implement, efficient with unimodal
 \end{frame}
 
+\begin{frame}
+
+\end{frame}
 
 \begin{frame}
     \frametitle{Parameter synthesis step}
