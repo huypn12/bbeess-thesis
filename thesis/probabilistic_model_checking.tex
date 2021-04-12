@@ -13,16 +13,14 @@ verify parametric models.
 
 \section{Markov chain}
 \subsection{Discrete Time Markov chain}
-Markov models are stochastic models of discrete or continous time which satisfy memoryless property
-(Markov property).
-\begin{definition}[Discrete-time Markov property]
-    Let X be a continuous random variable of exponentially distribution. X has memoryless property
-    if and only if
+Markov models are stochastic models of discrete or continous time which satisfy memoryless property.
+\begin{definition}[Discrete-time memoryless property]
+    Let $X$ be a random variable of geometric distribution. $X$ has memoryless property if and only if
     \begin{align*}
-        Pr\{X > t + \delta | X > t\} = Pr\{X > \delta\} \forall t,\delta\in\mathbb{R}_{\geq 0}
+        Pr\{X = t + m | X > m\} = Pr\{X > m\} \forall t,m \in \mathbb{N} k \geq 1
     \end{align*}
 \end{definition}
-Markov model can be non-deterministic \textit{Markov Decision Process}. However, in this thesis we
+Markov model can be non-deterministic \textit{(Markov Decision Process)}. However, in this thesis we
 consider only Markov models without non-determinism. The following definitions of discrete-time and
 continuous-time Markov chains follows the definitions presented by Baier \cite{baier2008principles}.
 \begin{definition}[Discrete Time Markov Chain]
@@ -44,8 +42,14 @@ continuous-time Markov chains follows the definitions presented by Baier \cite{b
     \end{itemize}
 \end{definition}
 
-In the scope of this thesis we interest in a special set of states, namely \textit{Bottom Strongly
-    Connected Components}, or \text{BSCCs} in short.
+\begin{example}[Knuth-Yao die]
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.5\textwidth]{figures/knuth_die.png}
+        \caption{Knuth-Yao die to simulate a 6-faced die by a fair coin. Image taken from }
+    \end{figure}
+\end{example}
+
 \begin{definition}[Strongly Connected Component]
     Let $\mathcal{M}=(S,\mathbf{P}, s_{init}, AP,L)$ a DTMC. A subset $S'\subset S$ is strongly
     connected if and only if for every pair $s_1,s_2\in S'$ there is a path between $s_1$ and $s_2$
@@ -54,22 +58,50 @@ In the scope of this thesis we interest in a special set of states, namely \text
     \textit{SCC} in short.
 \end{definition}
 
-\begin{definition}[ Strongly Connected Component]
-    Let $\mathcal{M}=(S,\mathbf{P}, S_{init}, AP,L)$ a DTMC and $S'\in S$ a
-    Strongly Connected Component. $S'$ is also a \textit{Bottom Strongly Connected
-        Component}, or \textit{BSCC} for short, if and only if there exist no state
-    $s \in S\\S'$ that is reachable from any state in $S'$. If $|S'|=1$ then $S'$ is a \textit{trivial BSCC}.
+\begin{definition}[Bottom Strongly Connected Component]
+    Let $\mathcal{M}=(S,\mathbf{P}, s_{init}, AP,L)$ a DTMC and $S'\in S$ a Strongly Connected
+    Component. $S'$ is also a \textit{Bottom Strongly Connected Component}, or \textit{BSCC} for
+    short, if and only if there exist no state $s \in S\\S'$ that is reachable from any state in
+    $S'$. If $|S'|=1$ then $S'$ is a \textit{trivial BSCC}. We denote $BSCC(\mathcal{M})\in S$ is
+    the set of all BSCCs of $\mathcal{M}$.
 \end{definition}
-%% Example: knuth die
+Intuitively, BSCCs are arbsobing; once a path in a DTMC reaches a state in a BSCC, it visits  all
+states in the BSCC infinitely often. It is proven by \cite{baier2008principles} that any run on a
+DTMC $\mathcal{M}$ ends in $BSCC(\mathcal{M})$ almost surely.
+\begin{theorem}[Long-run theorem]
+    Let $\mathcal{M}=(S,\mathbf{P}, s_{init}, AP,L)$ a DTMC.
+    \begin{align*}
+        P[\Diamond BSCC(\mathcal{M})] = 1
+    \end{align*}
+\end{theorem}
 
-The discrete-time memoryless property can also be extended into continuous-time memoryless property.
+In this thesis we concern the \textit{steady-state distribution} of a DTMC.
+\begin{definition}[Steady-state distribution]
+    Let $\mathcal{M}=(S,\mathbf{P}, s_{init}, AP,L)$ a DTMC and vector $v_t$ be a transient state distribution
+    \begin{align*}
+        v_t = (P[X_t=s_1],\ldots,P[X_t=s_N]), s_0,\ldots,s_N \in S
+    \end{align*}
+    A transient state distribution $v$ of $\mathcal{M}$ is a steady-state distribution of $\mathcal{M}$ if and only if
+    \begin{align*}
+        v = vP
+    \end{align*}
+\end{definition}
+As a result from long-run theorem, if $BSCC(\mathcal{M})\neq \emptyset$ then there exists a
+steady-state distribution $v = (P[X=s_1],\ldots,P[X=s_{|S|}])$, such that
+\begin{align*}
+    \forall 1 \leq i \leq |S|: P[X=s_i] \neq 0 \Leftrightarrow s_i \in BSCC(\mathcal{M})
+\end{align*}
+
+
+
 \subsection{Continuous-time Markov chain}
-Continous-time Markov chain also satisfies memoryless property
-\begin{definition}[Continuous-time Markov property]
+The discrete-time memoryless property can also be extended into continuous-time memoryless property.
+In continous-time, memoryless property has the following form
+\begin{definition}[Continuous-time memoryless property]
     Let X be a continuous random variable of exponentially distribution. X has memoryless property
     if and only if
     \begin{align*}
-        Pr\{X > t + \delta | X > t\} = Pr\{X > \delta\} \forall t,\delta\in\mathbb{R}_{\geq 0}
+        Pr\{X > t + \delta | X > t\} = Pr\{X > \delta\}, \forall t,\delta \in \mathbb{R}_{\geq 0}
     \end{align*}
 \end{definition}
 Based on continuous-time memory less property, we introduce the definition of \textit{Continous-time Markov chain}.
@@ -112,6 +144,7 @@ We can assure that the property of interest retains through uniformization thank
 theorem by \cite{baier2008principles}.
 \begin{theorem}
     %% Theorem: uniformization preserves satisfaction 
+    abcd
 \end{theorem}
 
 
@@ -120,14 +153,8 @@ theorem by \cite{baier2008principles}.
 Over CTL properties, we define the set of PCTL properties, in which we ask the probability to have a
 CTL property satisfied.
 
-\begin{definition}[PCTL* syntax] The syntax of PCTL* is defined as follow
-    \begin{align*}
-        \Phi & ::== \text{true} \;|\; a \;|\; \Phi \;|\; \Phi \wedge \Phi \;|\; \Phi \vee \Phi \;|\;  P_{\sim  p}[\phi] \\
-        \phi & ::== X\Phi \;|\; \Phi U \Phi
-    \end{align*}
-\end{definition}
 
-\begin{definition}[PCTL syntax] The syntax of PCTL is defined as follow
+\begin{definition}[PCTL] The syntax of PCTL is defined as follow
     \begin{align*}
         \Phi & ::== \text{true} \;|\; a \;|\; \Phi \;|\; \Phi \wedge \Phi \;|\; \Phi \vee \Phi \;|\;  P_{\sim  p}[\phi] \\
         \phi & ::== X\Phi \;|\; \Phi U \Phi
@@ -159,11 +186,13 @@ We introduce parameters to formalize unknown attributes of the system.
 \end{definition}
 
 \begin{definition}{Rational functions}
-    Let $\mathbf{x}=\{x_1,\ldots,x_n\}$ be a variable.\\
-    Let $\mathbf{Pol}[\mathbf{x}]$ be the set of all polynomial functions over $\mathbf{x}$.\\
-    Given $f,g\in\mathbf{Pol}[\mathbf{x}]$, then $h:=\frac{f(\mathbf{x})}{g(\mathbf{x})},
-        g{\mathbf{x}}\neq 0$ is a rational function over $\mathbf{x}$.\\
-    We denote $\mathbb{Q}(\mathbf{x})$ the set of rational functions over $\mathbf{x}$.
+    Let $\mathbf{x}=\{x_1,\ldots,x_n\}$ be a variable; let $\mathbf{Pol}[\mathbf{x}]$ be the set of
+    all polynomial functions over $\mathbf{x}$. A rational function $h(\mathbf{x})$ is defined
+    as following.
+    \begin{align*}
+        h(x) := \frac{f(\mathbf{x})}{g(\mathbf{x})}, f,g\in\mathbf{Pol}[\mathbf{x}], g(\mathbf{x}) \neq 0
+    \end{align*}
+    We denote $\mathbb{Q}(\mathbf{x})$ the set of all rational functions over $\mathbf{x}$.
 \end{definition}
 
 
@@ -189,6 +218,15 @@ based the definition on \cite{junges2019parameter}.
         \item $L: S \rightarrow 2^{AP}$ is the labelling function on states.
     \end{itemize}
 \end{definition}
+
+\begin{example}[Parametric Knuth-Yao die]
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.5\textwidth]{figures/knuth_die_pq.png}
+        \caption{Knuth-Yao die to simulate a 6-faced die by two unfair coins with probability of one
+            side $p$ and $q$. Image taken from \cite{katoen2016probabilistic}.}
+    \end{figure}
+\end{example}
 
 Given a parametric Discrete-time Markov chain $\mathcal{M}_\theta$. A concrete assignment of parameter $\theta$
 \textit{instantiates} a non-parametric Discrete-time Markov chain if $f{\theta}$ evaluates to a
