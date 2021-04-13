@@ -1,0 +1,42 @@
+\defcounter {refsection}{0}\relax 
+\contentsline {definition}{{Definition}{2.1.{1}}{Discrete-time memoryless property}}{3}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {definition}{{Definition}{2.1.{2}}{Discrete Time Markov Chain}}{4}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {example}{{Example}{2.1.{1}}{Knuth-Yao die}}{4}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {definition}{{Definition}{2.1.{3}}{Strongly Connected Component}}{5}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {definition}{{Definition}{2.1.{4}}{Bottom Strongly Connected Component}}{5}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {theorem}{{Theorem}{1}{Long-run theorem}}{5}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {definition}{{Definition}{2.1.{5}}{Steady-state distribution}}{5}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {definition}{{Definition}{2.1.{6}}{Continuous-time memoryless property}}{6}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {definition}{{Definition}{2.1.{7}}{Continuous-time Markov chain}}{6}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {definition}{{Definition}{2.1.{8}}{CTMC Uniformization}}{7}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {definition}{{Definition}{2.2.{1}}{PCTL}}{7}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {definition}{{Definition}{2.4.{1}}{Polynomial ring}}{8}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {definition}{{Definition}{2.4.{2}}{}}{9}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {definition}{{Definition}{2.4.{3}}{Discrete Time Markov Chain}}{9}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {example}{{Example}{2.4.{1}}{Parametric Knuth-Yao die}}{9}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {example}{{Example}{2.4.{2}}{}}{10}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {example}{{Example}{2.4.{3}}{}}{10}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {definition}{{Definition}{3.1.{1}}{Bayesian Credible Set}}{13}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {definition}{{Definition}{3.1.{2}}{Highest Posterior Density credible set}}{13}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {lemma}{{Lemma}{2}{Binomial-Beta Conjugation}}{15}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {lemma}{{Lemma}{3}{Multinomial-Dirichlet Conjugation}}{15}{}%

@@ -24,7 +24,7 @@ Markov model can be non-deterministic \textit{(Markov Decision Process)}. Howeve
 consider only Markov models without non-determinism. The following definitions of discrete-time and
 continuous-time Markov chains follows the definitions presented by Baier \cite{baier2008principles}.
 \begin{definition}[Discrete Time Markov Chain]
-    A Discrete-time Markov chain (DTMC) $\mathcal{M}$ is a tuple $(S,\mathbf{P}, s_{init}, AP, L)$,
+    A Discrete-time Markov chain (DTMC) $\mathcal{M}$ is a tuple $(S,\mathbf{P}, \iota_{init}, AP, L)$,
     in which
     \begin{itemize}
         \item $S$ is a countable, non-emty set of \textit{states}
@@ -33,9 +33,9 @@ continuous-time Markov chains follows the definitions presented by Baier \cite{b
               \begin{align*}
                   \forall s \in S : \sum_{s'\in S}\mathbf{P}(s, s') = 1
               \end{align*}
-        \item $s_{init}: S \rightarrow [0,1]$ is the \textit{initial distribution} such that
+        \item $\iota_{init}: S \rightarrow [0,1]$ is the \textit{initial distribution} such that
               \begin{align*}
-                  \sum_{s\in S} s_{init}(s) = 1
+                  \sum_{s\in S} \iota_{init}(s) = 1
               \end{align*}
         \item $AP$ is a set of \textit{atomic propositions}.
         \item $L: S \rightarrow 2^{AP}$ is the labelling function on states.
@@ -51,7 +51,7 @@ continuous-time Markov chains follows the definitions presented by Baier \cite{b
 \end{example}
 
 \begin{definition}[Strongly Connected Component]
-    Let $\mathcal{M}=(S,\mathbf{P}, s_{init}, AP,L)$ a DTMC. A subset $S'\subset S$ is strongly
+    Let $\mathcal{M}=(S,\mathbf{P}, \iota_{init}, AP,L)$ a DTMC. A subset $S'\subset S$ is strongly
     connected if and only if for every pair $s_1,s_2\in S'$ there is a path between $s_1$ and $s_2$
     which consists of only of state in $S'$. If there exist no $S''\subseteq S$, such that $S\subset
         S''$ and $S''$ is strongly connected, then $S'$ is a \textit{Strongly Connected Component}, or
@@ -59,7 +59,7 @@ continuous-time Markov chains follows the definitions presented by Baier \cite{b
 \end{definition}
 
 \begin{definition}[Bottom Strongly Connected Component]
-    Let $\mathcal{M}=(S,\mathbf{P}, s_{init}, AP,L)$ a DTMC and $S'\in S$ a Strongly Connected
+    Let $\mathcal{M}=(S,\mathbf{P}, \iota_{init}, AP,L)$ a DTMC and $S'\in S$ a Strongly Connected
     Component. $S'$ is also a \textit{Bottom Strongly Connected Component}, or \textit{BSCC} for
     short, if and only if there exist no state $s \in S\\S'$ that is reachable from any state in
     $S'$. If $|S'|=1$ then $S'$ is a \textit{trivial BSCC}. We denote $BSCC(\mathcal{M})\in S$ is
@@ -69,7 +69,7 @@ Intuitively, BSCCs are arbsobing; once a path in a DTMC reaches a state in a BSC
 states in the BSCC infinitely often. It is proven by \cite{baier2008principles} that any run on a
 DTMC $\mathcal{M}$ ends in $BSCC(\mathcal{M})$ almost surely.
 \begin{theorem}[Long-run theorem]
-    Let $\mathcal{M}=(S,\mathbf{P}, s_{init}, AP,L)$ a DTMC.
+    Let $\mathcal{M}=(S,\mathbf{P}, \iota_{init}, AP,L)$ a DTMC.
     \begin{align*}
         P[\Diamond BSCC(\mathcal{M})] = 1
     \end{align*}
@@ -77,7 +77,7 @@ DTMC $\mathcal{M}$ ends in $BSCC(\mathcal{M})$ almost surely.
 
 In this thesis we concern the \textit{steady-state distribution} of a DTMC.
 \begin{definition}[Steady-state distribution]
-    Let $\mathcal{M}=(S,\mathbf{P}, s_{init}, AP,L)$ a DTMC and vector $v_t$ be a transient state distribution
+    Let $\mathcal{M}=(S,\mathbf{P}, \iota_{init}, AP,L)$ a DTMC and vector $v_t$ be a transient state distribution
     \begin{align*}
         v_t = (P[X_t=s_1],\ldots,P[X_t=s_N]), s_0,\ldots,s_N \in S
     \end{align*}
@@ -93,7 +93,6 @@ steady-state distribution $v = (P[X=s_1],\ldots,P[X=s_{|S|}])$, such that
 \end{align*}
 
 
-
 \subsection{Continuous-time Markov chain}
 The discrete-time memoryless property can also be extended into continuous-time memoryless property.
 In continous-time, memoryless property has the following form
@@ -104,10 +103,10 @@ In continous-time, memoryless property has the following form
         Pr\{X > t + \delta | X > t\} = Pr\{X > \delta\}, \forall t,\delta \in \mathbb{R}_{\geq 0}
     \end{align*}
 \end{definition}
-Based on continuous-time memory less property, we introduce the definition of \textit{Continous-time Markov chain}.
+Based on continuous-time memory less property, we introduce the definition of \textit{Continous-time
+    Markov chain} \cite{baier2003model}.
 \begin{definition}[Continuous-time Markov chain]
-    A Continuous-time Markov chain (CTMC) is a tuple $(S,\mathbf{P}, \mathbf{r}, s_{init}, AP, L)$
-    \cite{baier2003model}
+    A Continuous-time Markov chain (CTMC) is a tuple $(S,\mathbf{P}, \mathbf{r}, \iota_{init}, AP, L)$
     \begin{itemize}
         \item $S$ is a countable, non-emty set of \textit{states}
         \item $\mathbf{P}:S\times S \rightarrow [0,1]$ is the \textit{transition probability}
@@ -115,50 +114,90 @@ Based on continuous-time memory less property, we introduce the definition of \t
               \begin{align*}
                   \forall s \in S : \sum_{s'\in S}\mathbf{P}(s, s') = 1
               \end{align*}
-        \item $\mathbf{r}:S \rightarrow \mathbb{N}$ is the \textit{transition probability} function
+        \item $\mathbf{r}:S \rightarrow \mathbb{R}_{>0}$ is the \textit{exit rate} function
               such that
               \begin{align*}
                   \forall s \in S : \sum_{s'\in S}\mathbf{P}(s, s') = 1
               \end{align*}
-        \item $s_{init}: S \rightarrow [0,1]$ is the \textit{initial distribution} such that
+        \item $\iota_{init}: S \rightarrow [0,1]$ is the \textit{initial distribution} such that
               \begin{align*}
-                  \sum_{s\in S}s_{init}(s) = 1
+                  \sum_{s\in S}\iota_{init}(s) = 1
               \end{align*}
         \item $AP$ is a set of \textit{atomic propositions}
         \item $L: S \rightarrow 2^{AP}$ is the labelling function on states.
     \end{itemize}
 \end{definition}
-Continous-time Markov chain has a wide range of application on modeling distributed system [cite],
-verification of protocol [cite], chemical reaction network [cite].
-\begin{example}[CTMC model of queueing jobs]
 
-\end{example}
-The main research object of this thesis are discrete-time Markov models. Therefore, we do not use
-continuous-time Markov chain to model systems of interest directly. Instead, we do not use
-Continuous-time Markov models directly. Instead, we transform CTMCs into DTMCs through
-uniformization.
+\begin{figure}
+    \centering
+    \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=3cm]
+        \tikzstyle{every state}=[fill=white,draw=black,thick,text=black]
+        \node[initial, state, label=above:2]    (S0)                   {$S_0$};
+        \node[state, label=above:4]    (S1)[right of=S0]      {$S_1$};
+        \node[state, label=above:3]    (S2)[right of=S1]      {$S_2$};
+        \path
+
+        (S0)
+        edge [bend left=20] node{$1$} (S1)
+
+        (S1)
+        edge [bend left=20] node{$\frac{2}{3}$} (S2)
+        edge [bend left=20] node{$\frac{1}{3}$} (S0)
+
+        (S2)
+        edge [bend left=20] node{$1$} (S1);
+    \end{tikzpicture}
+    \caption{An example of a CTMC with 3 states.}
+    \label{fig:ctmc}
+\end{figure}
+Continous-time Markov chain has a wide range of applications, especially in bioinformatics where
+chemical reaction network \cite{feinberg1980chemical} \cite{anderson2011continuous}. However, the
+frameworks in this thesis apply for discrete-time Markov models, thus we do not use continuous-time
+Markov chain to model systems of interest directly. Instead, we do not use Continuous-time Markov
+models directly. Instead, we transform CTMCs into DTMCs through uniformization \cite{katoen2016probabilistic}
 \begin{definition}[CTMC Uniformization]
-
-\end{definition}
-We can assure that the property of interest retains through uniformization thanks to the followin
-theorem by \cite{baier2008principles}.
-\begin{theorem}
-    %% Theorem: uniformization preserves satisfaction 
     abcd
-\end{theorem}
+\end{definition}
 
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=3cm]
+        \tikzstyle{every state}=[fill=white,draw=black,thick,text=black]
+        \node[initial, state, label=above:4]    (S0)                   {$S_0$};
+        \node[state, label=above:4]    (S1)[right of=S0]      {$S_1$};
+        \node[state, label=above:4]    (S2)[right of=S1]      {$S_2$};
+        \path
+
+        (S0)
+        edge [bend left=20] node{$\frac{1}{2}$} (S1)
+
+        (S1)
+        edge [bend left=20] node{$\frac{2}{3}$} (S2)
+        edge [bend left=20] node{$\frac{1}{3}$} (S0)
+
+        (S2)
+        edge [bend left=20] node{$\frac{3}{4}$} (S1);
+    \end{tikzpicture}
+    \caption{The uniformized  CTMC of \ref{fig:ctmc}.}
+\end{figure}
+It has been shown by Katoen \cite{katoen2013model} that uniformization preserves the transient
+probability distributions. Furthermore, in this thesis we concern steady state data and state
+property, thus uniformizing exit rate does not affect the validity of our constructed frameworks.
 
 \section{Probabilistic temporal logic}
+We define the set of PCTL properties,
+\begin{definition}[PCTL] The syntax of PCTL consists of state formulas and path formulas.
+    \begin{itemize}
+        \item State formulas
+              \begin{align*}
+                  \Phi & ::== \text{true} \;|\; a \;|\; \Phi \;|\; \Phi \wedge \Phi \;|\; \Phi \vee \Phi \;|\;  P_{\sim  p}[\phi]
+              \end{align*}
+        \item Path formulas
+              \begin{align*}
+                  \phi & ::== \bigcirc \Phi \;|\; \Phi \mathsf{U}  \Phi
+              \end{align*}
+    \end{itemize}
 
-Over CTL properties, we define the set of PCTL properties, in which we ask the probability to have a
-CTL property satisfied.
-
-
-\begin{definition}[PCTL] The syntax of PCTL is defined as follow
-    \begin{align*}
-        \Phi & ::== \text{true} \;|\; a \;|\; \Phi \;|\; \Phi \wedge \Phi \;|\; \Phi \vee \Phi \;|\;  P_{\sim  p}[\phi] \\
-        \phi & ::== X\Phi \;|\; \Phi U \Phi
-    \end{align*}
 \end{definition}
 
 \subsection{Model checking PCTL properties}
@@ -170,8 +209,10 @@ $\mathcal{M}\models\Phi$ is described as following:
 
 
 \section{Statistical Model checking}
-Statistical model checking is a simulation-based approach to model check a statistical model
-$\mathcal{M}$ against a property $\Phi$
+Statistical model checking is a simulation-based approach to model check a stochastic model
+$\mathcal{M}$ against a temporal property $\Phi$. The essential concept of probabilistic model
+checking is to simulate traces from $\mathcal{M}$, verify if each trace satisfies $\Phi$, then
+estimate probability $P(\mathcal{M}\models\Phi)$ by a statistical, frequentist approach.
 \subsection{Statistical model checking of unbounded properties.}
 Estimation method, Chernoff-Hoeffding bound.
 
@@ -200,7 +241,7 @@ We introduce parameters to formalize unknown attributes of the system.
 With the set of rational functions formally defined, we define parametric Discrete-time Markov chain
 based the definition on \cite{junges2019parameter}.
 \begin{definition}[Discrete Time Markov Chain]
-    A Discrete-time Markov chain (DTMC) is a tuple $(S, \mathbf{x}, \mathbf{P}, s_{init}, AP, L)$
+    A Discrete-time Markov chain (DTMC) is a tuple $(S, \mathbf{x}, \mathbf{P}, \iota_{init}, AP, L)$
     where
     \begin{itemize}
         \item $S$ is a countable, non-emty set of \textit{states}
@@ -210,9 +251,9 @@ based the definition on \cite{junges2019parameter}.
               \begin{align*}
                   \forall s \in S : \sum_{s'\in S}\mathbf{P}(s, s') = 1
               \end{align*}
-        \item $s_{init}: S \rightarrow [0,1]$ is the \textit{initial distribution} such that
+        \item $\iota_{init}: S \rightarrow [0,1]$ is the \textit{initial distribution} such that
               \begin{align*}
-                  \sum_{s\in S}s_{init}(s) = 1
+                  \sum_{s\in S}\iota_{init}(s) = 1
               \end{align*}
         \item $AP$ is a set of \textit{atomic propositions}
         \item $L: S \rightarrow 2^{AP}$ is the labelling function on states.

@@ -1,11 +1,12 @@
 \chapter{Bayesian inference}
- {\color{red}
-  \begin{itemize}
-      \item Bayesian formula: posterior, prior, likelihood
-      \item Bayesian parameter estimation: credible set, Highest density posterior
-      \item Approximation of posterior: tractability and sampling method Monte Carlo (Naive MC, MH, Sequential MC).
-  \end{itemize}
- }
+We present essential concepts in Bayesian parameter inference and several methods to estimate
+posterior distribution. The methods range from posterior conjugations, in which tractability is
+guaranteed as we know the analytic form of both likelihood and prior distribution. Afterwards, we
+discuss different sampling algorithm to approximate the posterior distribution when no conjugations
+are available. We also present a likelihood-free method to exploit in the case that the analytical
+form of the likelihood is not achievable or is too complex to evaluate. The sampling algorithms
+presented in this chapter are the building block for the Bayesian frameworks that we present in this
+thesis.
 
 \section{Bayesian inference}
 \subsection{Bayesian formula}
@@ -29,7 +30,8 @@ $\int_\theta P(D_{obs}|\theta)\pi(\theta)d\theta$ is the \textit{marginal distri
 essential part of Bayesian inference, since it gives the estimation of parameter $\theta$.
 
 \subsection{Bayesian parameter estimation}
-With posterior distribution $\pi(\theta|D)$ we estimate the parameter $\hat{\theta}$ using Bayesian posterior mean
+With posterior distribution $\pi(\theta|D)$ we estimate the parameter $\hat{\theta}$ using Bayesian
+posterior mean.
 \begin{align*}
     \hat{\theta} = \mathbf{E}[\theta] = \int_\theta \theta \pi(\theta|D) d\theta
 \end{align*}
@@ -160,7 +162,7 @@ section we discuss different approaches for posterior distribution approximation
     \item Approximate Bayesian Computation.
 \end{itemize}
 
-\subsection{Markov chain Monte-Carlo}
+\subsubsection{Markov chain Monte-Carlo}
 In case the posterior distribution has no analytical form or its analytical form
 is difficult to sample from directly, we use \textit{Metropolis-Hastings}
 algorithm (\textit{MH} in short).\\
@@ -214,17 +216,48 @@ There are two advantages of using Markov Chain Monte Carlo in Bayesian inference
 However, MH algorithm also has a drawback; its convergence becomes slower as the
 dimension of parameter $\theta$ increases.
 
-\subsection{Sequential Monte-Carlo}
+\subsubsection{Sequential Monte-Carlo}
 Sequential Monte-Carlo method is firstly proposed by \cite{del2006sequential}.  Instead of having
 one particle moving in its parameter space, Sequential Monte-Carlo estimates by using $N$ particles
 moving independently. Therefore Sequential Monte-Carlo method has a significant advantage of easily
 parallelizable.
 
 here \cite{daviet2018inference}
-
+\begin{algorithm}[H]
+    \caption{Sequential Monte-Carlo Algorithm}
+    \label{smc-algorithm}
+    \hspace*{\algorithmicindent} \textbf{Input:}
+    \begin{itemize}
+        \item $D$ is the observation data
+    \end{itemize}
+    \hspace*{\algorithmicindent} \textbf{Output:} $Trace$ is the set of accepted
+    sampling point.
+    \begin{algorithmic}[1]
+        \Procedure{Metropolis-Hastings}{$D$, maxIteration}
+        \State Select a proposal distribution $\pi(\theta)$
+        \State Draw a random initial point $\theta$
+        \State Init empty trace $Trace$
+        \While{maxIteration not reached}
+        \State $L \leftarrow P(D|\theta)$
+        \State Draw a point $\theta' $ from the proposal distribution.
+        \State $L' \leftarrow P(D|\theta')$
+        \If{ $\ln(L') - \ln(L) > 0$ }
+        \State Add $\theta'$ to $Trace$
+        \State $\theta = \theta'$
+        \Else
+        \State Draw a random number $x$ from $Uniform(0,1)$
+        \If{$x \leq \xi$, ($\xi$ very small, e.g $10^{-8}$)}
+        \State Add $\theta'$ to $Trace$ (avoiding local maxima)
+        \State $\theta = \theta'$
+        \EndIf
+        \EndIf
+        \EndWhile
+        \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
 Selection of kernel function for SMC is mentioned in \cite{silk2012optimizing}.
 
-\subsection{Approximate Bayesian Computation}
+\subsubsection{Approximate Bayesian Computation}
 The methods mentioned before is used with an assumption that the likelihood $P(D_{obs}|\theta)$ has
 an analytical form; the analytical can be evaluated without introducing computational burden.
 However there are situations in which the likelihood has no analytical form, or the analytical form
