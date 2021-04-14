@@ -11,7 +11,7 @@ of parametric model and parameter synthesis problems, as well as the symbolic co
 verify parametric models.
 
 
-\section{Markov chain}
+\section{Markov models}
 \subsection{Discrete Time Markov chain}
 Markov models are stochastic models of discrete or continous time which satisfy memoryless property.
 \begin{definition}[Discrete-time memoryless property]
@@ -46,7 +46,9 @@ continuous-time Markov chains follows the definitions presented by Baier \cite{b
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.5\textwidth]{figures/knuth_die.png}
-        \caption{Knuth-Yao die to simulate a 6-faced die by a fair coin. Image taken from }
+        \caption{Knuth-Yao die to simulate a 6-faced die by a fair coin. Image taken from
+            \cite{katoen2016probabilistic}}
+        \label{fig:knuth-die}
     \end{figure}
 \end{example}
 
@@ -104,9 +106,9 @@ In continous-time, memoryless property has the following form
     \end{align*}
 \end{definition}
 Based on continuous-time memory less property, we introduce the definition of \textit{Continous-time
-    Markov chain} \cite{baier2003model}.
+    Markov chain} \cite{katoen2013model}.
 \begin{definition}[Continuous-time Markov chain]
-    A Continuous-time Markov chain (CTMC) is a tuple $(S,\mathbf{P}, \mathbf{r}, \iota_{init}, AP, L)$
+    A Continuous-time Markov chain (CTMC) $\mathcal{C}$ is a tuple $(S,\mathbf{P}, \mathbf{r}, \iota_{init}, AP, L)$
     \begin{itemize}
         \item $S$ is a countable, non-emty set of \textit{states}
         \item $\mathbf{P}:S\times S \rightarrow [0,1]$ is the \textit{transition probability}
@@ -128,84 +130,139 @@ Based on continuous-time memory less property, we introduce the definition of \t
     \end{itemize}
 \end{definition}
 
-\begin{figure}
-    \centering
-    \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=3cm]
-        \tikzstyle{every state}=[fill=white,draw=black,thick,text=black]
-        \node[initial, state, label=above:2]    (S0)                   {$S_0$};
-        \node[state, label=above:4]    (S1)[right of=S0]      {$S_1$};
-        \node[state, label=above:3]    (S2)[right of=S1]      {$S_2$};
-        \path
+\begin{example}[CTMC]
+    An example of a CTMC with 3 states.
+    \begin{figure}[H]
+        \centering
+        \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=3cm]
+            \tikzstyle{every state}=[fill=white,draw=black,thick,text=black]
+            \node[initial, state, label=above:2]    (S0)                   {$S_0$};
+            \node[state, label=above:4]    (S1)[right of=S0]      {$S_1$};
+            \node[state, label=above:3]    (S2)[right of=S1]      {$S_2$};
+            \path
 
-        (S0)
-        edge [bend left=20] node{$1$} (S1)
+            (S0)
+            edge [bend left=20] node{$1$} (S1)
 
-        (S1)
-        edge [bend left=20] node{$\frac{2}{3}$} (S2)
-        edge [bend left=20] node{$\frac{1}{3}$} (S0)
+            (S1)
+            edge [bend left=20] node{$\frac{2}{3}$} (S2)
+            edge [bend left=20] node{$\frac{1}{3}$} (S0)
 
-        (S2)
-        edge [bend left=20] node{$1$} (S1);
-    \end{tikzpicture}
-    \caption{An example of a CTMC with 3 states.}
-    \label{fig:ctmc}
-\end{figure}
+            (S2)
+            edge [bend left=20] node{$1$} (S1);
+        \end{tikzpicture}
+        \label{fig:ctmc}
+    \end{figure}
+    \label{example:ctmc}
+\end{example}
+
 Continous-time Markov chain has a wide range of applications, especially in bioinformatics where
 chemical reaction network \cite{feinberg1980chemical} \cite{anderson2011continuous}. However, the
 frameworks in this thesis apply for discrete-time Markov models, thus we do not use continuous-time
 Markov chain to model systems of interest directly. Instead, we do not use Continuous-time Markov
 models directly. Instead, we transform CTMCs into DTMCs through uniformization \cite{katoen2016probabilistic}
 \begin{definition}[CTMC Uniformization]
-    abcd
+    Let $\mathcal{C} = (S,\mathbf{P}, \mathbf{r}, \iota_{init}, AP, L)$ be a CTMC. We define the
+    \textit{uniformization rate} $r$ such that
+    \begin{align*}
+        \forall s\in S: r \geq \mathbf{r}(s), r\in\mathbb{R}_{>0}
+    \end{align*}
+    The \textit{uniformized CTMC} $unif(r, \mathcal{C})=(S, \bar{\mathbf{P}}, \bar{\mathbf{r}}, \iota_{init}, AP, L )$ such that
+    \begin{align*}
+        \forall s\in S     & : \bar{\mathbf{r}}(s)     \\
+        \forall s, s'\in S & : \bar{\mathbf{P}}(s,s')=
+        \begin{cases}
+            \frac{\mathbf{r}(s)}{r}\mathbf{P}(s,s')                               & \text{if $s \neq s'$} \\ \quad \\
+            \frac{\mathbf{r}(s)}{r}\mathbf{P}(s,s') + 1 - \frac{\mathbf{r}(s)}{r} & \text{if $s = s'$}
+        \end{cases}
+    \end{align*}
 \end{definition}
 
-\begin{figure}[H]
-    \centering
-    \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=3cm]
-        \tikzstyle{every state}=[fill=white,draw=black,thick,text=black]
-        \node[initial, state, label=above:4]    (S0)                   {$S_0$};
-        \node[state, label=above:4]    (S1)[right of=S0]      {$S_1$};
-        \node[state, label=above:4]    (S2)[right of=S1]      {$S_2$};
-        \path
+\begin{example}[Uniformized CTMC]
+    We uniformize the CTMC in Example \ref{example:ctmc} by uniformization rate $r=4$.
+    \begin{figure}[H]
+        \centering
+        \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=3cm]
+            \tikzstyle{every state}=[fill=white,draw=black,thick,text=black]
+            \node[initial, state, label=above:4]    (S0)          {$S_0$};
+            \node[state, label=above:4]    (S1)[right of=S0]      {$S_1$};
+            \node[state, label=above:4]    (S2)[right of=S1]      {$S_2$};
+            \path
 
-        (S0)
-        edge [bend left=20] node{$\frac{1}{2}$} (S1)
+            (S0)
+            edge [bend left=20] node{$\frac{1}{2}$} (S1)
 
-        (S1)
-        edge [bend left=20] node{$\frac{2}{3}$} (S2)
-        edge [bend left=20] node{$\frac{1}{3}$} (S0)
+            (S1)
+            edge [bend left=20] node{$\frac{2}{3}$} (S2)
+            edge [bend left=20] node{$\frac{1}{3}$} (S0)
 
-        (S2)
-        edge [bend left=20] node{$\frac{3}{4}$} (S1);
-    \end{tikzpicture}
-    \caption{The uniformized  CTMC of \ref{fig:ctmc}.}
-\end{figure}
+            (S2)
+            edge [bend left=20] node{$\frac{3}{4}$} (S1);
+        \end{tikzpicture}
+        \label{fig:uniformized-ctmc}
+    \end{figure}
+\end{example}
 It has been shown by Katoen \cite{katoen2013model} that uniformization preserves the transient
 probability distributions. Furthermore, in this thesis we concern steady state data and state
 property, thus uniformizing exit rate does not affect the validity of our constructed frameworks.
 
-\section{Probabilistic temporal logic}
-We define the set of PCTL properties,
+\section{Property specification}
+\subsection{Probabilistic Computational Tree Logic}
+Model checking verifies a formalism of a system \textit{(model)} against a property of interest. We
+formalize a property by a \textit{temporal logic}, specifically \textit{Probabilistic Computational
+    Tree Logic} (or \textit{PCTL}). Firstly introduced by Clarke et al. \cite{clarke1986automatic}, PCTL
+is widely used in model checking of discrete-time stochastic models and supported by most
+probabilistic model checking tools \cite{dehnert2017storm}, \cite{kwiatkowska2011prism}.
 \begin{definition}[PCTL] The syntax of PCTL consists of state formulas and path formulas.
     \begin{itemize}
-        \item State formulas
+        \item State formulas are defined over $AP$
               \begin{align*}
-                  \Phi & ::== \text{true} \;|\; a \;|\; \Phi \;|\; \Phi \wedge \Phi \;|\; \Phi \vee \Phi \;|\;  P_{\sim  p}[\phi]
+                  \Phi & ::== \text{true} \;|\; a \;|\; \Phi \;|\; \Phi_1 \wedge \Phi_2 \;|\; \Phi_1 \vee \Phi_2 \;|\;  P_{J}[\phi]
               \end{align*}
+              where $a\in AP$, $\phi$ is a path formula, and $J\subseteq[0,1]$ is an interval.
         \item Path formulas
               \begin{align*}
-                  \phi & ::== \bigcirc \Phi \;|\; \Phi \mathsf{U}  \Phi
+                  \phi & ::== \bigcirc \Phi \;|\; \Phi_1 \mathsf{U} \Phi_2 \;|\; \Phi_1 \mathsf{U}^{\leq n} \Phi_2
               \end{align*}
+              where $\Phi,\Phi_1,\Phi_2$ are state formulas, and $n\in \mathbb{N}$.
     \end{itemize}
-
 \end{definition}
+PCTL properties is applicable on discrete-time stochastic models such as DTMC, as the times between
+state transitions are uniform. In a DTMC, a PCTL state formula is verified at each state, while a
+PCTL path formula is verified through a trace from an execution path.
+\begin{example}
+
+\end{example}
 
 \subsection{Model checking PCTL properties}
 Given a DTMC $\mathcal{M}$ and a PCTL property $\Phi$, general algorithm for checking
-$\mathcal{M}\models\Phi$ is described as following:
+$\mathcal{M}\models\Phi$ consists of the following steps:
 
-%% Argues the complexity
+\begin{algorithm}[H]
+    \caption{Model checking a DTMC against a PCTL}
+    \label{alg:dtmc-model-checking}
+    \begin{algorithmic}[1]
+        \Procedure{Dtmc-Check-Pctl}{}
+        \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{theorem}[Complexity of checking a DTMC against a PCTL formula.]
+
+\end{theorem}
 \subsection{State exlosion problem}
+The soundness of the model checking relies heavily on how the system is modeled. In fact, the model
+checking is only as sound and valid as the model.
+\begin{enumerate}
+    \item Which formalism is used?
+    \item How the system is encoded into states and transitions?
+\end{enumerate}
+Consider a distributed software system, in which a \textit{global state} is a composition of
+\begin{itemize}
+    \item values of all variables, and
+    \item states of all communication channels.
+\end{itemize}
+It is obvious that the number of possible states grows exponentially as
 
 
 \section{Statistical Model checking}
@@ -215,10 +272,25 @@ checking is to simulate traces from $\mathcal{M}$, verify if each trace satisfie
 estimate probability $P(\mathcal{M}\models\Phi)$ by a statistical, frequentist approach.
 \subsection{Statistical model checking of unbounded properties.}
 Estimation method, Chernoff-Hoeffding bound.
-
+\begin{algorithm}[H]
+    \caption{APMC Statistical Model Checking}
+    \label{alg:smc-apmc}
+    \begin{algorithmic}[1]
+        \Procedure{SMC-APMC}{}
+        \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
 
 \subsection{Statistical model checking of bounded properties.}
-%% 
+
+\begin{algorithm}[H]
+    \caption{SPRT Statistical Model Checking}
+    \label{alg:smc-sprt}
+    \begin{algorithmic}[1]
+        \Procedure{SMC-SPRT}{}
+        \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
 
 \section{Parametric model}
 We introduce parameters to formalize unknown attributes of the system.
@@ -261,11 +333,12 @@ based the definition on \cite{junges2019parameter}.
 \end{definition}
 
 \begin{example}[Parametric Knuth-Yao die]
+    A Knuth-Yao die to simulate a 6-faced die by two unfair coins with probability of one
+    side $p$ and $q$. Image taken from \cite{katoen2016probabilistic}.
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.5\textwidth]{figures/knuth_die_pq.png}
-        \caption{Knuth-Yao die to simulate a 6-faced die by two unfair coins with probability of one
-            side $p$ and $q$. Image taken from \cite{katoen2016probabilistic}.}
+        \label{fig:knuth-die-pq}
     \end{figure}
 \end{example}
 
@@ -290,6 +363,4 @@ real value for all $f\in\mathbf{P}$.
     Monte-Carlo search on parameter space gives the following satisfying point:
     %% Figures
 \end{example}
-\section{Statistical Model checking}
-Statistical model checking must be performed on an instantiated Markov chain.
 
