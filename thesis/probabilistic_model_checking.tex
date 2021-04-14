@@ -43,11 +43,12 @@ continuous-time Markov chains follows the definitions presented by Baier \cite{b
 \end{definition}
 
 \begin{example}[Knuth-Yao die]
+    Knuth-Yao die to simulate a 6-faced die by a fair coin. In this Knuth's die DTMC, there are 6
+    BSCCs, each of them represents an outcome of a die tossing. Image taken from
+    \cite{katoen2016probabilistic}
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.5\textwidth]{figures/knuth_die.png}
-        \caption{Knuth-Yao die to simulate a 6-faced die by a fair coin. Image taken from
-            \cite{katoen2016probabilistic}}
         \label{fig:knuth-die}
     \end{figure}
 \end{example}
@@ -229,27 +230,26 @@ probabilistic model checking tools \cite{dehnert2017storm}, \cite{kwiatkowska201
 \end{definition}
 PCTL properties is applicable on discrete-time stochastic models such as DTMC, as the times between
 state transitions are uniform. In a DTMC, a PCTL state formula is verified at each state, while a
-PCTL path formula is verified through a trace from an execution path.
-\begin{example}
-
-\end{example}
-
-\subsection{Model checking PCTL properties}
-Given a DTMC $\mathcal{M}$ and a PCTL property $\Phi$, general algorithm for checking
-$\mathcal{M}\models\Phi$ consists of the following steps:
-
-\begin{algorithm}[H]
-    \caption{Model checking a DTMC against a PCTL}
-    \label{alg:dtmc-model-checking}
-    \begin{algorithmic}[1]
-        \Procedure{Dtmc-Check-Pctl}{}
-        \EndProcedure
-    \end{algorithmic}
-\end{algorithm}
-
+PCTL path formula is verified through a trace from an execution path.\\
+The algorithm to model check DTMC against PCTL properties is described in detail in Katoen
+\cite{baier2008principles}. Given a DTMC $\mathcal{M}$ and a PCTL property $\Phi$, general algorithm
+for checking $\mathcal{M}\models\Phi$ has complexity of polynomial to $|\mathcal{M}|$ and linear to
+$|\Phi|$ \cite{katoen2013model}.
 \begin{theorem}[Complexity of checking a DTMC against a PCTL formula.]
-
+    For finite DTMC $\mathcal{M}$ and PCTL state-formula $\Phi$,the PCTL model-checking problem can be solved in time
+    \begin{align*}
+        \mathcal{O}(poly(size(D)\cdot n_{max} \cdot |\Phi|)
+    \end{align*}
+    where
+    \begin{align*}
+        n_{max} =
+        \begin{cases}
+            max(n | (\Psi_1 \mathsf{U}^{\leq n} \Psi_2) \quad\text{occurs in}\quad \Phi) \\
+            1 \text{ if $\Phi$ contains no bounded until property}
+        \end{cases}
+    \end{align*}
 \end{theorem}
+
 \subsection{State exlosion problem}
 The soundness of the model checking relies heavily on how the system is modeled. In fact, the model
 checking is only as sound and valid as the model.
@@ -257,32 +257,76 @@ checking is only as sound and valid as the model.
     \item Which formalism is used?
     \item How the system is encoded into states and transitions?
 \end{enumerate}
-Consider a distributed software system, in which a \textit{global state} is a composition of
-\begin{itemize}
+For example, we consider a distributed software system, in which a \textit{global state} is a
+composition of
+\begin{enumerate}
     \item values of all variables, and
     \item states of all communication channels.
-\end{itemize}
-It is obvious that the number of possible states grows exponentially as
-
+\end{enumerate}
+It is obvious that the number of possible states grows exponentially as more variables and
+communication channels are added to the system.\\
+\textit{State-explosion problem} occurs when the size of the system state space grows exponentially
+as the number of state variables in the system increases \cite{clarke2011model}. As discussed
+before, the complexity of model checking a PCTL property against a DTMC model is polynomial to the
+DTMC's state-space. However, the state-explosion problem renders model checking computationally
+expensive. One possible way to reduce the computational cost is to use \textit{statistical model
+    checking}.
 
 \section{Statistical Model checking}
 Statistical model checking is a simulation-based approach to model check a stochastic model
 $\mathcal{M}$ against a temporal property $\Phi$. The essential concept of probabilistic model
-checking is to simulate traces from $\mathcal{M}$, verify if each trace satisfies $\Phi$, then
-estimate probability $P(\mathcal{M}\models\Phi)$ by a statistical, frequentist approach.
-\subsection{Statistical model checking of unbounded properties.}
-Estimation method, Chernoff-Hoeffding bound.
+checking is to simulate $N$ traces from $\mathcal{M}$, verify if each trace satisfies $\Phi$, then
+estimate probability $P(\mathcal{M}\models\Phi)$ by a statistical, frequentist approach.\\
+In statistical model checking of, different methods are applied to \textit{quantitative} and
+\textit{qualitative}
+questions.\footnote{\url{https://www-verimag.imag.fr/Statistical-Model-Checking-814.html\#nb3}}
+Given a stochastic model $\mathcal{M}$ and a property $\Phi$, statistical model checking solves the
+following problems:
+\begin{enumerate}
+    \item \textbf{Quantitative}: Estimate the probability $p = P(\mathcal{M}\models\Phi)$. In other
+          words, it checks $\mathcal{M}$ the property \begin{align*}
+              P_{=?}[ \Phi ]
+          \end{align*}
+    \item \textbf{Qualitative}: Decide if $p = P(\mathcal{M}\models\Phi)$ is greater or less than a threshold $\epsilon$. In other
+          words, it checks $\mathcal{M}$ the property \begin{align*}
+              P_J[ \Phi ]
+          \end{align*}
+          where $J\subseteq[0,1]$ is an interval.
+\end{enumerate}
+
+\subsection{Statistical model checking of quantitative properties.}
+Given an approximation $\epsilon$ and a confidential
+level $\alpha$, we estimate $\hat{p}$ as an estimation of $p$ such that
+\begin{align*}
+    P[|p-\hat{p}| \leq \epsilon] \geq 1 - \alpha
+\end{align*}
+How many simulations must be performed?  As verifying a simulation trace against a reachability
+property $\Phi$ is Bernoulli trial (satisfied or not satisfied), the number of simulation $N$ can be
+estimated using different bounds, such as Chernoff-Hoeffding bound \cite{chernoff2014career}. Let
+$Sat(N)$ be number of satisfying trace in $N$ sampled traces, applying Chernoff-Hoeffding inequality
+gives
+\begin{align*}
+    P[|\frac{Sat(N)}{N}-p| > \epsilon]                          & \leq 2\exp{\frac{-N\epsilon^2}{4}}     \\
+    \leftrightarrow \quad P[|\frac{Sat(N)}{N}-p| \leq \epsilon] & \geq 1 - 2\exp{\frac{-N\epsilon^2}{4}}
+\end{align*}
+Replace $\alpha = 2\exp{\frac{-N\epsilon^2}{4}}$ and $\hat{p}=\frac{Sat(N)}{N}$, we have
+\begin{align*}
+    P[|\hat{N} - p| \leq \epsilon] & \geq 1 - 2\alpha                                \\
+    \leftrightarrow \quad N        & \geq 4\frac{\log{\frac{2}{\alpha}}}{\epsilon^2}
+\end{align*}
+The estimation algorithm is described in detail in [1].
 \begin{algorithm}[H]
-    \caption{APMC Statistical Model Checking}
+    \caption{Statistical Model Checking, Approximate Probabilistic Model Checking method.}
     \label{alg:smc-apmc}
     \begin{algorithmic}[1]
         \Procedure{SMC-APMC}{}
+        \State $N \leftarrow 4\frac{\log{\frac{2}{\alpha}}}{\epsilon^2}$
         \EndProcedure
     \end{algorithmic}
 \end{algorithm}
 
-\subsection{Statistical model checking of bounded properties.}
-
+\subsection{Statistical model checking of qualitative properties.}
+Estimation of number of simulation $N$ in this case is slightly more complicated.
 \begin{algorithm}[H]
     \caption{SPRT Statistical Model Checking}
     \label{alg:smc-sprt}
@@ -358,9 +402,10 @@ real value for all $f\in\mathbf{P}$.
 \subsection{Parameter synthesis of pDTMC}
 
 \begin{example}
-    Given a pDTMC of Knuth die $\mathcal{M}_{p}$ and a path property $\Phi = P_{\geq 0.2} [F
+    Given a pDTMC of Knuth die $\mathcal{M}_{pq}$ and a path property $\Phi = P_{\geq 0.2} [F
                 \texttt{"one"}]$, synthesize parameter $p$ so that $\mathcal{M}_{p} \models \Phi$. A simple
     Monte-Carlo search on parameter space gives the following satisfying point:
     %% Figures
 \end{example}
 
+\subsection{Summary}

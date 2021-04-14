@@ -8,9 +8,29 @@ frameworks synthesize a set of $N$ parameters $(\theta_1,\ldots,\theta_N)$ such 
 \begin{align*}
       \forall i \in [1,N]: \mathcal{M}_{\theta_i} \models \Phi
 \end{align*}
-Eac
+each
 
-\section{Model checking of parametric models}
+\section{General framework for parameter synthesis}
+\begin{algorithm}[H]
+      \caption{Markov chain Monte-Carlo with rational functions}
+      \label{rf-mcmc-alg}
+      \hspace*{\algorithmicindent} \textbf{Input:}
+      \begin{itemize}
+            \item $\mathcal{M}_\theta$: parametric Discrete-Time Markov chain of parameter $\theta$
+            \item $\Phi$: bounded reachability property of interest.
+      \end{itemize}
+      \hspace*{\algorithmicindent} \textbf{Output:}
+      \begin{itemize}
+            \item $(\theta_1,\ldots,\theta_{N_{MH}})$: $N_{MH}$ sampled particles.
+            \item $(w_1,\ldots,w_{N_{MH}})$: corresponding weights of sampled particles.
+      \end{itemize}
+      \begin{algorithmic}[1]
+            \Procedure{RF-MCMC}{}
+
+            \EndProcedure
+      \end{algorithmic}
+\end{algorithm}
+\subsection{Model checking of parametric models}
 First way to
 \begin{algorithm}[H]
       \caption{Markov chain Monte-Carlo with rational functions}
@@ -199,18 +219,20 @@ We can also use Sequential Monte-Carlo sampling method.
       \end{algorithmic}
 \end{algorithm}
 
-\section{Bayesian frameworks without rational functions}
+\section{Bayesian frameworks with simulation}
 
 Without the availability of analytical form of observational and interested properties, we face the
 following obstacles:
 \begin{itemize}
-      \item \textbf{Absence of likelihood functions:} As the rational functions for properties are not
-            available, we do not have the analytical form of likelihood. The abscence of likelihood suggests
-            to exploit \textit{likelihood-free methods}. In this framework we use \textit{Approximate
-                  Bayesian Computation} in combination with \textit{Sequential Monte-Carlo method}.
-      \item \textbf{Absence of rational function for verification of bounded path property:} the
-            satisfaction of an instantiated model to a bounded path property cannot be computed. In the case
-            that the number of states is too large, we use \textit{Statistical Model Checking}.
+      \item \textbf{Absence of likelihood functions:} As the rational functions for properties are
+            not available, we do not have the analytical form of likelihood. The abscence of
+            likelihood suggests to exploit \textit{likelihood-free methods}. In this framework we
+            use \textit{Approximate Bayesian Computation} in combination with \textit{Sequential
+                  Monte-Carlo method}.
+      \item \textbf{Absence of rational function for verification of bounded reachability property:}
+            the satisfaction of an instantiated model to a bounded path property cannot be computed.
+            In the case that the number of states is too large, we use \textit{Statistical Model
+                  Checking}.
 \end{itemize}
 For this case we present Statistical Model Checking, Approximate Bayesian Computation - Sequential
 Monte-Carlo method \textit{SMC-ABC-SMC} framework.
