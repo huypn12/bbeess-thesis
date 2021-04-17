@@ -114,169 +114,239 @@ among three types:
     \item \textit{Infected (S)}
     \item \textit{Recovered (S)}
 \end{itemize}
-\begin{align*}
+SIR system is a stochastic system modeled by reactions between S, I and R. In this thesis we use only 2 reactions.
+\begin{equation*}
     S + I \xrightarrow{\alpha} 2I \\
     I \xrightarrow{\beta} R
-\end{align*}
+    \label{eqn:sir}
+\end{equation*}
+
+\begin{algorithm}[H]
+    \caption{Generate SIR CTMC from reactions.}
+    \label{alg:gen-sir-ctmc}
+    \hspace*{\algorithmicindent} \textbf{Input:}
+    \begin{itemize}
+        \item $(S_0, I_0, R_0)$: initial population.
+        \item Reactions of rate $\alpha,\beta$
+              \begin{equation*}
+                  S + I \xrightarrow{\alpha} 2I \\
+                  I \xrightarrow{\beta} R
+              \end{equation*}
+    \end{itemize}
+    \hspace*{\algorithmicindent} \textbf{Output:}
+    \begin{itemize}
+        \item CTMC $\mathcal{C}$
+    \end{itemize}
+    \begin{algorithmic}[1]
+        \Procedure{Sir-Explore-Statespace}{}
+        \If{$i = 0$}
+        \EndIf
+        \If{$(s>0) \wedge (i>0)$}
+        \State Sir-Explore-Statespace
+        \EndIf
+        \If{$(i>0)$}
+        \State Sir-Explore-Statespace
+        \EndIf
+        \EndProcedure
+        \Procedure{Sir-Explore-Statespace}{}
+        \If{$i = 0$}
+        \EndIf
+        \If{$(s>0) \wedge (i>0)$}
+        \State Sir-Explore-Statespace
+        \EndIf
+        \If{$(i>0)$}
+        \State Sir-Explore-Statespace
+        \EndIf
+        \EndProcedure
+    \end{algorithmic}
+
+\end{algorithm}
 
 \subsection{Model and properties}
-Example of an SIR CTMC model with initial population $(S_0, I_0, R_0) = (3,1,0)$
-\begin{figure}
-    \centering
-    \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=3cm]
-        \tikzstyle{every state}=[fill=white,draw=black,thick,text=black]
-        \node[state]    (Init)                      {$(3,1,0)$};
-        \node[state]    (S_301)[below of=Init]      {$(3,0,1)$};
-        \node[state]    (S_220)[right of=Init]      {$(2,2,0)$};
-        \node[state]    (S_211)[below of=S_220]     {$(2,1,1)$};
-        \node[state]    (S_202)[below of=S_211]     {$(2,0,2)$};
-        \node[state]    (S_130)[right of=S_220]     {$(1,3,0)$};
-        \node[state]    (S_121)[below of=S_130]     {$(1,2,1)$};
-        \node[state]    (S_112)[below of=S_121]     {$(1,1,2)$};
-        \node[state]    (S_103)[below of=S_112]     {$(1,0,3)$};
-        \node[state]    (S_040)[right of=S_130]     {$(0,4,0)$};
-        \node[state]    (S_031)[below of=S_040]     {$(0,3,1)$};
-        \node[state]    (S_022)[below of=S_031]     {$(0,2,2)$};
-        \node[state]    (S_013)[below of=S_022]     {$(0,1,3)$};
-        \node[state]    (S_004)[below of=S_013]     {$(0,0,4)$};
-        \path
-        (Init)
-        edge node{$\beta$} (S_301)
-        edge node{$3\alpha$} (S_220)
 
-        (S_220)
-        edge node{$2\alpha$} (S_130)
-        edge node{$\beta$} (S_211)
+\begin{theorem}{Acyclicity}
+    A CTMC $\mathcal{C}$ constructed by Algorithm \ref{alg:gen-sir-ctmc} using reactions
+    \ref{eqn:sr} is acyclic.
+\end{theorem}
+\textbf{Proof}: For any arbitrary transition in $\mathcal{C}$
+\begin{enumerate}
+    \item $|S|$ is monotonically decreasing, as there exists no reaction which produces $S$.
+    \item $|R|$ is monotonically increasing, as there exists no reaction which consumes $R$.
+    \item If $P((s,i,r), (s',i',r'))\neq 0$, then $i \neq i'$. That is because all reactions change $i$.
+\end{enumerate}
+As $|S| + |I| + |R| = S_0 + I_0 + R_0$ and $S_0,R_0,I_0$ are constants, if there exists a path fragment
+\begin{align*}
+    (s^t,i^t,r^t)\rightarrow \quad \ldots \quad \rightarrow(s^{t+k},i^{t+k},r^{t+k})
+\end{align*}
+such that $(s^t,i^t,r^t) = (s^{t+k},i^{t+k},r^{t+k})$ then $k=0$, because all reactions change $i$
+(if $P((s,i,r), (s',i',r'))\neq 0$, then $i \neq i'$). \QED
+\begin{corollary}
+    A CTMC constructed by Algorithm \ref{alg:gen-sir-ctmc} using reactions \ref{eqn:sr} has BSCCs
+    and the BSCCs are trivial.
+\end{corollary}
 
-        (S_130)
-        edge node{$\alpha$} (S_040)
-        edge node{$3\beta$} (S_121)
+\begin{example}
+    Example of an SIR CTMC model with initial population $(S_0, I_0, R_0) = (3,1,0)$
+    \begin{figure}[H]
+        \centering
+        \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=3cm]
+            \tikzstyle{every state}=[fill=white,draw=black,thick,text=black]
+            \node[state]    (Init)                      {$(3,1,0)$};
+            \node[state]    (S_301)[below of=Init]      {$(3,0,1)$};
+            \node[state]    (S_220)[right of=Init]      {$(2,2,0)$};
+            \node[state]    (S_211)[below of=S_220]     {$(2,1,1)$};
+            \node[state]    (S_202)[below of=S_211]     {$(2,0,2)$};
+            \node[state]    (S_130)[right of=S_220]     {$(1,3,0)$};
+            \node[state]    (S_121)[below of=S_130]     {$(1,2,1)$};
+            \node[state]    (S_112)[below of=S_121]     {$(1,1,2)$};
+            \node[state]    (S_103)[below of=S_112]     {$(1,0,3)$};
+            \node[state]    (S_040)[right of=S_130]     {$(0,4,0)$};
+            \node[state]    (S_031)[below of=S_040]     {$(0,3,1)$};
+            \node[state]    (S_022)[below of=S_031]     {$(0,2,2)$};
+            \node[state]    (S_013)[below of=S_022]     {$(0,1,3)$};
+            \node[state]    (S_004)[below of=S_013]     {$(0,0,4)$};
+            \path
+            (Init)
+            edge node{$\beta$} (S_301)
+            edge node{$3\alpha$} (S_220)
 
-        (S_040)
-        edge node{$4\beta$} (S_031)
+            (S_220)
+            edge node{$2\alpha$} (S_130)
+            edge node{$\beta$} (S_211)
 
-        (S_031)
-        edge node{$3\beta$} (S_022)
+            (S_130)
+            edge node{$\alpha$} (S_040)
+            edge node{$3\beta$} (S_121)
 
-        (S_022)
-        edge node{$2\beta$} (S_013)
+            (S_040)
+            edge node{$4\beta$} (S_031)
 
-        (S_013)
-        edge node{$\beta$} (S_004)
+            (S_031)
+            edge node{$3\beta$} (S_022)
 
-        (S_121)
-        edge node{$\alpha$} (S_031)
-        edge node{$\beta$} (S_112)
+            (S_022)
+            edge node{$2\beta$} (S_013)
 
-        (S_112)
-        edge node{$\alpha$} (S_022)
-        edge node{$\beta$} (S_103)
+            (S_013)
+            edge node{$\beta$} (S_004)
 
-        (S_211)
-        edge node{$2\alpha$} (S_121)
-        edge node{$\beta$} (S_202)
+            (S_121)
+            edge node{$\alpha$} (S_031)
+            edge node{$\beta$} (S_112)
 
-        (S_301)
-        edge [in=240,out=300,loop]  ()
+            (S_112)
+            edge node{$\alpha$} (S_022)
+            edge node{$\beta$} (S_103)
 
-        (S_202)
-        edge [in=240,out=300,loop]  ()
+            (S_211)
+            edge node{$2\alpha$} (S_121)
+            edge node{$\beta$} (S_202)
 
-        (S_103)
-        edge [in=240,out=300,loop]  ()
+            (S_301)
+            edge [in=240,out=300,loop]  ()
 
-        (S_004)
-        edge [in=240,out=300,loop]  ();
+            (S_202)
+            edge [in=240,out=300,loop]  ()
 
-    \end{tikzpicture}
-    \caption{$SIR(3,1,0)$ CTMC model with parameters$(\alpha, \beta)$}
-\end{figure}
+            (S_103)
+            edge [in=240,out=300,loop]  ()
 
-Uniformize the chain with uniformization rate $(3\alpha + 4\beta)$, we derive the following uniformized DTMC:
-\begin{figure}
-    \centering
-    \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=3.5cm]
-        \tikzstyle{every state}=[fill=white,draw=black,thick,text=black]
-        \node[state]    (Init)                      {$(3,1,0)$};
-        \node[state]    (S_301)[below of=Init]      {$(3,0,1)$};
-        \node[state]    (S_220)[right of=Init]      {$(2,2,0)$};
-        \node[state]    (S_211)[below of=S_220]     {$(2,1,1)$};
-        \node[state]    (S_202)[below of=S_211]     {$(2,0,2)$};
-        \node[state]    (S_130)[right of=S_220]     {$(1,3,0)$};
-        \node[state]    (S_121)[below of=S_130]     {$(1,2,1)$};
-        \node[state]    (S_112)[below of=S_121]     {$(1,1,2)$};
-        \node[state]    (S_103)[below of=S_112]     {$(1,0,3)$};
-        \node[state]    (S_040)[right of=S_130]     {$(0,4,0)$};
-        \node[state]    (S_031)[below of=S_040]     {$(0,3,1)$};
-        \node[state]    (S_022)[below of=S_031]     {$(0,2,2)$};
-        \node[state]    (S_013)[below of=S_022]     {$(0,1,3)$};
-        \node[state]    (S_004)[below of=S_013]     {$(0,0,4)$};
-        \path[->, every loop/.style={looseness=3}]
-        (Init)
-        edge node{$\frac{\beta}{3\alpha + 3\beta}$}   (S_301)
-        edge node{$\frac{3\alpha}{3\alpha + 3\beta}$} (S_220)
-        edge[in=150,out=105,loop] node[above]{$\frac{3\beta}{3\alpha + 3\beta}$} ()
+            (S_004)
+            edge [in=240,out=300,loop]  ();
 
-        (S_220)
-        edge node{$\frac{2\alpha}{3\alpha + 3\beta}$} (S_130)
-        edge node{$\frac{\beta}{3\alpha + 3\beta}$} (S_211)
-        edge[in=150,out=105,loop] node[above]{$\frac{\alpha+3\beta}{3\alpha + 3\beta}$} ()
+        \end{tikzpicture}
+        \caption{$SIR(3,1,0)$ CTMC model with parameters$(\alpha, \beta)$}
+    \end{figure}
+\end{example}
 
-        (S_130)
-        edge node{$\frac{\alpha}{3\alpha + 3\beta}$} (S_040)
-        edge node{$\frac{3\beta}{3\alpha + 3\beta}$} (S_121)
-        edge[in=150,out=105,loop] node[above]{$\frac{2\alpha+\beta}{3\alpha + 3\beta}$} ()
+\begin{example}
+    Uniformize the chain with uniformization rate $(3\alpha + 4\beta)$, we derive the following uniformized DTMC:
+    \begin{figure}[H]
+        \centering
+        \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=3.5cm]
+            \tikzstyle{every state}=[fill=white,draw=black,thick,text=black]
+            \node[state]    (Init)                      {$(3,1,0)$};
+            \node[state]    (S_301)[below of=Init]      {$(3,0,1)$};
+            \node[state]    (S_220)[right of=Init]      {$(2,2,0)$};
+            \node[state]    (S_211)[below of=S_220]     {$(2,1,1)$};
+            \node[state]    (S_202)[below of=S_211]     {$(2,0,2)$};
+            \node[state]    (S_130)[right of=S_220]     {$(1,3,0)$};
+            \node[state]    (S_121)[below of=S_130]     {$(1,2,1)$};
+            \node[state]    (S_112)[below of=S_121]     {$(1,1,2)$};
+            \node[state]    (S_103)[below of=S_112]     {$(1,0,3)$};
+            \node[state]    (S_040)[right of=S_130]     {$(0,4,0)$};
+            \node[state]    (S_031)[below of=S_040]     {$(0,3,1)$};
+            \node[state]    (S_022)[below of=S_031]     {$(0,2,2)$};
+            \node[state]    (S_013)[below of=S_022]     {$(0,1,3)$};
+            \node[state]    (S_004)[below of=S_013]     {$(0,0,4)$};
+            \path[->, every loop/.style={looseness=3}]
+            (Init)
+            edge node{$\frac{\beta}{3\alpha + 3\beta}$}   (S_301)
+            edge node{$\frac{3\alpha}{3\alpha + 3\beta}$} (S_220)
+            edge[in=150,out=105,loop] node[above]{$\frac{3\beta}{3\alpha + 3\beta}$} ()
 
-        (S_040)
-        edge node{$\frac{4\beta}{3\alpha + 3\beta}$} (S_031)
-        edge[in=150,out=105,loop] node[above]{$\frac{3\alpha}{3\alpha + 3\beta}$} ()
+            (S_220)
+            edge node{$\frac{2\alpha}{3\alpha + 3\beta}$} (S_130)
+            edge node{$\frac{\beta}{3\alpha + 3\beta}$} (S_211)
+            edge[in=150,out=105,loop] node[above]{$\frac{\alpha+3\beta}{3\alpha + 3\beta}$} ()
 
-        (S_031)
-        edge node{$\frac{3\beta}{3\alpha + 3\beta}$} (S_022)
-        edge[in=150,out=105,loop] node[above]{$\frac{3\alpha+\beta}{3\alpha + 3\beta}$} ()
+            (S_130)
+            edge node{$\frac{\alpha}{3\alpha + 3\beta}$} (S_040)
+            edge node{$\frac{3\beta}{3\alpha + 3\beta}$} (S_121)
+            edge[in=150,out=105,loop] node[above]{$\frac{2\alpha+\beta}{3\alpha + 3\beta}$} ()
 
-        (S_022)
-        edge node{$\frac{2\beta}{3\alpha + 3\beta}$} (S_013)
-        edge[in=150,out=105,loop] node[above]{$\frac{3\alpha + 2\beta}{3\alpha + 3\beta}$} ()
+            (S_040)
+            edge node{$\frac{4\beta}{3\alpha + 3\beta}$} (S_031)
+            edge[in=150,out=105,loop] node[above]{$\frac{3\alpha}{3\alpha + 3\beta}$} ()
 
-        (S_013)
-        edge node{$\frac{\beta}{3\alpha + 3\beta}$} (S_004)
-        edge[in=150,out=105,loop] node[above]{$\frac{3\alpha + 3\beta}{3\alpha + 3\beta}$} ()
+            (S_031)
+            edge node{$\frac{3\beta}{3\alpha + 3\beta}$} (S_022)
+            edge[in=150,out=105,loop] node[above]{$\frac{3\alpha+\beta}{3\alpha + 3\beta}$} ()
 
-        (S_121)
-        edge node{$\frac{\alpha}{3\alpha + 3\beta}$} (S_031)
-        edge node{$\frac{\beta}{3\alpha + 3\beta}$} (S_112)
-        edge[in=150,out=105,loop] node[above]{$\frac{2\alpha + 3\beta}{3\alpha + 3\beta}$} ()
+            (S_022)
+            edge node{$\frac{2\beta}{3\alpha + 3\beta}$} (S_013)
+            edge[in=150,out=105,loop] node[above]{$\frac{3\alpha + 2\beta}{3\alpha + 3\beta}$} ()
 
-        (S_112)
-        edge node{$\frac{\alpha}{3\alpha + 3\beta}$} (S_022)
-        edge node{$\frac{\beta}{3\alpha + 3\beta}$} (S_103)
-        edge[in=150,out=105,loop] node[above]{$\frac{2\alpha+3\beta}{3\alpha + 3\beta}$} ()
+            (S_013)
+            edge node{$\frac{\beta}{3\alpha + 3\beta}$} (S_004)
+            edge[in=150,out=105,loop] node[above]{$\frac{3\alpha + 3\beta}{3\alpha + 3\beta}$} ()
 
-        (S_211)
-        edge node{$\frac{2\alpha}{3\alpha + 3\beta}$} (S_121)
-        edge node{$\frac{\beta}{3\alpha + 3\beta}$} (S_202)
-        edge[in=150,out=105,loop] node[above]{$\frac{\alpha+3\beta}{3\alpha + 3\beta}$} ()
+            (S_121)
+            edge node{$\frac{\alpha}{3\alpha + 3\beta}$} (S_031)
+            edge node{$\frac{\beta}{3\alpha + 3\beta}$} (S_112)
+            edge[in=150,out=105,loop] node[above]{$\frac{2\alpha + 3\beta}{3\alpha + 3\beta}$} ()
 
-        (S_301)
-        edge [in=240,out=300,loop]  ()
+            (S_112)
+            edge node{$\frac{\alpha}{3\alpha + 3\beta}$} (S_022)
+            edge node{$\frac{\beta}{3\alpha + 3\beta}$} (S_103)
+            edge[in=150,out=105,loop] node[above]{$\frac{2\alpha+3\beta}{3\alpha + 3\beta}$} ()
 
-        (S_202)
-        edge [in=240,out=300,loop]  ()
+            (S_211)
+            edge node{$\frac{2\alpha}{3\alpha + 3\beta}$} (S_121)
+            edge node{$\frac{\beta}{3\alpha + 3\beta}$} (S_202)
+            edge[in=150,out=105,loop] node[above]{$\frac{\alpha+3\beta}{3\alpha + 3\beta}$} ()
 
-        (S_103)
-        edge [in=240,out=300,loop]  ()
+            (S_301)
+            edge [in=240,out=300,loop]  ()
 
-        (S_004)
-        edge [in=240,out=300,loop]  ();
+            (S_202)
+            edge [in=240,out=300,loop]  ()
 
-    \end{tikzpicture}
-    \caption{$SIR(3,1,0)$ Uniformized DTMC model with parameters$(\alpha, \beta)$ and uniformization rate $(3\alpha + 4\beta)$}
-\end{figure}
+            (S_103)
+            edge [in=240,out=300,loop]  ()
+
+            (S_004)
+            edge [in=240,out=300,loop]  ();
+
+        \end{tikzpicture}
+        \caption{$SIR(3,1,0)$ Uniformized DTMC model with parameters$(\alpha, \beta)$ and uniformization rate $(3\alpha + 4\beta)$}
+    \end{figure}
+\end{example}
+
 
 \subsection{Evaluation}
-\subsubsection{Accuracy}
-\subsubsection{Scalability}
+\subsubsection{True parameters and synthetic data}
+\subsubsection{Parameter synthesis result}
 We evaluate different frameworks on different size of initial population
 \begin{figure}[!htb]
     \centering
@@ -440,5 +510,7 @@ We evaluate different frameworks on different size of initial population
     \end{subfigure}
 \end{figure}
 
-\subsubsection{Uncertainty evaluation}
+\subsubsection{Parameter synthesis with uncertainty}
 
+\subsection{Discussion}
+This experiment shows good results.

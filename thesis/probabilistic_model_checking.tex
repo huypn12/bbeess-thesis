@@ -17,7 +17,7 @@ Markov models are stochastic models of discrete or continous time which satisfy 
 \begin{definition}[Discrete-time memoryless property]
     Let $X$ be a random variable of geometric distribution. $X$ has memoryless property if and only if
     \begin{align*}
-        Pr\{X = t + m | X > m\} = Pr\{X > m\} \forall t,m \in \mathbb{N} k \geq 1
+        Pr(X = t + m | X > m) = Pr(X > m) \forall t,m \in \mathbb{N} k \geq 1
     \end{align*}
 \end{definition}
 Markov model can be non-deterministic \textit{(Markov Decision Process)}. However, in this thesis we
@@ -74,7 +74,7 @@ DTMC $\mathcal{M}$ ends in $BSCC(\mathcal{M})$ almost surely.
 \begin{theorem}[Long-run theorem]
     Let $\mathcal{M}=(S,\mathbf{P}, \iota_{init}, AP,L)$ a DTMC.
     \begin{align*}
-        P[\Diamond BSCC(\mathcal{M})] = 1
+        Pr(\Diamond BSCC(\mathcal{M})) = 1
     \end{align*}
 \end{theorem}
 
@@ -82,7 +82,7 @@ In this thesis we concern the \textit{steady-state distribution} of a DTMC.
 \begin{definition}[Steady-state distribution]
     Let $\mathcal{M}=(S,\mathbf{P}, \iota_{init}, AP,L)$ a DTMC and vector $v_t$ be a transient state distribution
     \begin{align*}
-        v_t = (P[X_t=s_1],\ldots,P[X_t=s_N]), s_0,\ldots,s_N \in S
+        v_t = (Pr(X_t=s_1),\ldots,Pr(X_t=s_N)), s_0,\ldots,s_N \in S
     \end{align*}
     A transient state distribution $v$ of $\mathcal{M}$ is a steady-state distribution of $\mathcal{M}$ if and only if
     \begin{align*}
@@ -90,7 +90,7 @@ In this thesis we concern the \textit{steady-state distribution} of a DTMC.
     \end{align*}
 \end{definition}
 As a result from long-run theorem, if $BSCC(\mathcal{M})\neq \emptyset$ then there exists a
-steady-state distribution $v = (P[X=s_1],\ldots,P[X=s_{|S|}])$, such that
+steady-state distribution $v = (Pr(X=s_1),\ldots,Pr(X=s_{|S|}))$, such that
 \begin{align*}
     \forall 1 \leq i \leq |S|: P[X=s_i] \neq 0 \Leftrightarrow s_i \in BSCC(\mathcal{M})
 \end{align*}
@@ -103,7 +103,7 @@ In continous-time, memoryless property has the following form
     Let X be a continuous random variable of exponentially distribution. X has memoryless property
     if and only if
     \begin{align*}
-        Pr\{X > t + \delta | X > t\} = Pr\{X > \delta\}, \forall t,\delta \in \mathbb{R}_{\geq 0}
+        Pr(X > t + \delta | X > t) = Pr(X > \delta), \forall t,\delta \in \mathbb{R}_{\geq 0}
     \end{align*}
 \end{definition}
 Based on continuous-time memory less property, we introduce the definition of \textit{Continous-time
@@ -218,12 +218,12 @@ probabilistic model checking tools \cite{dehnert2017storm}, \cite{kwiatkowska201
     \begin{itemize}
         \item State formulas are defined over $AP$
               \begin{align*}
-                  \Phi & ::== \text{true} \;|\; a \;|\; \Phi \;|\; \Phi_1 \wedge \Phi_2 \;|\; \Phi_1 \vee \Phi_2 \;|\;  P_{J}[\phi]
+                  \Phi & ::= \text{true} \;|\; a \;|\; \Phi \;|\; \Phi_1 \wedge \Phi_2 \;|\; \Phi_1 \vee \Phi_2 \;|\;  P_{J}(\phi)
               \end{align*}
               where $a\in AP$, $\phi$ is a path formula, and $J\subseteq[0,1]$ is an interval.
         \item Path formulas
               \begin{align*}
-                  \phi & ::== \bigcirc \Phi \;|\; \Phi_1 \mathsf{U} \Phi_2 \;|\; \Phi_1 \mathsf{U}^{\leq n} \Phi_2
+                  \phi & ::= \bigcirc \Phi \;|\; \Phi_1 \mathsf{U} \Phi_2 \;|\; \Phi_1 \mathsf{U}^{\leq n} \Phi_2
               \end{align*}
               where $\Phi,\Phi_1,\Phi_2$ are state formulas, and $n\in \mathbb{N}$.
     \end{itemize}
@@ -269,7 +269,7 @@ communication channels are added to the system.\\
 as the number of state variables in the system increases \cite{clarke2011model}. As discussed
 before, the complexity of model checking a PCTL property against a DTMC model is polynomial to the
 DTMC's state-space. However, the state-explosion problem renders model checking computationally
-expensive. One possible way to reduce the computational cost is to use \textit{statistical model
+expensive. One possible way to cope with state-explosion problem and to reduce the computational cost is to use \textit{statistical model
     checking}.
 
 \section{Statistical Model checking}
@@ -283,13 +283,13 @@ questions.\footnote{\url{https://www-verimag.imag.fr/Statistical-Model-Checking-
 Given a stochastic model $\mathcal{M}$ and a property $\Phi$, statistical model checking solves the
 following problems:
 \begin{enumerate}
-    \item \textbf{Quantitative}: Estimate the probability $p = P(\mathcal{M}\models\Phi)$. In other
+    \item \textbf{Quantitative}: Estimate the probability $p = Pr(\mathcal{M}\models\Phi)$. In other
           words, it checks $\mathcal{M}$ the property \begin{align*}
-              P_{=?}[ \Phi ]
+              P_{=?}(\Phi)
           \end{align*}
-    \item \textbf{Qualitative}: Decide if $p = P(\mathcal{M}\models\Phi)$ is greater or less than a threshold $\epsilon$. In other
-          words, it checks $\mathcal{M}$ the property \begin{align*}
-              P_J[ \Phi ]
+    \item \textbf{Qualitative}: Decide if $p = Pr(\mathcal{M}\models\Phi)$ is greater or less than a
+          threshold $\epsilon$. In other words, it checks $\mathcal{M}$ the property \begin{align*}
+              P_J(\Phi)
           \end{align*}
           where $J\subseteq[0,1]$ is an interval.
 \end{enumerate}
@@ -298,7 +298,7 @@ following problems:
 Given an approximation $\epsilon$ and a confidential
 level $\alpha$, we estimate $\hat{p}$ as an estimation of $p$ such that
 \begin{align*}
-    P[|p-\hat{p}| \leq \epsilon] \geq 1 - \alpha
+    Pr(|p-\hat{p}| \leq \epsilon) \geq 1 - \alpha
 \end{align*}
 How many simulations must be performed?  As verifying a simulation trace against a reachability
 property $\Phi$ is Bernoulli trial (satisfied or not satisfied), the number of simulation $N$ can be
@@ -306,8 +306,8 @@ estimated using different bounds, such as Chernoff-Hoeffding bound \cite{chernof
 $Sat(N)$ be number of satisfying trace in $N$ sampled traces, applying Chernoff-Hoeffding inequality
 gives
 \begin{align*}
-    P[|\frac{Sat(N)}{N}-p| > \epsilon]                          & \leq 2\exp{\frac{-N\epsilon^2}{4}}     \\
-    \leftrightarrow \quad P[|\frac{Sat(N)}{N}-p| \leq \epsilon] & \geq 1 - 2\exp{\frac{-N\epsilon^2}{4}}
+    P(|\frac{Sat(N)}{N}-p| > \epsilon)                                    & \leq 2\exp{\frac{-N\epsilon^2}{4}}     \\
+    \llap{$\Leftrightarrow$ \qquad} P[|\frac{Sat(N)}{N}-p| \leq \epsilon] & \geq 1 - 2\exp{\frac{-N\epsilon^2}{4}}
 \end{align*}
 Replace $\alpha = 2\exp{\frac{-N\epsilon^2}{4}}$ and $\hat{p}=\frac{Sat(N)}{N}$, we have
 \begin{align*}
@@ -391,21 +391,30 @@ Given a parametric Discrete-time Markov chain $\mathcal{M}_\theta$. A concrete a
 real value for all $f\in\mathbf{P}$.
 
 \subsection{Symbolic model checking of pDTMC}
-
+Symbolic model checking is mentioned on \cite{daws2004symbolic}.
 \begin{example}{Parametric Knuth's die}
     We continue the example with Knuth die model $\mathcal{M}_{p}$. Assume the
-    \begin{align*}
-        x =
-    \end{align*}
+    \begin{lstlisting}
+        P(F "1") = (p^2*q+(-1)*p*q)/(p*q+(-1))
+        P(F "2") = ((p)^2 * (q+(-1)))/(p*q+(-1))
+        P(F "3") = (-1 * ((p) * (p+(-1)) * (q+(-1))))/(p*q+(-1))
+        P(F "4") = (-1 * (p^2*q+(-1)*p*q))/(p*q+(-1)*p+1)
+        P(F "5") = (p^2*q+(-2)*p*q+q)/(p*q+(-1)*p+1)
+        P(F "6") = (-1 * ((p+(-1))^2 * (q+(-1))))/(p*q+(-1)*p+1)
+    \end{lstlisting}
 \end{example}
 
 \subsection{Parameter synthesis of pDTMC}
 
 \begin{example}
-    Given a pDTMC of Knuth die $\mathcal{M}_{pq}$ and a path property $\Phi = P_{\geq 0.2} [F
-                \texttt{"one"}]$, synthesize parameter $p$ so that $\mathcal{M}_{p} \models \Phi$. A simple
+    Given a pDTMC of Knuth die $\mathcal{M}_{(p,q)}, (p,q)\in[0,1]\times[0,1] $ and a reachability property $\Phi = P_(\geq 0.2)
+        [\texttt{F "one"}]$, synthesize parameter $p$ so that $\mathcal{M}_{p} \models \Phi$. A simple
     Monte-Carlo search on parameter space gives the following satisfying point:
-    %% Figures
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.5\textwidth]{figures/knuth_die_trueparams.png}
+        \label{fig:knuth-die-pq}
+    \end{figure}
 \end{example}
 
 \subsection{Summary}

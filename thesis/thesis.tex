@@ -24,10 +24,13 @@
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{hyperref}
+\usepackage{courier}
 
 % Bibliotheq
 \usepackage{biblatex}
 \addbibresource{thesis.bib}
+
+\lstset{basicstyle=\ttfamily\footnotesize,breaklines=true}
 
 % MACROS
 \newcommand*{\QED}{\hfill\ensuremath{\square}}
@@ -43,6 +46,7 @@
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{example}[section]{Example}
+\newtheorem{corollary}{Corollary}[theorem]
 
 \newcommand{\subtitle}[1]{%
   \posttitle{%
