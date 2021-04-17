@@ -30,7 +30,7 @@ each
             \EndProcedure
       \end{algorithmic}
 \end{algorithm}
-\subsection{Model checking of parametric models}
+
 First way to
 \begin{algorithm}[H]
       \caption{Markov chain Monte-Carlo with rational functions}
@@ -89,7 +89,11 @@ can be done with as many processor cores as possible. The second advantage makes
 DTMC sampling \textit{scalable}, compare to the rational function evaluation
 approach, which is not scallable due to its nature of deep recursion.
 
-\section{Bayesian parameter synthesis with rational functions}
+\subsection{Selection of prior distribution}
+
+\subsection{Selection of transition and pertubation kernel}
+
+\section{Symbolic computation based frameworks}
 \newpage
 As we have analytical form for both target property and likelihood function, we can propose a Markov
 chain Monte-Carlo algorithm. In this case we use Metropolis-Hastings algorithm, with rational
@@ -219,7 +223,7 @@ We can also use Sequential Monte-Carlo sampling method.
       \end{algorithmic}
 \end{algorithm}
 
-\section{Bayesian frameworks with simulation}
+\section{Simulation based frameworks.}
 
 Without the availability of analytical form of observational and interested properties, we face the
 following obstacles:
@@ -311,6 +315,3 @@ Monte-Carlo method \textit{SMC-ABC-SMC} framework.
       \end{algorithmic}
 \end{algorithm}
 
-\section{Selection of pertubation kernel}
-Selection of pertubation kernel is mentioned in \cite{filippi2013optimality}. In this thesis, we use
-component-wise uniform kernel:

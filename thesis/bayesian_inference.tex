@@ -11,33 +11,46 @@ thesis.
 \section{Bayesian inference}
 \subsection{Bayesian formula}
 Let $D_{obs}$ be observed data. In statistical inference, we assume that the observed data has a
-probability distribution of unknown parameter $\theta$, i.e $D_{obs} \sim P(D_{obs}|\theta)$. In
-frequentist approach, the estimation of $\theta$ based on long-run property, that is, given a large
-enough sample size, expected value of parameter estimation $\hat{\theta}$ is equal to $\theta$.
-Therefore, frequentist approach requires to gather a large amount of data to deliver a close
-estimation $\hat{\theta}$.  The main advantage of Bayesian approach over frequentist approach is
-that it require less data to obtain an estimation $\hat{\theta}$.\\
+probability distribution of unknown parameter $\theta$, that is $D_{obs} \sim P(D_{obs}|\theta)$. There are two main approaches in statistical inference
+\begin{enumerate}
+    \item Frequentist approach.
+    \item Bayesian approach.
+\end{enumerate}
+In frequentist approach, the estimation of $\theta$ based on long-run property, that is, given a
+large enough sample size, expected value of parameter estimation $\hat{\theta}$ is equal to
+$\theta$. Therefore, frequentist approach requires to gather a large amount of data to deliver a
+close estimation $\hat{\theta}$.  The main advantage of Bayesian approach over frequentist approach
+is that it require less data to obtain an estimation $\hat{\theta}$.\\
 In Bayesian approach, we use the information gained from previously observed data \textit{(beliefs)}
 to enhance the accuracy of the estimation of $\hat{\theta}$. The beliefs obtained from prior
 knowledge of model parameter $\theta$ is represented by \textit{prior distribution} $\pi(\theta)$.
 We have the \textit{likelihood} $P(D_{obs}|\theta)$ as the probability distribution over observed
-data, given parameter $\theta$. The Bayesian formula states that
-\begin{align*}
-    \pi(\theta | D_{obs}) = \frac{P(D_{obs}|\theta)\pi(\theta)}{\int_\theta P(D_{obs}|\theta)\pi(\theta)d\theta}
-\end{align*}
-$\int_\theta P(D_{obs}|\theta)\pi(\theta)d\theta$ is the \textit{marginal distribution}. $\pi(\theta
-    | D_{obs})$ is the \textit{posterior distribution}. To compute posterior distribution is the
-essential part of Bayesian inference, since it gives the estimation of parameter $\theta$.
+data, given parameter $\theta$.
+\begin{definition}{Bayes theorem}
+    \begin{align*}
+        \pi(\theta | D_{obs}) = \frac{P(D_{obs}|\theta)\pi(\theta)}{\int_\theta P(D_{obs}|\theta)\pi(\theta)d\theta}
+    \end{align*}
+    where
+    \begin{itemize}
+        \item $\int_\theta P(D_{obs}|\theta)\pi(\theta)d\theta$ is the \textit{marginal distribution}.
+        \item $\pi(\theta | D_{obs})$ is the \textit{posterior distribution}
+    \end{itemize}
+\end{definition}
+The essential part of Bayesian inference in statistic is to compute or estimate the posterior
+distribution. From the analytical form or the samples from the posterior distribution, we estimate
+the model parameter $\theta$.
 
 \subsection{Bayesian parameter estimation}
 With posterior distribution $\pi(\theta|D)$ we estimate the parameter $\hat{\theta}$ using Bayesian
 posterior mean.
-\begin{align*}
-    \hat{\theta} = \mathbf{E}[\theta] = \int_\theta \theta \pi(\theta|D) d\theta
-\end{align*}
-In case we have samples from posterior distribution, for example the $Trace$
-from Metropolis-Hastings algorithm, for example when we use MH algorithm, the
-discrete form of posterior mean is used:
+\begin{definition}{Bayesian posterior mean}
+    \begin{align*}
+        \hat{\theta} = \mathbf{E}[\theta] = \int_\theta \theta \pi(\theta|D) d\theta
+    \end{align*}
+\end{definition}
+In case we have samples from posterior distribution, for example a trace $T$ of parameter values
+${\theta_1,\dots,\theta_|T|}$ from Metropolis-Hastings algorithm, the discrete form of posterior
+mean is used:
 \begin{align*}
     \hat{\theta} = \mathbf{E}[\theta] = \sum_\theta \theta \pi(\theta|D)
 \end{align*}
@@ -50,15 +63,14 @@ discrete form of posterior mean is used:
     \end{align*}
 \end{definition}
 In this thesis, we use by default $0.95$ credible set, which corresponds to $\alpha=0.05$
-
 \begin{definition}[Highest Posterior Density credible set]
     Highest Posterior Density $(1-\alpha)100\%$ credible set (HPD for short) is the
     interval with minimum length over all Bayesian $(1-\alpha)100\%$ Credible Set.
 \end{definition}
 
-In this research, the HPD is calculated using algorithm from \textit{PyMC3}
-library \cite{salvatier2016pymc3}. For simplicity, we assume that in all cases which we concern,
-HPD is computed for unimodal distribution.
+In this research, the HPD is calculated using algorithm from \textit{PyMC3} library
+\cite{salvatier2016pymc3}. For simplicity, we assume that in all cases which we concern, HPD is
+computed using the algorithm for unimodal distribution.
 \begin{algorithm}[H]
     \caption{Compute Highest Posterior Density Interval}
     \label{mh}

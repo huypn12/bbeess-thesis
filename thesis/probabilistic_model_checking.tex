@@ -419,13 +419,12 @@ traces reach either of the two bounds $p_0$ or $p_1$.
 
 
 \section{Parametric model}
-We introduce parameters to formalize unknown attributes of the system.
-\begin{definition}[Polynomial ring]
-    Given a tuple $\mathbf{x}=(x_1,\ldots,x_n)$ be a tuple
-\end{definition}
-
+\subsection{Parametric Discrete Time Markov chain}
+In order to generalize the model and encompass the unknown features of the interested system in
+DTMC, we introduce \textit{parameters} into transition probabilities. In this thesis we assume that
+parameters' domain is $\mathbb{R}$.
 \begin{definition}{Rational functions}
-    Let $\mathbf{x}=\{x_1,\ldots,x_n\}$ be a variable; let $\mathbf{Pol}[\mathbf{x}]$ be the set of
+    Let $\theta=\{x_1,\ldots,x_n\}$ be a variable; let $\mathbf{Pol}[\mathbf{x}]$ be the set of
     all polynomial functions over $\mathbf{x}$. A rational function $h(\mathbf{x})$ is defined
     as following.
     \begin{align*}
@@ -433,17 +432,14 @@ We introduce parameters to formalize unknown attributes of the system.
     \end{align*}
     We denote $\mathbb{Q}(\mathbf{x})$ the set of all rational functions over $\mathbf{x}$.
 \end{definition}
-
-
-\subsection{Parametric Discrete Time Markov chain}
-With the set of rational functions formally defined, we define parametric Discrete-time Markov chain
-based the definition on \cite{junges2019parameter}.
+With the set of parameters and rational functions being formally defined, we define parametric
+Discrete-time Markov chain based the definition on \cite{junges2019parameter}.
 \begin{definition}[Discrete Time Markov Chain]
-    A Discrete-time Markov chain (DTMC) is a tuple $(S, \mathbf{x}, \mathbf{P}, \iota_{init}, AP, L)$
-    where
+    A parametric Discrete-time Markov chain (pDTMC) $\mathcal{M}_\theta$ is a tuple $(S, \theta,
+        \mathbf{P}, \iota_{init}, AP, L)$ where
     \begin{itemize}
         \item $S$ is a countable, non-emty set of \textit{states}
-        \item $\mathbf{x} \in \mathbb{R}^n, n \in \mathbb{N}$ as the set of $n$ real parameters.
+        \item $\theta \in \mathbb{R}^n, n \in \mathbb{N}$ as the set of  parameters.
         \item $\mathbf{P}:S\times S \rightarrow \mathbb{Q}(\mathbf{x})$ is the \textit{transition
                   probability} function such that
               \begin{align*}
@@ -457,7 +453,14 @@ based the definition on \cite{junges2019parameter}.
         \item $L: S \rightarrow 2^{AP}$ is the labelling function on states.
     \end{itemize}
 \end{definition}
-
+A parametric DTMC instantiates a non-parametric DTMC by an assignment of its variable.
+\begin{definition}{Parameter value}
+    Let $\mathcal{M}_\theta = (S, \theta, \mathbf{P}, \iota_{init}, AP, L)$ be a pDTMC,
+    $\theta=\{\theta_1,\ldots,\theta_n\}$. A value of $\theta$ is a map $v: \theta
+        \rightarrow \mathbb{R}^n$. A value $v$ \textit{instantiates} a non-parametric
+    Discrete-time Markov chain if $f{\mathbf{v(\theta)}}$ evaluates to a real value for all
+    $f\in\mathbf{P}$.
+\end{definition}
 \begin{example}[Parametric Knuth-Yao die]
     A DTMC modelling Knuth-Yao die to simulate a 6-faced die by two unfair coins with probability of
     one side $p$ and $q$. Image taken from \cite{katoen2016probabilistic}.
@@ -468,12 +471,28 @@ based the definition on \cite{junges2019parameter}.
     \end{figure}
 \end{example}
 
-Given a parametric Discrete-time Markov chain $\mathcal{M}_\theta$. A concrete assignment of parameter $\theta$
-\textit{instantiates} a non-parametric Discrete-time Markov chain if $f{\theta}$ evaluates to a
-real value for all $f\in\mathbf{P}$.
-
-\subsection{Symbolic model checking of pDTMC}
-Symbolic model checking is mentioned on \cite{daws2004symbolic}.
+\subsection{Parameter synthesis of pDTMC}
+With a pDTMC represents a class of DTMC, we concerns of instantiated DTMC which satisfy a certain property of interest.
+\begin{definition}{Parameter synthesis (Katoen 2016)\cite{katoen2016probabilistic}} Given a
+    parametric DTMC $\mathcal{M}_\theta = (S, \theta, \mathbf{P}, \iota_{init}, AP, L)$ and a
+    reachability property $\Phi$, find a set of parameter values $\theta$ such that
+    $\mathcal{m}_\theta \models \Phi$.
+\end{definition}
+Katoen \cite{katoen2013model} summarizes the following methods on parameter synthesis of pDTMC:
+\begin{enumerate}
+    \item \textit{Computing symbolic reachability probabilities}: using states elimination to obtain symbolic
+          rational function of a reachability property \cite{daws2004symbolic}
+          \cite{hahn2011probabilistic}.
+    \item \textit{Candidate region generation and checking}: partition the parameter space into \textit{safe}
+          and \textit{unsafe} regions using non-linear interval arithmetic
+          \cite{kwiatkowska2006symmetry}.
+    \item \textit{Parameter lifting} is another parameter space partitioning method; it introduces
+          new transitions into the original pDTMC through \textit{relaxation} and
+          \textit{substitution}. The procedure results in a non-parametric transition system with
+          transition labels are bounds from given intervals. The region is then checked using
+          candidate region generation and checking method.
+\end{enumerate}
+In this thesis we use only symbolic model checking \cite{daws2004symbolic}.
 \begin{example}{Parametric Knuth's die}
     We continue the example with Knuth die model $\mathcal{M}_{p}$. Assume the
     \begin{lstlisting}
@@ -485,18 +504,24 @@ Symbolic model checking is mentioned on \cite{daws2004symbolic}.
         P(F "6") = (-1 * ((p+(-1))^2 * (q+(-1))))/(p*q+(-1)*p+1)
     \end{lstlisting}
 \end{example}
-
-\subsection{Parameter synthesis of pDTMC}
-
+With the symbolic rational function $f_\Phi(\theta)$ of $\Phi$ obtained, we assign a parameter value
+to $\theta$, then replace all symbolic parameters by their concrete value to check if
+$\mathcal{M}_\theta \models \Phi$.
 \begin{example}
-    Given a pDTMC of Knuth die $\mathcal{M}_{(p,q)}, (p,q)\in[0,1]\times[0,1] $ and a reachability property $\Phi = P_(\geq 0.2)
-        [\texttt{F "one"}]$, synthesize parameter $p$ so that $\mathcal{M}_{p} \models \Phi$. A simple
-    Monte-Carlo search on parameter space gives the following satisfying point:
+    Given a pDTMC of Knuth die $\mathcal{M}_{(p,q)}, (p,q)\in[0,1]\times[0,1] $ and a reachability
+    property $\Phi = P_{\geq 0.2} (\texttt{F "one"})$, synthesize parameter $(p,q)$ so that
+    $\mathcal{M}_{(p,q)} \models \Phi$. A simple Monte-Carlo search on parameter space gives the
+    following satisfying points:
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.5\textwidth]{figures/knuth_die_trueparams.png}
-        \label{fig:knuth-die-pq}
+        \label{fig:knuth-die-pq-trueparams}
     \end{figure}
 \end{example}
 
 \subsection{Summary}
+In this chapter we introduce the essential theoretical concepts on discrete-time models,
+probabilistic temporal logic, and parameter synthesis problem. However, the parameter synthesis
+methods presented exhaustively search on parameter space for satisfying parameter values. In the
+next chapter, we present Bayesian inference methods for later construction of data-informed
+parameter synthesis frameworks.
