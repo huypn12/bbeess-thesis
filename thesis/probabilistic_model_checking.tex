@@ -274,7 +274,7 @@ expensive. One possible way to cope with state-explosion problem and to reduce t
 
 \section{Statistical Model checking}
 Statistical model checking is a simulation-based approach to model check a stochastic model
-$\mathcal{M}$ against a temporal property $\Phi$. The essential concept of probabilistic model
+$\mathcal{D}$ against a PCTL property $\Phi$. The essential concept of probabilistic model
 checking is to simulate $N$ traces from $\mathcal{M}$, verify if each trace satisfies $\Phi$, then
 estimate probability $P(\mathcal{M}\models\Phi)$ by a statistical, frequentist approach.\\
 In statistical model checking of, different methods are applied to \textit{quantitative} and
@@ -302,39 +302,121 @@ level $\alpha$, we estimate $\hat{p}$ as an estimation of $p$ such that
 \end{align*}
 How many simulations must be performed?  As verifying a simulation trace against a reachability
 property $\Phi$ is Bernoulli trial (satisfied or not satisfied), the number of simulation $N$ can be
-estimated using different bounds, such as Chernoff-Hoeffding bound \cite{chernoff2014career}. Let
-$Sat(N)$ be number of satisfying trace in $N$ sampled traces, applying Chernoff-Hoeffding inequality
-gives
+estimated using different bounds. Chernoff \cite{chernoff2014career} presents Chernoff inequality to
+estimate $N$ for Bernoulli trials. Hoeffding \cite{hoeffding1963probability} later extends Chernoff
+inequality to general cases.\\
+Let $Sat(N)$ be number of satisfying trace in $N$ sampled traces. By applying Chernoff-Hoeffding
+inequality we obtain
 \begin{align*}
     P(|\frac{Sat(N)}{N}-p| > \epsilon)                                    & \leq 2\exp{\frac{-N\epsilon^2}{4}}     \\
     \llap{$\Leftrightarrow$ \qquad} P[|\frac{Sat(N)}{N}-p| \leq \epsilon] & \geq 1 - 2\exp{\frac{-N\epsilon^2}{4}}
 \end{align*}
 Replace $\alpha = 2\exp{\frac{-N\epsilon^2}{4}}$ and $\hat{p}=\frac{Sat(N)}{N}$, we have
 \begin{align*}
-    P[|\hat{N} - p| \leq \epsilon] & \geq 1 - 2\alpha                                \\
-    \leftrightarrow \quad N        & \geq 4\frac{\log{\frac{2}{\alpha}}}{\epsilon^2}
+    P[|\hat{N} - p| \leq \epsilon]    & \geq 1 - 2\alpha                                \\
+    \llap{$\Leftrightarrow$ \qquad} N & \geq 4\frac{\log{\frac{2}{\alpha}}}{\epsilon^2}
 \end{align*}
 The estimation algorithm is described in detail in [1].
 \begin{algorithm}[H]
-    \caption{Statistical Model Checking, Approximate Probabilistic Model Checking method.}
+    \caption{Statistical Model Checking, APMC method.}
     \label{alg:smc-apmc}
+    \hspace*{\algorithmicindent} \textbf{Input:}
+    \begin{itemize}
+        \item $\mathcal{D}$: a DTMC
+        \item $\alpha, \epsilon$: confidence level and approximation, respectively.
+        \item $\Phi = P_{=?}(\varphi) $: a PCTL property in $\mathcal{D}$
+    \end{itemize}
+    \hspace*{\algorithmicindent} \textbf{Output:} $\hat{p}$: an estimation of $p$ for
+    \begin{align*}
+        p = Pr(\mathcal{D} \models \varphi)
+    \end{align*}
     \begin{algorithmic}[1]
         \Procedure{SMC-APMC}{}
         \State $N \leftarrow 4\frac{\log{\frac{2}{\alpha}}}{\epsilon^2}$
+        \State $A \leftarrow 0$
+        \State $i \leftarrow 1$
+        \While{$i \leq N$}
+        \State Simulate a trace $t$ from $\mathcal{D}$ by discrete-event simulation.
+        \If{$t \models \phi$}
+        \State $A \leftarrow A + 1$
+        \EndIf
+        \EndWhile
+        \Return $\frac{A}{N}$
+        \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+The Chernoff-Hoeffding gives more close estimation of $N$, thus it helps reducing the computational
+cost, while still maintain estimation accuracy. In case $\Phi$ has probabilistic bound, we use
+hypothesis test as the outcome of checking $\mathcal{D}$ against $\Phi$ is Boolean.
+
+\subsection{Statistical model checking of qualitative properties.}
+Wald \cite{wald1945sequential} introduces Sequential Probability Ratio Test (SPRT) to perform
+hypothesis test on sequential statistical analysis, in which the sample size $N$ is not know
+a-priori. SPRT updates a cummulative sum and stop when it has enough information to decide whether
+to statistically accept null hypothesis or alternative hypothesis.\\
+Younes \cite{younes2002probabilistic} introduces an application of Wald's SPRT on statistical model
+checking. Given a DTMC $\mathcal{D}$ and a PCTL property $\Phi$ with probabilistic bound $\Phi =
+    P_J(\varphi)$. Without loss of generality, we asume that $\Phi = P_{\geq p}(\varphi),
+    p\in[0,1]$. SPRT method tests the following null hypothesis and alternative hypothesis with
+approximation width $\epsilon$:
+\begin{align*}
+     & H_0: \hat{p} \geq p + \epsilon \\
+     & H_0: \hat{p} < p - \epsilon
+\end{align*}
+Among $N$ simulated traces from $\mathcal{D}$, the probability to have $A$ satisfying traces given
+probability of success in a single Bernoulli trial is $p$:
+\begin{align*}
+    P(A | p) = {N \choose A} \cdot p^A(1-p)^{N-A}
+\end{align*}
+At each simulation $i$, SPRT compute the likelihood ratio based on accumulated number of success trials:
+\begin{align*}
+    R_i = \frac{P(A_i | p + \delta)}{P(A | p - \delta)}
+\end{align*}
+Let $\alpha$ and $\beta$ be error of type I and type II, respectively.
+\begin{align*}
+     & \alpha = Pr(\mathcal{D} \models \Phi | \text{Accept}\quad H_1) \\
+     & \beta =  Pr(\mathcal{D} \nvDash \Phi | \text{Accept}\quad H_0)
+\end{align*}
+We compute bounds for accepting or rejecting null hypothesis
+\begin{align*}
+    p_0 & = \frac{\beta}{1 - \alpha} \\
+    p_1 & = \frac{\alpha}{1 - \beta}
+\end{align*}
+Wald's sequential probabilistic ratio test allows the algorithm to terminate as soon as simulated
+traces reach either of the two bounds $p_0$ or $p_1$.
+\begin{algorithm}[H]
+    \caption{Statistical Model Checking, SPRT method}
+    \label{alg:smc-sprt}
+    \hspace*{\algorithmicindent} \textbf{Input:}
+    \begin{itemize}
+        \item $\mathcal{D}$: a DTMC
+        \item $\alpha, \beta$: probability of type I and type II error respectively.
+        \item $\epsilon$: approximation width.
+        \item $\Phi = P_{\geq p}(\varphi)$: a PCTL property in $\mathcal{D}$
+    \end{itemize}
+    \hspace*{\algorithmicindent} \textbf{Output:} Decide whether $(\mathcal{D} \models \Phi)$
+    \begin{algorithmic}[1]
+        \Procedure{SMC-SPRT}{}
+        \State $p_0 = \frac{\beta}{1 - \alpha}$
+        \State $p_1 = \frac{\alpha}{1 - \beta}$
+        \State $N \leftarrow 0$
+        \State $A \leftarrow 0$
+        \While{$\texttt{True}$}
+        \State $R_i \leftarrow \frac{P(A_i | p + \delta)}{P(A | p - \delta)}$
+        \If{$R_i \geq p_1$}
+        \State Accept $H_1$
+        \State Return
+        \Else
+        \If{$R_i \leq p_0$}
+        \State Accept $H_0$
+        \State Return
+        \EndIf
+        \EndIf
+        \EndWhile
         \EndProcedure
     \end{algorithmic}
 \end{algorithm}
 
-\subsection{Statistical model checking of qualitative properties.}
-Estimation of number of simulation $N$ in this case is slightly more complicated.
-\begin{algorithm}[H]
-    \caption{SPRT Statistical Model Checking}
-    \label{alg:smc-sprt}
-    \begin{algorithmic}[1]
-        \Procedure{SMC-SPRT}{}
-        \EndProcedure
-    \end{algorithmic}
-\end{algorithm}
 
 \section{Parametric model}
 We introduce parameters to formalize unknown attributes of the system.
@@ -377,8 +459,8 @@ based the definition on \cite{junges2019parameter}.
 \end{definition}
 
 \begin{example}[Parametric Knuth-Yao die]
-    A Knuth-Yao die to simulate a 6-faced die by two unfair coins with probability of one
-    side $p$ and $q$. Image taken from \cite{katoen2016probabilistic}.
+    A DTMC modelling Knuth-Yao die to simulate a 6-faced die by two unfair coins with probability of
+    one side $p$ and $q$. Image taken from \cite{katoen2016probabilistic}.
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.5\textwidth]{figures/knuth_die_pq.png}
