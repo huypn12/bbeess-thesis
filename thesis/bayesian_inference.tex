@@ -226,30 +226,7 @@ distribution itself.
     \end{algorithmic}
 \end{algorithm}
 
-The likelihood function can be implemented as log-likelihood to avoid underflow error. The
-transition kernel $Q(\theta^t|\theta^{t-1})$ defines how do we proceed to the next parameter value
-on the parameter space. There are different strategies on choosing a transition kernel:
-\begin{itemize}
-    \item \textit{Random-Walk Metropolis-Hastings}
-    \item \textit{Independence Metropolis-Hastings}
-    \item \textit{Single Component Metropolis-Hastings}
-\end{itemize}
-In \textit{Random-Walk Metropolis-Hastings}, we select a symmetric probability density function
-$h(x)$ centered at $0$. We define transition kernel as
-\begin{align*}
-    Q(\theta_t | \theta_{t-1}) = \theta_{t-1} + \delta
-\end{align*}
-where $\delta\sim h$. As $h$ is symmetric and centered at $0$, then $h(\delta) = h(-\delta)$. Thus, the transition function
-\begin{align*}
-    a
-\end{align*}
-
-In \textit{Random-Walk Metropolis-Hastings},
-
-
-In \textit{Single Component Metropolis-Hastings},
-
-In this thesis, we implement Single Component Metropolis-Hastings.
+The likelihood function can be implemented as log-likelihood to avoid underflow error.
 Advantages of Metropolis-Hastings are
 \begin{itemize}
     \item Parameter transition only needs the computation of likelihood function.

@@ -1,35 +1,30 @@
 \chapter{Related works}
-
 %% Frameworks from molyneux
-\cite{jha2009bayesian} \cite{polgreen2016data}
+The frameworks presented in this thesis are based on ABC-SMC framework \cite{molyneux2019bayesian}
+and ABC-(SMC)2 \cite{molyneux2020abc} by Molyneux et al. However, the ABC-SMC and ABC-(SMC)2
+frameworks synthesize parameters for CTMC and check the CTMC model agains CSL property. In
+parametric DTMC, since the symbolic rational function of PCTL property is obtainable, we compare the
+approach based on evaluation of symbolic rational function to the approach based on only simulation.
 
-\cite{molyneux2019bayesian} \cite{molyneux2020abc}
+%% Model checking
+The theoretical background of model checking DTMC is presented by Baier et al
+\cite{baier2008principles}. An introduction to parametric DTMC and current methods on parameter
+synthesis is presented by the tutorial by Katoen \cite{katoen2016probabilistic}. More in-depth
+surveys and discoveries on parametric model checking and parameter synthesis is presented by Junges
+\cite{junges2020parameter} and \cite{hutschenreiter2017parametric}. Polgreen
+\cite{polgreen2016data}, Jha \cite{jha2009bayesian}, Haesaert \cite{haesaert2015data} present
+Bayesian approach on data-informed parameter synthesis and model verification.
 
-%% Bayesian verification
-Polgreen et al \cite{polgreen2016data} presents a method for bayesian inference of pMC parameters in
-\cite{haesaert2015data}
 %% Bayesian inference: optimzation methodds
+Monte-Carlo sampling algorithms used in this thesis are presented by Metropolis
+\cite{metropolis1953equation}, Del Moral \cite{del2006sequential}, and Toni
+\cite{toni2009approximate}. A comparision between different Monte-Carlo sampling algorithms,
+including Markov-chain Monte-Carlo, Sequential Monte-Carlo, Hamiltonian Monte-Carlo, and Hamiltonian
+Sequential Monte-Carlo is presented in \cite{daviet2018inference}.
 
 %% Tools: PRISM and STORM
-\cite{kwiatkowska2011prism}
-
-The definition and model checking of DTMC and pMC is studied by \cite{baier2008principles},
-\cite{hutschenreiter2017parametric}, and \cite{katoen2016probabilistic}.\\
-Bayesian inference of pMC parameters is studied in \cite{polgreen2016data} and
-. In , the authors developed methods to synthesize
-parameters to satisfy a given set of PCTL properties. In \cite{jha2009bayesian}, the authors
-presented methods to perform model checking of biological system using Bayesian statistic. The
-authors in \cite{jha2009bayesian} uses a Bayesian hypothesis test, where $H_0$ is the null
-hypothesis that the model satisfies a PCTL $P$, and alternative hypothesis $H_1$ is that the system
-does not satisfies $P$. Similar approach to the parameter estimation in this project is described by
-\cite{hussain2015automated}.\\
-In this project, we use bee colony model semantics from \cite{hajnal2019data}. The methods and
-implementation in this project is designed to extend the results of \cite{hajnal2019data} and its
-tool \textit{DiPS}
-
-storm drawback: it does not support
-
-%% CITE some comparision between storm and prism
-
-In \cite{molyneux2020abc} the author introduces the same approach but it is to use on CSL properties
-and CTMC.
+The model checking step in the frameworks presented by this thesis are implemented using Storm model
+checker \cite{hensel2020probabilistic}. Storm provides well documented and easy to use APIs to embed
+model checking to software projects programmatically. However, Storm does not support Statistical
+Model Checking. Thus, Statistical Model Checking step in simulation-based frameworks is implemented
+using PRISM \cite{kwiatkowska2011prism}.

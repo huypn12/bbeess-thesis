@@ -31,52 +31,10 @@ each
       \end{algorithmic}
 \end{algorithm}
 
-First way to
-\begin{algorithm}[H]
-      \caption{Markov chain Monte-Carlo with rational functions}
-      \label{rf-mcmc-alg}
-      \hspace*{\algorithmicindent} \textbf{Input:}
-      \begin{itemize}
-            \item $\mathcal{M}_\theta$: parametric Discrete-Time Markov chain of parameter $\theta$
-            \item $\Phi$: bounded reachability property of interest.
-      \end{itemize}
-      \hspace*{\algorithmicindent} \textbf{Output:}
-      \begin{itemize}
-            \item $(\theta_1,\ldots,\theta_{N_{MH}})$: $N_{MH}$ sampled particles.
-            \item $(w_1,\ldots,w_{N_{MH}})$: corresponding weights of sampled particles.
-      \end{itemize}
-      \begin{algorithmic}[1]
-            \Procedure{RF-MCMC}{}
-
-            \EndProcedure
-      \end{algorithmic}
-\end{algorithm}
-
-
-\begin{algorithm}[H]
-      \caption{Markov chain Monte-Carlo with rational functions}
-      \label{rf-mcmc-alg}
-      \hspace*{\algorithmicindent} \textbf{Input:}
-      \begin{itemize}
-            \item $\mathcal{M}_\theta$: parametric Discrete-Time Markov chain of parameter $\theta$
-            \item $\Phi$: bounded reachability property of interest.
-      \end{itemize}
-      \hspace*{\algorithmicindent} \textbf{Output:}
-      \begin{itemize}
-            \item $(\theta_1,\ldots,\theta_{N_{MH}})$: $N_{MH}$ sampled particles.
-            \item $(w_1,\ldots,w_{N_{MH}})$: corresponding weights of sampled particles.
-      \end{itemize}
-      \begin{algorithmic}[1]
-            \Procedure{RF-MCMC}{}
-            \EndProcedure
-      \end{algorithmic}
-\end{algorithm}
-
-
 \textit{Rational functions} are functions of model parameter that represent the
 probability of finally globally reach each terminal state. The function is
 delivered by PRISM model checker thanks to it capability of symbolic model
-checking \cite{KNP11}.\\
+checking \cite{kwiatkowska2011prism}.\\
 However, it is not always possible to deduct rational functions from a given
 model, due to the technical limitation (time, memory) and the limitation of
 PRISM itself. In our conducted experiment, PRISM is capable of deliver rational
@@ -90,8 +48,35 @@ DTMC sampling \textit{scalable}, compare to the rational function evaluation
 approach, which is not scallable due to its nature of deep recursion.
 
 \subsection{Selection of prior distribution}
+Prior distribution is Uniform distribution to reduce the impact of false beliefs propagation.
 
 \subsection{Selection of transition and pertubation kernel}
+As Metropolis-Hastings algorithm is a part of the framework with rational function, selecting a
+transition kernel has impacts on the final sampling results. The transition kernel
+$Q(\theta^t|\theta^{t-1})$ defines how do we proceed to the next parameter value on the parameter
+space. There are different strategies on choosing a transition kernel:
+\begin{itemize}
+      \item \textit{Random-Walk Metropolis-Hastings}
+      \item \textit{Independence Metropolis-Hastings}
+      \item \textit{Single Component Metropolis-Hastings}
+\end{itemize}
+In \textit{Random-Walk Metropolis-Hastings}, we select a symmetric probability density function
+$h(x)$ centered at $0$. We define transition kernel as
+\begin{align*}
+      Q(\theta_t | \theta_{t-1}) = \theta_{t-1} + \delta
+\end{align*}
+where $\delta\sim h$. As $h$ is symmetric and centered at $0$, then $h(\delta) = h(-\delta)$. Thus,
+the transition function
+\begin{align*}
+      a
+\end{align*}
+
+In \textit{Random-Walk Metropolis-Hastings},
+
+
+In \textit{Single Component Metropolis-Hastings},
+
+In this thesis, we implement Single Component Metropolis-Hastings.
 
 \section{Symbolic computation based frameworks}
 \newpage
