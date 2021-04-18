@@ -98,17 +98,18 @@ A systematic inference to select prior distribution family and prior distributio
 \cite{allenby2005hierarchical}.
 
 \subsection{Estimation of posterior distribution}
-In posterior estimation the following factors are important:
-\begin{enumerate}
-    \item Tractability: we have analytical form of posterior distribution.
-    \item Computationally effective: updating model parameter is of linear time to the dimension of
-          parameter.
-\end{enumerate}
-
 \subsubsection{Posterior conjugation}
 Conjugated posteriors are special cases of Bayesian inference, in which the prior and posterior
-distribution belongs to the same family of distribution. We consider two conjugated posterior:
-Binomial-Beta and Dirichlet-Multinomial
+distribution belongs to the same family of distribution. When posterior conjugation is applicable,
+only the parameters of probability distribution function need to be re-estimated. Applying
+conjugated posterior when it is possible gives advantages:
+\begin{itemize}
+    \item Tractability: we have analytical form of posterior distribution with only changes in its
+          parameters.
+    \item Computationally effective: updating model parameter is of linear time to the dimension of
+          parameter.
+\end{itemize}
+We consider two conjugated posteriors as examples: Binomial-Beta and Dirichlet-Multinomial.
 \begin{lemma}[Binomial-Beta Conjugation]
     Binomial distribution is conjugated to beta distribution.
 \end{lemma}
@@ -175,27 +176,37 @@ section we discuss different approaches for posterior distribution approximation
 \end{itemize}
 
 \subsubsection{Markov chain Monte-Carlo}
-In case the posterior distribution has no analytical form or its analytical form
-is difficult to sample from directly, we use \textit{Metropolis-Hastings}
-algorithm (\textit{MH} in short).\\
-Metropolis-Hastings algorithm is a \textit{Monte Carlo Markov Chain} algorithm.
-In its essential, Metropolis-Hastings algorithm draws sample from an unknown distribution.
-Using the MH algorithm, we can estimate the parameter by posterior mean, without
-knowing the analytical form of posterior distribution itself.
+In case the posterior distribution has no analytical form or its analytical form is difficult to
+sample from directly, we use \textit{Metropolis-Hastings} algorithm  (\textit{MH} in short).\\
+invented by Metropolis \cite{metropolis1953equation} and later generalized by Hastings \cite{hastings1970monte}
+
+
+Metropolis-Hastings algorithm is a \textit{Monte Carlo Markov Chain} algorithm. In its essential,
+Metropolis-Hastings algorithm draws sample from an unknown distribution. Using the MH algorithm, we
+can estimate the parameter by posterior mean, without knowing the analytical form of posterior
+distribution itself.
 
 \begin{algorithm}[H]
-    \caption{Metropolis-Hastings Algorithm}\label{mhalg}
+    \caption{Metropolis-Hastings Algorithm}
+    \label{alg:mh}
     \hspace*{\algorithmicindent} \textbf{Input:}
     \begin{itemize}
-        \item $D$ is the observation data
+        \item Model $\mathcal{M}_\theta$
+        \item $D_{obs}$: observation data
+        \item Likelihood function $P(D|\theta)$
+        \item $\pi(\theta)$: prior distribution
+        \item Transition kernel $Q(\theta^t|\theta^{t-1})$
+        \item $N$ number of particles.
     \end{itemize}
-    \hspace*{\algorithmicindent} \textbf{Output:} $Trace$ is the set of accepted
-    sampling point.
+    \hspace*{\algorithmicindent} \textbf{Output:}
+    \begin{itemize}
+        \item $(\theta_1,\ldots,\theta_N)$ sample of $N$ particles
+        \item $(w_1,\ldots,w_N)$ corresponding likelihoods.
+    \end{itemize}
     \begin{algorithmic}[1]
         \Procedure{Metropolis-Hastings}{$D$, maxIteration}
-        \State Select a proposal distribution $\pi(\theta)$
-        \State Draw a random initial point $\theta$
-        \State Init empty trace $Trace$
+        \State Draw $\theta_0$ from $\pi(\theta)$
+        \State $i \leftarrow 0$
         \While{maxIteration not reached}
         \State $L \leftarrow P(D|\theta)$
         \State Draw a point $\theta' $ from the proposal distribution.
@@ -214,36 +225,76 @@ knowing the analytical form of posterior distribution itself.
         \EndProcedure
     \end{algorithmic}
 \end{algorithm}
-The likelihood function can be implemented as log-likelihood to avoid underflow
-error. Proposal distribution defines how do we proceed to the next parameter
-value on the parameter space; it can be of any distribution family.\\
-There are two advantages of using Markov Chain Monte Carlo in Bayesian inference:
-\begin{enumerate}
+
+The likelihood function can be implemented as log-likelihood to avoid underflow error. The
+transition kernel $Q(\theta^t|\theta^{t-1})$ defines how do we proceed to the next parameter value
+on the parameter space. There are different strategies on choosing a transition kernel:
+\begin{itemize}
+    \item \textit{Random-Walk Metropolis-Hastings}
+    \item \textit{Independence Metropolis-Hastings}
+    \item \textit{Single Component Metropolis-Hastings}
+\end{itemize}
+In \textit{Random-Walk Metropolis-Hastings}, we select a symmetric probability density function
+$h(x)$ centered at $0$. We define transition kernel as
+\begin{align*}
+    Q(\theta_t | \theta_{t-1}) = \theta_{t-1} + \delta
+\end{align*}
+where $\delta\sim h$. As $h$ is symmetric and centered at $0$, then $h(\delta) = h(-\delta)$. Thus, the transition function
+\begin{align*}
+    a
+\end{align*}
+
+In \textit{Random-Walk Metropolis-Hastings},
+
+
+In \textit{Single Component Metropolis-Hastings},
+
+In this thesis, we implement Single Component Metropolis-Hastings.
+Advantages of Metropolis-Hastings are
+\begin{itemize}
     \item Parameter transition only needs the computation of likelihood function.
           Therefore, Monte Carlo Markov Chain can be used in general Bayesian inference,
           in which we are not guaranteed to have an analytical form of posterior.
-    \item Specifically in Metropolis-Hastings algorithm, marginal distribution is
-          cancelled out, thus make Metropolis-Hastings a computationally efficient algorithm.
+    \item Computationally efficient; as marginal distribution is cancelled out, and likelihood can
+          be replaced by log-likelihood, Metropolis-Hastings simplifies the computation of Bayes formula
+          and avoid infinitesimal values.
+    \item Simple to implement.
+\end{itemize}
+Disadvantages of Metropolis-Hastings are
+\begin{enumerate}
+    \item Particle in Metropolis-Hastings algorithm moves in a linear Markov chain; it is highly
+          probable to be stuck in a local maximum or minimum.
+    \item Not parallelizable; since there is only one linear chain, and current step depends on
+          previous step, Metropolis-Hastings algorithm does not scale up to multi-processors.
 \end{enumerate}
-However, MH algorithm also has a drawback; its convergence becomes slower as the
-dimension of parameter $\theta$ increases.
+The next algorithm, \textit{Sequential Monte-Carlo}, address the issues of Metropolis-Hastings.
 
 \subsubsection{Sequential Monte-Carlo}
 Sequential Monte-Carlo method is firstly proposed by \cite{del2006sequential}.  Instead of having
 one particle moving in its parameter space, Sequential Monte-Carlo estimates by using $N$ particles
-moving independently. Therefore Sequential Monte-Carlo method has a significant advantage of easily
-parallelizable.
+moving independently. Sequential Monte-Carlo uses  starting by a \textit{pertubation kernel}.
 
-here \cite{daviet2018inference}
+Therefore Sequential Monte-Carlo method has a significant advantage of easily
+parallelizable. Comparision between \cite{daviet2018inference}
+good for multimodal
 \begin{algorithm}[H]
     \caption{Sequential Monte-Carlo Algorithm}
-    \label{smc-algorithm}
+    \label{alg:smc}
     \hspace*{\algorithmicindent} \textbf{Input:}
     \begin{itemize}
-        \item $D$ is the observation data
+        \item Model $\mathcal{M}_\theta$
+        \item $D_{obs}$: observation data
+        \item $\pi(\theta)$: prior distribution
+        \item $P(D|\theta)$: Likelihood function.
+        \item Transition kernel $Q(\theta^t|\theta^{t-1})$
+        \item \item Transition kernel $Q(\theta^t|\theta^{t-1})$
+        \item $N$ number of particles.
     \end{itemize}
-    \hspace*{\algorithmicindent} \textbf{Output:} $Trace$ is the set of accepted
-    sampling point.
+    \hspace*{\algorithmicindent} \textbf{Output:}
+    \begin{itemize}
+        \item $(\theta_1,\ldots,\theta_N)$ sample of $N$ particles
+        \item $(w_1,\ldots,w_N)$ corresponding likelihoods.
+    \end{itemize}
     \begin{algorithmic}[1]
         \Procedure{Metropolis-Hastings}{$D$, maxIteration}
         \State Select a proposal distribution $\pi(\theta)$
@@ -272,34 +323,54 @@ Selection of kernel function for SMC is mentioned in \cite{silk2012optimizing}.
 \subsubsection{Approximate Bayesian Computation}
 The methods mentioned before is used with an assumption that the likelihood $P(D_{obs}|\theta)$ has
 an analytical form; the analytical can be evaluated without introducing computational burden.
-However there are situations in which the likelihood has no analytical form, or the analytical form
-is expensive to be evaluated. In such cases, a class of different methods, dubbed
-\textit{likelihood-free} methods, are used. Likelihood-free methods in Bayesian inference means that
-instead of compute the likelihood $P(D|\theta)$, we estimate it or replace it by other measures.
-Approximate Bayesian Computation is a widely used likelihood-free method for approximating posterior
-distribution. Instead of estimating the likelihood $P(D|\theta)$ directly, we sample a observable
-data set $\hat{D}$ and define a distance measure $\delta(D, \hat{D})$. Approximate Bayesian
-Computation accepts a set of tuples $(\hat{\theta}, \hat{D})$, each satisfies that
-$\delta(D_{obs},D_{sim}) < \epsilon, \epsilon\in\mathbf{R}_{\leq 0}$.
+However for situations in which the likelihood has no analytical form, or the analytical form is
+expensive to be evaluated, we use a class of \textit{likelihood-free} methods. Likelihood-free
+methods in Bayesian inference estimates the likelihood $P(D_{obs}|\theta)$ ,
+estimate it or replace it by other measures. Approximate Bayesian Computation is a widely used
+likelihood-free method for approximating posterior distribution. Instead of estimating the
+likelihood $P(D|\theta)$ directly, we sample a observable data set $\hat{D}$ and define a distance
+measure $\delta(D, \hat{D})$. Approximate Bayesian Computation accepts a set of tuples
+$(\hat{\theta}, \hat{D})$, each satisfies that $\delta(D_{obs},D_{sim}) < \epsilon,
+    \epsilon\in\mathbf{R}_{\leq 0}$.
 \begin{algorithm}[H]
     \caption{Approximate Bayesian Computation}
-    \label{abcalg}
+    \label{alg:abc-reject}
     \hspace*{\algorithmicindent} \textbf{Input:}
     \begin{itemize}
-        \item $D_{obs}$: observed data for Bayesian inference or its summary statistic $S_{obs}$
-        \item $\theta=(\theta_1,\ldots,\theta_k)$: $k$-dimensional model parameter.
-        \item $\pi(\theta)$: prior distribution on $\theta$.
-        \item $N$: number of particles (parameter samples).
-        \item $\epsilon$: absolute error threshold.
+        \item Model $\mathcal{M}_\theta$
+        \item $D_{obs}$: observation data
+        \item $\pi(\theta)$: prior distribution
+        \item $P(D|\theta)$: Likelihood function.
+        \item Transition kernel $Q(\theta^t|\theta^{t-1})$
+        \item \item Transition kernel $Q(\theta^t|\theta^{t-1})$
+        \item $N$ number of particles.
     \end{itemize}
     \hspace*{\algorithmicindent} \textbf{Output:}
     \begin{itemize}
         \item $(\theta_1,\ldots,\theta_N)$: $N$ sampled particles.
-        \item $(\omega_1,\ldots,\omega_N)$: corresponding weights of sampled particles.
+        \item $(w_1,\ldots,w_N)$: corresponding weights of sampled particles.
     \end{itemize}
     \begin{algorithmic}[1]
-        \Procedure{Approximate-Bayesian-Computation}{$D$, $\theta$, $\pi(\theta)$, $N$, $\epsilon$}
-        \State $t:=0$ \While{$t \leq N$} \EndWhile \EndProcedure
+        \Procedure{Approximate-Bayesian-Computation}{}
+        \State Select a proposal distribution $\pi(\theta)$
+        \State Draw a random initial point $\theta$
+        \State Init empty trace $Trace$
+        \While{maxIteration not reached}
+        \State $L \leftarrow P(D|\theta)$
+        \State Draw a point $\theta' $ from the proposal distribution.
+        \State $L' \leftarrow P(D|\theta')$
+        \If{ $\ln(L') - \ln(L) > 0$ }
+        \State Add $\theta'$ to $Trace$
+        \State $\theta = \theta'$
+        \Else
+        \State Draw a random number $x$ from $Uniform(0,1)$
+        \If{$x \leq \xi$, ($\xi$ very small, e.g $10^{-8}$)}
+        \State Add $\theta'$ to $Trace$ (avoiding local maxima)
+        \State $\theta = \theta'$
+        \EndIf
+        \EndIf
+        \EndWhile
+        \EndProcedure
     \end{algorithmic}
 \end{algorithm}
 
