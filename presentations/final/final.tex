@@ -1,7 +1,7 @@
 \documentclass{beamer}
 
 \usepackage{biblatex}
-\addbibresource{final.bib}
+\addbibresource{thesis.bib}
 \usepackage{hyperref}
 \usepackage[utf8]{inputenc}
 
@@ -11,7 +11,7 @@
 \algrenewcommand\ALG@beginalgorithmic{\footnotesize}
 \makeatother
 
-\usetheme{Pittsburgh}
+\usetheme{Copenhagen}
 \usecolortheme{default}
 \setbeamertemplate{items}[triangle]
 \setbeamertemplate{sections/subsections in toc}[square]
@@ -104,7 +104,7 @@
         \begin{tabular}{|l|l|l|}
             \hline
                                        & Input                      & Ouput                      \\ \hline
-            \begin{tabular}[c]{@{}l@{}}Parameter\\ inference\end{tabular}  & \begin{tabular}[c]{@{}l@{}}Model $\mathcal{M}_\theta$\\ Observed data $D_{obs}$ \end{tabular}  & \begin{tabular}[c]{@{}l@{}}Parameter estimation\\ $\hat{\theta}$\end{tabular}  \\ \hline
+            \begin{tabular}[c]{@{}l@{}}Parameter\\ inference\end{tabular}  & \begin{tabular}[c]{@{}l@{}}Model $\mathcal{M}_\theta$\\ Observed data $D_{obs}$ \end{tabular} & \begin{tabular}[c]{@{}l@{}}Parameter estimation\\ $\hat{\theta}$\end{tabular} \\ \hline
             \begin{tabular}[c]{@{}l@{}}Parameter\\ synthesis\end{tabular} & \begin{tabular}[c]{@{}l@{}}Model $\mathcal{M}_\theta$\\ Reachability property $\Phi$ \end{tabular} & \begin{tabular}[c]{@{}l@{}}$(\theta_1,\ldots,\theta_N)$ \\ $\forall \theta_i \in (\theta_1,\ldots,\theta_N): \mathcal{M}_{\theta_i}\models\Phi$\end{tabular} \\ \hline
         \end{tabular}
     \end{table}
