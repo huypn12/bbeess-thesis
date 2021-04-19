@@ -179,8 +179,6 @@ section we discuss different approaches for posterior distribution approximation
 In case the posterior distribution has no analytical form or its analytical form is difficult to
 sample from directly, we use \textit{Metropolis-Hastings} algorithm  (\textit{MH} in short).\\
 invented by Metropolis \cite{metropolis1953equation} and later generalized by Hastings \cite{hastings1970monte}
-
-
 Metropolis-Hastings algorithm is a \textit{Monte Carlo Markov Chain} algorithm. In its essential,
 Metropolis-Hastings algorithm draws sample from an unknown distribution. Using the MH algorithm, we
 can estimate the parameter by posterior mean, without knowing the analytical form of posterior
@@ -204,7 +202,7 @@ distribution itself.
         \item $(w_1,\ldots,w_N)$ corresponding likelihoods.
     \end{itemize}
     \begin{algorithmic}[1]
-        \Procedure{Metropolis-Hastings}{$D$, maxIteration}
+        \Procedure{Metropolis-Hastings}{}
         \State Draw $\theta_0$ from $\pi(\theta)$
         \State $i \leftarrow 0$
         \While{maxIteration not reached}
@@ -273,29 +271,48 @@ good for multimodal
         \item $(w_1,\ldots,w_N)$ corresponding likelihoods.
     \end{itemize}
     \begin{algorithmic}[1]
-        \Procedure{Metropolis-Hastings}{$D$, maxIteration}
-        \State Select a proposal distribution $\pi(\theta)$
-        \State Draw a random initial point $\theta$
-        \State Init empty trace $Trace$
-        \While{maxIteration not reached}
-        \State $L \leftarrow P(D|\theta)$
-        \State Draw a point $\theta' $ from the proposal distribution.
-        \State $L' \leftarrow P(D|\theta')$
-        \If{ $\ln(L') - \ln(L) > 0$ }
-        \State Add $\theta'$ to $Trace$
-        \State $\theta = \theta'$
-        \Else
-        \State Draw a random number $x$ from $Uniform(0,1)$
-        \If{$x \leq \xi$, ($\xi$ very small, e.g $10^{-8}$)}
-        \State Add $\theta'$ to $Trace$ (avoiding local maxima)
-        \State $\theta = \theta'$
-        \EndIf
-        \EndIf
+        \Procedure{Sequential-Monte-Carlo}{}
+        \State $i \leftarrow 1$
+        \While{$i \leq N$} \algorithmiccomment {SMC initialization}
+        \State Draw $\theta$ from $\pi(\theta)$
+        \State $\theta_i \leftarrow \theta$
+        \State $w_i \leftarrow P(D_{obs}|\theta_i)$
+        \State $i \leftarrow i + 1$
         \EndWhile
+        \State $t \leftarrow 1$
+        \While{$t \leq M$}
+        \State $i \leftarrow 1$ \algorithmiccomment{SMC correction step}
+        \While{$i \leq N$}
+        \State $w'_i \leftarrow \frac{w_i}{\sum_{i=1}^N w_i} $
+        \EndWhile
+        \State Sample with replacement $(\theta'_1,\ldots,\theta'_N)$ \algorithmiccomment{SMC selection step} \\\hspace{1.5cm} from $(\theta_1,\ldots,\theta_N)$ with probabilities $(w'_1,\ldots,w'_N)$
+        \State $(\theta_1,\ldots,\theta_N) \leftarrow (\theta'_1,\ldots,\theta'_N)$
+        \State $i \leftarrow 1$
+        \While{$i \leq N$} \algorithmiccomment {SMC pertubation step}
+        \State Draw $\hat{\theta}^t_i$ from $F_t(\theta^t | \theta^{t-1}_1,\ldots,\theta^{t-1}_N), 1\leq t \leq M$
+        \State $(\theta^*_1,\ldots,\theta^*_{N_{MH}}), (w^*_1,\ldots,w^*_{N_{MH}}) \leftarrow Metropolis-Hastings(\hat{\theta}^t_i)$
+        \State $\theta_i \leftarrow \theta^*_{N_{MH}}$
+        \State $w_i \leftarrow w^*_{N_{MH}}$
+        \EndWhile
+        \EndWhile
+        \State Return $(\theta_1,\ldots,\theta_{N})$, $(w_1,\ldots,w_{N})$
         \EndProcedure
     \end{algorithmic}
 \end{algorithm}
-Selection of kernel function for SMC is mentioned in \cite{silk2012optimizing}.
+Selection of kernel function for SMC is mentioned in \cite{silk2012optimizing}.\\
+Advantages of Sequential Monte-Carlo algorithm:
+\begin{itemize}
+    \item Approximate multimodal distributions: since Sequential Monte-Carlo consists of $N$
+          particles moving independently and later selected with replacement, it is less likely to fall
+          into a local maximum or minimum.
+    \item Parallelizable: Sequential Monte-Carlo has trivially data-parallelism, in contrast to
+          Metropolis-Hastings where no parallelization is possible.
+\end{itemize}
+However, Sequential Monte-Carlo also has disadvantages:
+\begin{itemize}
+    \item Selection of pertubation and transition kernel is not trivial.
+    \item More difficult to implement.
+\end{itemize}
 
 \subsubsection{Approximate Bayesian Computation}
 The methods mentioned before is used with an assumption that the likelihood $P(D_{obs}|\theta)$ has
@@ -317,9 +334,8 @@ $(\hat{\theta}, \hat{D})$, each satisfies that $\delta(D_{obs},D_{sim}) < \epsil
         \item Model $\mathcal{M}_\theta$
         \item $D_{obs}$: observation data
         \item $\pi(\theta)$: prior distribution
-        \item $P(D|\theta)$: Likelihood function.
-        \item Transition kernel $Q(\theta^t|\theta^{t-1})$
-        \item \item Transition kernel $Q(\theta^t|\theta^{t-1})$
+        \item $\delta(D_{sim}, D_{obs})$: distance function between two set of data simulated by $\mathcal{M}_\theta$
+        \item $epsilon$: distance threshold
         \item $N$ number of particles.
     \end{itemize}
     \hspace*{\algorithmicindent} \textbf{Output:}
@@ -330,28 +346,34 @@ $(\hat{\theta}, \hat{D})$, each satisfies that $\delta(D_{obs},D_{sim}) < \epsil
     \begin{algorithmic}[1]
         \Procedure{Approximate-Bayesian-Computation}{}
         \State Select a proposal distribution $\pi(\theta)$
-        \State Draw a random initial point $\theta$
-        \State Init empty trace $Trace$
-        \While{maxIteration not reached}
-        \State $L \leftarrow P(D|\theta)$
-        \State Draw a point $\theta' $ from the proposal distribution.
-        \State $L' \leftarrow P(D|\theta')$
-        \If{ $\ln(L') - \ln(L) > 0$ }
-        \State Add $\theta'$ to $Trace$
-        \State $\theta = \theta'$
-        \Else
-        \State Draw a random number $x$ from $Uniform(0,1)$
-        \If{$x \leq \xi$, ($\xi$ very small, e.g $10^{-8}$)}
-        \State Add $\theta'$ to $Trace$ (avoiding local maxima)
-        \State $\theta = \theta'$
-        \EndIf
+        \State $i \leftarrow 1$
+        \While{$i \leq N$}
+        \State Draw a random particle $\theta$ from $\pi(\theta)$
+        \State Simulate data $D_{sim}$ from $\mathcal{M}_\theta$
+        \If{$d = \delta(D_{sim}, D_{obs}) < \epsilon$}
+        \State $\theta_i \leftarrow \theta$
+        \State $w_i = d$
         \EndIf
         \EndWhile
+        \State Return $(\theta_1,\ldots,\theta_N)$, $(w_1,\ldots,w_N)$
         \EndProcedure
     \end{algorithmic}
 \end{algorithm}
+Advantages of Approximate Bayesian Computation:
+\begin{itemize}
+    \item Likelihood-free: applicable when the likelihood has no analytical form or there is no likelihood.
+    \item Easy to implement.
+\end{itemize}
+Disavantages of Approximate Bayesian Computation:
+\begin{itemize}
+    \item Which distances are proper to measure two data set? In the other word, is measuring
+          distance a proper method to approximate likelihood?
+    \item How to select a threshold so that the likelihood is closely approximated?
+\end{itemize}
 
 \section{Summary}
-We present a set of optimization and approximation methods which are essentials to Bayesian
-Inference. In the following chapter we propose a data-driven approach for parameter synthesis
-combining Approximate Bayesian computation, Sequential Monte Carlo, and Statistical Model Checking.
+We introduces basic concepts on Bayesian parameter inference and posterior estimation. Since the
+posterior distributions normally have no analytical form, the presented sampling and
+optimization methods which are essentials to posterior estimation. In the following chapter we
+propose a data-driven approach for parameter synthesis combining Approximate Bayesian computation,
+Sequential Monte Carlo, and Statistical Model Checking.

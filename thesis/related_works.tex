@@ -3,8 +3,10 @@
 The frameworks presented in this thesis are based on ABC-SMC framework \cite{molyneux2019bayesian}
 and ABC-(SMC)2 \cite{molyneux2020abc} by Molyneux et al. However, the ABC-SMC and ABC-(SMC)2
 frameworks synthesize parameters for CTMC and check the CTMC model agains CSL property. In
-parametric DTMC, since the symbolic rational function of PCTL property is obtainable, we compare the
-approach based on evaluation of symbolic rational function to the approach based on only simulation.
+parametric DTMC, since the symbolic rational function of PCTL property is obtainable, we based on
+Del Moral \cite{del2006sequential} and Daviet \cite{daviet2018inference} to construct an algorithm
+based on evaluation of symbolic rational function, then benchmark it againts the approach based on
+only simulation.
 
 %% Model checking
 The theoretical background of model checking DTMC is presented by Baier et al
@@ -12,15 +14,19 @@ The theoretical background of model checking DTMC is presented by Baier et al
 synthesis is presented by the tutorial by Katoen \cite{katoen2016probabilistic}. More in-depth
 surveys and discoveries on parametric model checking and parameter synthesis is presented by Junges
 \cite{junges2020parameter} and \cite{hutschenreiter2017parametric}. Polgreen
-\cite{polgreen2016data}, Jha \cite{jha2009bayesian}, Haesaert \cite{haesaert2015data} present
-Bayesian approach on data-informed parameter synthesis and model verification.
+\cite{polgreen2016data}, and Haesaert \cite{haesaert2015data} present Bayesian approach on
+data-informed parameter synthesis and model verification. Jha \cite{jha2009bayesian} pioneered the
+first algorithm for Bayesian approach on Statistical Model Checking, namelyBayesian Sequential
+Hypothesis Testing.
 
 %% Bayesian inference: optimzation methodds
 Monte-Carlo sampling algorithms used in this thesis are presented by Metropolis
 \cite{metropolis1953equation}, Del Moral \cite{del2006sequential}, and Toni
 \cite{toni2009approximate}. A comparision between different Monte-Carlo sampling algorithms,
 including Markov-chain Monte-Carlo, Sequential Monte-Carlo, Hamiltonian Monte-Carlo, and Hamiltonian
-Sequential Monte-Carlo is presented in \cite{daviet2018inference}.
+Sequential Monte-Carlo is presented in \cite{daviet2018inference}. Silk \cite{silk2012optimizing}
+discussed different approaches on the pertubation kernel selection of Sequential Monte-Carlo and
+Sequential Monte-Carlo with Approximate Bayesian Computation algorithms.
 
 %% Tools: PRISM and STORM
 The model checking step in the frameworks presented by this thesis are implemented using Storm model
