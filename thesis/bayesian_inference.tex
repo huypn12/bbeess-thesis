@@ -13,8 +13,8 @@ thesis.
 Let $D_{obs}$ be observed data. In statistical inference, we assume that the observed data has a
 probability distribution of unknown parameter $\theta$, that is $D_{obs} \sim P(D_{obs}|\theta)$. There are two main approaches in statistical inference
 \begin{enumerate}
-    \item Frequentist approach.
-    \item Bayesian approach.
+      \item Frequentist approach.
+      \item Bayesian approach.
 \end{enumerate}
 In frequentist approach, the estimation of $\theta$ based on long-run property, that is, given a
 large enough sample size, expected value of parameter estimation $\hat{\theta}$ is equal to
@@ -27,14 +27,14 @@ knowledge of model parameter $\theta$ is represented by \textit{prior distributi
 We have the \textit{likelihood} $P(D_{obs}|\theta)$ as the probability distribution over observed
 data, given parameter $\theta$.
 \begin{definition}{Bayes theorem}
-    \begin{align*}
-        \pi(\theta | D_{obs}) = \frac{P(D_{obs}|\theta)\pi(\theta)}{\int_\theta P(D_{obs}|\theta)\pi(\theta)d\theta}
-    \end{align*}
-    where
-    \begin{itemize}
-        \item $\int_\theta P(D_{obs}|\theta)\pi(\theta)d\theta$ is the \textit{marginal distribution}.
-        \item $\pi(\theta | D_{obs})$ is the \textit{posterior distribution}
-    \end{itemize}
+      \begin{align*}
+            \pi(\theta | D_{obs}) = \frac{P(D_{obs}|\theta)\pi(\theta)}{\int_\theta P(D_{obs}|\theta)\pi(\theta)d\theta}
+      \end{align*}
+      where
+      \begin{itemize}
+            \item $\int_\theta P(D_{obs}|\theta)\pi(\theta)d\theta$ is the \textit{marginal distribution}.
+            \item $\pi(\theta | D_{obs})$ is the \textit{posterior distribution}
+      \end{itemize}
 \end{definition}
 The essential part of Bayesian inference in statistic is to compute or estimate the posterior
 distribution. From the analytical form or the samples from the posterior distribution, we estimate
@@ -44,46 +44,46 @@ the model parameter $\theta$.
 With posterior distribution $\pi(\theta|D)$ we estimate the parameter $\hat{\theta}$ using Bayesian
 posterior mean.
 \begin{definition}{Bayesian posterior mean}
-    \begin{align*}
-        \hat{\theta} = \mathbf{E}[\theta] = \int_\theta \theta \pi(\theta|D) d\theta
-    \end{align*}
+      \begin{align*}
+            \hat{\theta} = \mathbf{E}[\theta] = \int_\theta \theta \pi(\theta|D) d\theta
+      \end{align*}
 \end{definition}
 In case we have samples from posterior distribution, for example a trace $T$ of parameter values
 ${\theta_1,\dots,\theta_|T|}$ from Metropolis-Hastings algorithm, the discrete form of posterior
 mean is used:
 \begin{align*}
-    \hat{\theta} = \mathbf{E}[\theta] = \sum_\theta \theta \pi(\theta|D)
+      \hat{\theta} = \mathbf{E}[\theta] = \sum_\theta \theta \pi(\theta|D)
 \end{align*}
 
 \begin{definition}[Bayesian Credible Set]
-    Set C is a $(1 − \alpha )100\%$ credible set for the parameter $\theta$ if the posterior
-    probability for $\theta$ to belong to C equals $(1 − \alpha)$.
-    \begin{align*}
-        P(\theta \in C | D) = \int_C \pi(\theta|D) d\theta = 1 - \alpha
-    \end{align*}
+      Set C is a $(1 − \alpha )100\%$ credible set for the parameter $\theta$ if the posterior
+      probability for $\theta$ to belong to C equals $(1 − \alpha)$.
+      \begin{align*}
+            P(\theta \in C | D) = \int_C \pi(\theta|D) d\theta = 1 - \alpha
+      \end{align*}
 \end{definition}
 In this thesis, we use by default $0.95$ credible set, which corresponds to $\alpha=0.05$
 \begin{definition}[Highest Posterior Density credible set]
-    Highest Posterior Density $(1-\alpha)100\%$ credible set (HPD for short) is the
-    interval with minimum length over all Bayesian $(1-\alpha)100\%$ Credible Set.
+      Highest Posterior Density $(1-\alpha)100\%$ credible set (HPD for short) is the
+      interval with minimum length over all Bayesian $(1-\alpha)100\%$ Credible Set.
 \end{definition}
 
 In this research, the HPD is calculated using algorithm from \textit{PyMC3} library
 \cite{salvatier2016pymc3}. For simplicity, we assume that in all cases which we concern, HPD is
 computed using the algorithm for unimodal distribution.
 \begin{algorithm}[H]
-    \caption{Compute Highest Posterior Density Interval}
-    \label{mh}
-    \hspace*{\algorithmicindent} \textbf{Input:} $S$ is samples from a distribution. \\
-    \hspace*{\algorithmicindent} \textbf{Input:} $0\leq \alpha \leq 1$ \\
-    \hspace*{\algorithmicindent} \textbf{Output:} HPD interval
-    \begin{algorithmic}[1]
-        \Procedure{Compute HPD}{$S$}
-        \State Compute interval width $w = |S| * \alpha$
-        \State Find modal (peak) of sample points.
-        \State Return minimal interval of size $|S| - w$ which contains the modal.
-        \EndProcedure
-    \end{algorithmic}
+      \caption{Compute Highest Posterior Density Interval}
+      \label{mh}
+      \hspace*{\algorithmicindent} \textbf{Input:} $S$ is samples from a distribution. \\
+      \hspace*{\algorithmicindent} \textbf{Input:} $0\leq \alpha \leq 1$ \\
+      \hspace*{\algorithmicindent} \textbf{Output:} HPD interval
+      \begin{algorithmic}[1]
+            \Procedure{Compute HPD}{$S$}
+            \State Compute interval width $w = |S| * \alpha$
+            \State Find modal (peak) of sample points.
+            \State Return minimal interval of size $|S| - w$ which contains the modal.
+            \EndProcedure
+      \end{algorithmic}
 \end{algorithm}
 
 \subsection{Selection of prior distribution}
@@ -104,65 +104,65 @@ distribution belongs to the same family of distribution. When posterior conjugat
 only the parameters of probability distribution function need to be re-estimated. Applying
 conjugated posterior when it is possible gives advantages:
 \begin{itemize}
-    \item Tractability: we have analytical form of posterior distribution with only changes in its
-          parameters.
-    \item Computationally effective: updating model parameter is of linear time to the dimension of
-          parameter.
+      \item Tractability: we have analytical form of posterior distribution with only changes in its
+            parameters.
+      \item Computationally effective: updating model parameter is of linear time to the dimension of
+            parameter.
 \end{itemize}
 We consider two conjugated posteriors as examples: Binomial-Beta and Dirichlet-Multinomial.
 \begin{lemma}[Binomial-Beta Conjugation]
-    Binomial distribution is conjugated to beta distribution.
+      Binomial distribution is conjugated to beta distribution.
 \end{lemma}
 \begin{proof}
-    The observed data $D=(x_1,\ldots,x_n)$ is sampled from $Binomial(k, \theta)$ function
-    \begin{align*}
-        P(D|\theta) = \prod_{i=1}^n{k\choose x_i}\theta^{x_i}(1-\theta)^{k-x_i}
-    \end{align*}
-    The parameter $\theta$ is of $Beta(\alpha, \beta)$ distribution
-    \begin{align*}
-        \pi(\theta) = \theta^{\alpha-1}(1-\theta)^{\beta -1}
-    \end{align*}
-    We obtained:
-    \begin{align*}
-        \pi(\theta|D) & \sim P(D|\theta)\pi(\theta)                                                                             \\
-                      & \sim \theta^{\sum_{i=1}^n x_i}(1-\theta)^{nk -\sum_{i=1}^n x_i} \theta^{\alpha -1} (1-\theta)^{\beta-1} \\
-                      & = \theta^{\alpha - 1 + \sum_{i=1}^n x_i}(1-\theta)^{\beta - 1 + nk -\sum_{i=1}^n x_i}
-    \end{align*}
-    Thus, the posterior is $Beta(\alpha + \sum_{i=1}^n x_i, \beta + nk -\sum_{i=1}^n x_i)$
+      The observed data $D=(x_1,\ldots,x_n)$ is sampled from $Binomial(k, \theta)$ function
+      \begin{align*}
+            P(D|\theta) = \prod_{i=1}^n{k\choose x_i}\theta^{x_i}(1-\theta)^{k-x_i}
+      \end{align*}
+      The parameter $\theta$ is of $Beta(\alpha, \beta)$ distribution
+      \begin{align*}
+            \pi(\theta) = \theta^{\alpha-1}(1-\theta)^{\beta -1}
+      \end{align*}
+      We obtained:
+      \begin{align*}
+            \pi(\theta|D) & \sim P(D|\theta)\pi(\theta)                                                                             \\
+                          & \sim \theta^{\sum_{i=1}^n x_i}(1-\theta)^{nk -\sum_{i=1}^n x_i} \theta^{\alpha -1} (1-\theta)^{\beta-1} \\
+                          & = \theta^{\alpha - 1 + \sum_{i=1}^n x_i}(1-\theta)^{\beta - 1 + nk -\sum_{i=1}^n x_i}
+      \end{align*}
+      Thus, the posterior is $Beta(\alpha + \sum_{i=1}^n x_i, \beta + nk -\sum_{i=1}^n x_i)$
 \end{proof}
 Generalize this conjugation, we also have Multinomial-Dirichlet conjugation.
 \begin{lemma}[Multinomial-Dirichlet Conjugation]
-    Multinomial distribution is conjugated to Dirichlet distribution.
+      Multinomial distribution is conjugated to Dirichlet distribution.
 \end{lemma}
 \begin{proof}
-    The observed data $D=(x_1,\ldots,x_n)$ is sampled from $Multinomial(n; \theta_1,\ldots,\theta_n)$ function
-    \begin{align*}
-        P(x_1,\ldots,x_n | N, \theta_0,\ldots,\theta_n) & = \frac{n!}{x_1!\ldots x_n!} \prod_{i=1}^n\theta_i^{x_i}
-    \end{align*}
-    The parameter $(\theta_1,\ldots,\theta_n)$ is
-    $Dirichlet(\alpha_1,\ldots,\alpha_n)$
-    \begin{align*}
-        \pi(\theta_1,\ldots,\theta_n) = \frac{1}{\mathbf{B}(\alpha_1,\ldots,\alpha_n)}\prod_{i=1}^n\theta_i^{\alpha_i - 1}
-    \end{align*}
-    We obtain
-    \begin{align*}
-        \pi(\theta_1,\ldots,\theta_n|D) & \sim P(D|\theta)\pi(\theta)                                           \\
-                                        & \sim \prod_{i=1}^n\theta_i^{x_i} \prod_{i=1}^n\theta_i^{\alpha_i - 1} \\
-                                        & \sim \prod_{i=1}^n\theta_i^{\alpha_i - 1 + \sum_{i=1}^n x_i}
-    \end{align*}
-    Thus, the posterior is $Dirichlet(\alpha_1 +  x_1,\ldots,\alpha_n
-        +  x_n)$
+      The observed data $D=(x_1,\ldots,x_n)$ is sampled from $Multinomial(n; \theta_1,\ldots,\theta_n)$ function
+      \begin{align*}
+            P(x_1,\ldots,x_n | N, \theta_0,\ldots,\theta_n) & = \frac{n!}{x_1!\ldots x_n!} \prod_{i=1}^n\theta_i^{x_i}
+      \end{align*}
+      The parameter $(\theta_1,\ldots,\theta_n)$ is
+      $Dirichlet(\alpha_1,\ldots,\alpha_n)$
+      \begin{align*}
+            \pi(\theta_1,\ldots,\theta_n) = \frac{1}{\mathbf{B}(\alpha_1,\ldots,\alpha_n)}\prod_{i=1}^n\theta_i^{\alpha_i - 1}
+      \end{align*}
+      We obtain
+      \begin{align*}
+            \pi(\theta_1,\ldots,\theta_n|D) & \sim P(D|\theta)\pi(\theta)                                           \\
+                                            & \sim \prod_{i=1}^n\theta_i^{x_i} \prod_{i=1}^n\theta_i^{\alpha_i - 1} \\
+                                            & \sim \prod_{i=1}^n\theta_i^{\alpha_i - 1 + \sum_{i=1}^n x_i}
+      \end{align*}
+      Thus, the posterior is $Dirichlet(\alpha_1 +  x_1,\ldots,\alpha_n
+            +  x_n)$
 \end{proof}
 More detailed description in these cases can be found in \cite{tu2014dirichlet}
 and \cite{baron2019probability}. We summarize the necessary results in the following table:
 \begin{table}[H]
-    \begin{tabular}{lllll}
-        \cline{1-3}
-        \multicolumn{1}{|l|}{Likelihood}                                 & \multicolumn{1}{l|}{Prior}                                 & \multicolumn{1}{l|}{Posterior parameters}                         &  & \\ \cline{1-3}
-        \multicolumn{1}{|l|}{$Binomial(n, k)$}                           & \multicolumn{1}{l|}{$Beta(\alpha, \beta)$}                 & \multicolumn{1}{l|}{\begin{tabular}[x]{@{}c@{}}$\alpha' = \alpha + \sum_{i=1}^n x_i$\\$\beta' = \beta + nk -\sum_{i=1}^n x_i$\end{tabular}}                   &  & \\ \cline{1-3}
-        \multicolumn{1}{|l|}{$Multinomial(n; \theta_1,\ldots,\theta_n)$} & \multicolumn{1}{l|}{$Dirichlet(\alpha_1,\ldots,\alpha_n)$} & \multicolumn{1}{l|}{$\alpha_i' =\alpha_i + x_i, 1 \leq i \leq n$} &  & \\ \cline{1-3}
-                                                                         &                                                            &                                                                   &  &
-    \end{tabular}
+      \begin{tabular}{lllll}
+            \cline{1-3}
+            \multicolumn{1}{|l|}{Likelihood}                                 & \multicolumn{1}{l|}{Prior}                                 & \multicolumn{1}{l|}{Posterior parameters}                         &  & \\ \cline{1-3}
+            \multicolumn{1}{|l|}{$Binomial(n, k)$}                           & \multicolumn{1}{l|}{$Beta(\alpha, \beta)$}                 & \multicolumn{1}{l|}{\begin{tabular}[x]{@{}c@{}}$\alpha' = \alpha + \sum_{i=1}^n x_i$\\$\beta' = \beta + nk -\sum_{i=1}^n x_i$\end{tabular}}                   &  & \\ \cline{1-3}
+            \multicolumn{1}{|l|}{$Multinomial(n; \theta_1,\ldots,\theta_n)$} & \multicolumn{1}{l|}{$Dirichlet(\alpha_1,\ldots,\alpha_n)$} & \multicolumn{1}{l|}{$\alpha_i' =\alpha_i + x_i, 1 \leq i \leq n$} &  & \\ \cline{1-3}
+                                                                             &                                                            &                                                                   &  &
+      \end{tabular}
 \end{table}
 However, posterior conjugation is applicable to a subset of prior and likelihood functions. In
 Bayesian inference, it is usual that the posterior distribution has no analytical form or its
@@ -170,12 +170,12 @@ analytical form is difficult to directly sample from. In these cases, we can sev
 sampling and optimization methods to approximate the posterior distribution. In the following
 section we discuss different approaches for posterior distribution approximation:
 \begin{itemize}
-    \item Markov chain Monte-Carlo.
-    \item Sequential Monte-Carlo.
-    \item Approximate Bayesian Computation.
+      \item Markov chain Monte Carlo.
+      \item Sequential Monte Carlo.
+      \item Approximate Bayesian Computation.
 \end{itemize}
 
-\subsubsection{Markov chain Monte-Carlo}
+\subsubsection{Markov chain Monte Carlo}
 In case the posterior distribution has no analytical form or its analytical form is difficult to
 sample from directly, we use \textit{Metropolis-Hastings} algorithm  (\textit{MH} in short).\\
 invented by Metropolis \cite{metropolis1953equation} and later generalized by Hastings \cite{hastings1970monte}
@@ -185,133 +185,137 @@ can estimate the parameter by posterior mean, without knowing the analytical for
 distribution itself.
 
 \begin{algorithm}[H]
-    \caption{Metropolis-Hastings Algorithm}
-    \label{alg:mh}
-    \hspace*{\algorithmicindent} \textbf{Input:}
-    \begin{itemize}
-        \item Model $\mathcal{M}_\theta$
-        \item $D_{obs}$: observation data
-        \item Likelihood function $P(D|\theta)$
-        \item $\pi(\theta)$: prior distribution
-        \item Transition kernel $Q(\theta^t|\theta^{t-1})$
-        \item $N$ number of particles.
-    \end{itemize}
-    \hspace*{\algorithmicindent} \textbf{Output:}
-    \begin{itemize}
-        \item $(\theta_1,\ldots,\theta_N)$ sample of $N$ particles
-        \item $(w_1,\ldots,w_N)$ corresponding likelihoods.
-    \end{itemize}
-    \begin{algorithmic}[1]
-        \Procedure{Metropolis-Hastings}{}
-        \State Draw $\theta_0$ from $\pi(\theta)$
-        \State $i \leftarrow 0$
-        \While{maxIteration not reached}
-        \State $L \leftarrow P(D|\theta)$
-        \State Draw a point $\theta' $ from the proposal distribution.
-        \State $L' \leftarrow P(D|\theta')$
-        \If{ $\ln(L') - \ln(L) > 0$ }
-        \State Add $\theta'$ to $Trace$
-        \State $\theta = \theta'$
-        \Else
-        \State Draw a random number $x$ from $Uniform(0,1)$
-        \If{$x \leq \xi$, ($\xi$ very small, e.g $10^{-8}$)}
-        \State Add $\theta'$ to $Trace$ (avoiding local maxima)
-        \State $\theta = \theta'$
-        \EndIf
-        \EndIf
-        \EndWhile
-        \EndProcedure
-    \end{algorithmic}
+      \caption{Metropolis-Hastings Algorithm}
+      \label{alg:mh}
+      \footnotesize{
+            \hspace*{\algorithmicindent} \textbf{Input:}
+            \begin{itemize}
+                  \item Model $\mathcal{M}_\theta$
+                  \item $D_{obs}$: observation data
+                  \item $P(D|\theta)$: likelihood function
+                  \item $\pi(\theta)$: prior distribution
+                  \item Transition kernel $Q(\theta^t|\theta^{t-1})$
+                  \item $N$ number of particles.
+            \end{itemize}
+            \hspace*{\algorithmicindent} \textbf{Output:}
+            \begin{itemize}
+                  \item $(\theta_1,\ldots,\theta_N)$ sample of $N$ particles
+                  \item $(w_1,\ldots,w_N)$ corresponding likelihoods.
+            \end{itemize}
+      }
+      \begin{algorithmic}[1]
+            \Procedure{Metropolis-Hastings}{}
+            \State Draw $\theta_0$ from $\pi(\theta)$
+            \State $i \leftarrow 0$
+            \While{maxIteration not reached}
+            \State $L \leftarrow P(D|\theta)$
+            \State Draw a point $\theta' $ from the proposal distribution.
+            \State $L' \leftarrow P(D|\theta')$
+            \If{ $\ln(L') - \ln(L) > 0$ }
+            \State Add $\theta'$ to $Trace$
+            \State $\theta = \theta'$
+            \Else
+            \State Draw a random number $x$ from $Uniform(0,1)$
+            \If{$x \leq \xi$, ($\xi$ very small, e.g $10^{-8}$)}
+            \State Add $\theta'$ to $Trace$ (avoiding local maxima)
+            \State $\theta = \theta'$
+            \EndIf
+            \EndIf
+            \EndWhile
+            \EndProcedure
+      \end{algorithmic}
 \end{algorithm}
 
 The likelihood function can be implemented as log-likelihood to avoid underflow error.
 Advantages of Metropolis-Hastings are
 \begin{itemize}
-    \item Parameter transition only needs the computation of likelihood function.
-          Therefore, Monte Carlo Markov Chain can be used in general Bayesian inference,
-          in which we are not guaranteed to have an analytical form of posterior.
-    \item Computationally efficient; as marginal distribution is cancelled out, and likelihood can
-          be replaced by log-likelihood, Metropolis-Hastings simplifies the computation of Bayes formula
-          and avoid infinitesimal values.
-    \item Simple to implement.
+      \item Parameter transition only needs the computation of likelihood function.
+            Therefore, Monte Carlo Markov Chain can be used in general Bayesian inference,
+            in which we are not guaranteed to have an analytical form of posterior.
+      \item Computationally efficient; as marginal distribution is cancelled out, and likelihood can
+            be replaced by log-likelihood, Metropolis-Hastings simplifies the computation of Bayes formula
+            and avoid infinitesimal values.
+      \item Simple to implement.
 \end{itemize}
 Disadvantages of Metropolis-Hastings are
 \begin{enumerate}
-    \item Particle in Metropolis-Hastings algorithm moves in a linear Markov chain; it is highly
-          probable to be stuck in a local maximum or minimum.
-    \item Not parallelizable; since there is only one linear chain, and current step depends on
-          previous step, Metropolis-Hastings algorithm does not scale up to multi-processors.
+      \item Particle in Metropolis-Hastings algorithm moves in a linear Markov chain; it is highly
+            probable to be stuck in a local maximum or minimum.
+      \item Not parallelizable; since there is only one linear chain, and current step depends on
+            previous step, Metropolis-Hastings algorithm does not scale up to multi-processors.
 \end{enumerate}
-The next algorithm, \textit{Sequential Monte-Carlo}, address the issues of Metropolis-Hastings.
+The next algorithm, \textit{Sequential Monte Carlo}, address the issues of Metropolis-Hastings.
 
-\subsubsection{Sequential Monte-Carlo}
-Sequential Monte-Carlo method is firstly proposed by \cite{del2006sequential}.  Instead of having
-one particle moving in its parameter space, Sequential Monte-Carlo estimates by using $N$ particles
-moving independently. Sequential Monte-Carlo uses  starting by a \textit{pertubation kernel}.
+\subsubsection{Sequential Monte Carlo}
+Sequential Monte Carlo method is firstly proposed by \cite{del2006sequential}.  Instead of having
+one particle moving in its parameter space, Sequential Monte Carlo estimates by using $N$ particles
+moving independently. Sequential Monte Carlo uses  starting by a \textit{pertubation kernel}.
 
-Therefore Sequential Monte-Carlo method has a significant advantage of easily
+Therefore Sequential Monte Carlo method has a significant advantage of easily
 parallelizable. Comparision between \cite{daviet2018inference}
 good for multimodal
 \begin{algorithm}[H]
-    \caption{Sequential Monte-Carlo Algorithm}
-    \label{alg:smc}
-    \hspace*{\algorithmicindent} \textbf{Input:}
-    \begin{itemize}
-        \item Model $\mathcal{M}_\theta$
-        \item $D_{obs}$: observation data
-        \item $\pi(\theta)$: prior distribution
-        \item $P(D|\theta)$: Likelihood function.
-        \item Transition kernel $Q(\theta^t|\theta^{t-1})$
-        \item \item Transition kernel $Q(\theta^t|\theta^{t-1})$
-        \item $N$ number of particles.
-    \end{itemize}
-    \hspace*{\algorithmicindent} \textbf{Output:}
-    \begin{itemize}
-        \item $(\theta_1,\ldots,\theta_N)$ sample of $N$ particles
-        \item $(w_1,\ldots,w_N)$ corresponding likelihoods.
-    \end{itemize}
-    \begin{algorithmic}[1]
-        \Procedure{Sequential-Monte-Carlo}{}
-        \State $i \leftarrow 1$
-        \While{$i \leq N$} \algorithmiccomment {SMC initialization}
-        \State Draw $\theta$ from $\pi(\theta)$
-        \State $\theta_i \leftarrow \theta$
-        \State $w_i \leftarrow P(D_{obs}|\theta_i)$
-        \State $i \leftarrow i + 1$
-        \EndWhile
-        \State $t \leftarrow 1$
-        \While{$t \leq M$}
-        \State $i \leftarrow 1$ \algorithmiccomment{SMC correction step}
-        \While{$i \leq N$}
-        \State $w'_i \leftarrow \frac{w_i}{\sum_{i=1}^N w_i} $
-        \EndWhile
-        \State Sample with replacement $(\theta'_1,\ldots,\theta'_N)$ \algorithmiccomment{SMC selection step} \\\hspace{1.5cm} from $(\theta_1,\ldots,\theta_N)$ with probabilities $(w'_1,\ldots,w'_N)$
-        \State $(\theta_1,\ldots,\theta_N) \leftarrow (\theta'_1,\ldots,\theta'_N)$
-        \State $i \leftarrow 1$
-        \While{$i \leq N$} \algorithmiccomment {SMC pertubation step}
-        \State Draw $\hat{\theta}^t_i$ from $F_t(\theta^t | \theta^{t-1}_1,\ldots,\theta^{t-1}_N), 1\leq t \leq M$
-        \State $(\theta^*_1,\ldots,\theta^*_{N_{MH}}), (w^*_1,\ldots,w^*_{N_{MH}}) \leftarrow Metropolis-Hastings(\hat{\theta}^t_i)$
-        \State $\theta_i \leftarrow \theta^*_{N_{MH}}$
-        \State $w_i \leftarrow w^*_{N_{MH}}$
-        \EndWhile
-        \EndWhile
-        \State Return $(\theta_1,\ldots,\theta_{N})$, $(w_1,\ldots,w_{N})$
-        \EndProcedure
-    \end{algorithmic}
+      \caption{Sequential Monte Carlo Algorithm}
+      \label{alg:smc}
+      \footnotesize{
+            \hspace*{\algorithmicindent} \textbf{Input:}
+            \begin{itemize}
+                  \item Model $\mathcal{M}_\theta$
+                  \item $D_{obs}$: observation data
+                  \item $\pi(\theta)$: prior distribution
+                  \item $P(D|\theta)$: Likelihood function.
+                  \item $Q(\theta^t|\theta^{t-1})$: Transition kernel.
+                  \item $F_t(\theta^t|\theta_1^{t-1},\ldots,\theta_N^{t-1})$: Pertubation kernels
+                  \item $N$ number of particles.
+            \end{itemize}
+            \hspace*{\algorithmicindent} \textbf{Output:}
+            \begin{itemize}
+                  \item $(\theta_1,\ldots,\theta_N)$ sample of $N$ particles
+                  \item $(w_1,\ldots,w_N)$ corresponding likelihoods.
+            \end{itemize}
+      }
+      \begin{algorithmic}[1]
+            \Procedure{Sequential-Monte Carlo}{}
+            \State $i \leftarrow 1$
+            \While{$i \leq N$} \algorithmiccomment {SMC initialization}
+            \State Draw $\theta$ from $\pi(\theta)$
+            \State $\theta_i \leftarrow \theta$
+            \State $w_i \leftarrow P(D_{obs}|\theta_i)$
+            \State $i \leftarrow i + 1$
+            \EndWhile
+            \State $t \leftarrow 1$
+            \While{$t \leq M$}
+            \State $i \leftarrow 1$ \algorithmiccomment{SMC correction step}
+            \While{$i \leq N$}
+            \State $w'_i \leftarrow \frac{w_i}{\sum_{i=1}^N w_i} $
+            \EndWhile
+            \State Sample with replacement $(\theta'_1,\ldots,\theta'_N)$ \algorithmiccomment{SMC selection step} \\\hspace{1.5cm} from $(\theta_1,\ldots,\theta_N)$ with probabilities $(w'_1,\ldots,w'_N)$
+            \State $(\theta_1,\ldots,\theta_N) \leftarrow (\theta'_1,\ldots,\theta'_N)$
+            \State $i \leftarrow 1$
+            \While{$i \leq N$} \algorithmiccomment {SMC pertubation step}
+            \State Draw $\hat{\theta}^t_i$ from $F_t(\theta^t | \theta^{t-1}_1,\ldots,\theta^{t-1}_N), 1\leq t \leq M$
+            \State $(\theta^*_1,\ldots,\theta^*_{N_{MH}}), (w^*_1,\ldots,w^*_{N_{MH}}) \leftarrow Metropolis-Hastings(\hat{\theta}^t_i)$
+            \State $\theta_i \leftarrow \theta^*_{N_{MH}}$
+            \State $w_i \leftarrow w^*_{N_{MH}}$
+            \EndWhile
+            \EndWhile
+            \State Return $(\theta_1,\ldots,\theta_{N})$, $(w_1,\ldots,w_{N})$
+            \EndProcedure
+      \end{algorithmic}
 \end{algorithm}
 Selection of kernel function for SMC is mentioned in \cite{silk2012optimizing}.\\
-Advantages of Sequential Monte-Carlo algorithm:
+Advantages of Sequential Monte Carlo algorithm:
 \begin{itemize}
-    \item Approximate multimodal distributions: since Sequential Monte-Carlo consists of $N$
-          particles moving independently and later selected with replacement, it is less likely to fall
-          into a local maximum or minimum.
-    \item Parallelizable: Sequential Monte-Carlo has trivially data-parallelism, in contrast to
-          Metropolis-Hastings where no parallelization is possible.
+      \item Approximate multimodal distributions: since Sequential Monte Carlo consists of $N$
+            particles moving independently and later selected with replacement, it is less likely to fall
+            into a local maximum or minimum.
+      \item Parallelizable: Sequential Monte Carlo has trivially data-parallelism, in contrast to
+            Metropolis-Hastings where no parallelization is possible.
 \end{itemize}
-However, Sequential Monte-Carlo also has disadvantages:
+However, Sequential Monte Carlo also has disadvantages:
 \begin{itemize}
-    \item Selection of pertubation and transition kernel is not trivial.
-    \item More difficult to implement.
+      \item Selection of pertubation and transition kernel is not trivial.
+      \item More difficult to implement.
 \end{itemize}
 
 \subsubsection{Approximate Bayesian Computation}
@@ -325,50 +329,52 @@ likelihood-free method for approximating posterior distribution. Instead of esti
 likelihood $P(D|\theta)$ directly, we sample a observable data set $\hat{D}$ and define a distance
 measure $\delta(D, \hat{D})$. Approximate Bayesian Computation accepts a set of tuples
 $(\hat{\theta}, \hat{D})$, each satisfies that $\delta(D_{obs},D_{sim}) < \epsilon,
-    \epsilon\in\mathbf{R}_{\leq 0}$.
+      \epsilon\in\mathbf{R}_{\leq 0}$.
 \begin{algorithm}[H]
-    \caption{Approximate Bayesian Computation}
-    \label{alg:abc-reject}
-    \hspace*{\algorithmicindent} \textbf{Input:}
-    \begin{itemize}
-        \item Model $\mathcal{M}_\theta$
-        \item $D_{obs}$: observation data
-        \item $\pi(\theta)$: prior distribution
-        \item $\delta(D_{sim}, D_{obs})$: distance function between two set of data simulated by $\mathcal{M}_\theta$
-        \item $epsilon$: distance threshold
-        \item $N$ number of particles.
-    \end{itemize}
-    \hspace*{\algorithmicindent} \textbf{Output:}
-    \begin{itemize}
-        \item $(\theta_1,\ldots,\theta_N)$: $N$ sampled particles.
-        \item $(w_1,\ldots,w_N)$: corresponding weights of sampled particles.
-    \end{itemize}
-    \begin{algorithmic}[1]
-        \Procedure{Approximate-Bayesian-Computation}{}
-        \State Select a proposal distribution $\pi(\theta)$
-        \State $i \leftarrow 1$
-        \While{$i \leq N$}
-        \State Draw a random particle $\theta$ from $\pi(\theta)$
-        \State Simulate data $D_{sim}$ from $\mathcal{M}_\theta$
-        \If{$d = \delta(D_{sim}, D_{obs}) < \epsilon$}
-        \State $\theta_i \leftarrow \theta$
-        \State $w_i = d$
-        \EndIf
-        \EndWhile
-        \State Return $(\theta_1,\ldots,\theta_N)$, $(w_1,\ldots,w_N)$
-        \EndProcedure
-    \end{algorithmic}
+      \caption{Approximate Bayesian Computation}
+      \label{alg:abc-reject}
+      \footnotesize{
+            \hspace*{\algorithmicindent} \textbf{Input:}
+            \begin{itemize}
+                  \item Model $\mathcal{M}_\theta$
+                  \item $D_{obs}$: observation data
+                  \item $\pi(\theta)$: prior distribution
+                  \item $\delta(D_{sim}, D_{obs})$: distance function between two set of data simulated by $\mathcal{M}_\theta$
+                  \item $epsilon$: distance threshold
+                  \item $N$ number of particles.
+            \end{itemize}
+            \hspace*{\algorithmicindent} \textbf{Output:}
+            \begin{itemize}
+                  \item $(\theta_1,\ldots,\theta_N)$: $N$ sampled particles.
+                  \item $(w_1,\ldots,w_N)$: corresponding weights of sampled particles.
+            \end{itemize}
+      }
+      \begin{algorithmic}[1]
+            \Procedure{Approximate-Bayesian-Computation}{}
+            \State Select a proposal distribution $\pi(\theta)$
+            \State $i \leftarrow 1$
+            \While{$i \leq N$}
+            \State Draw a random particle $\theta$ from $\pi(\theta)$
+            \State Simulate data $D_{sim}$ from $\mathcal{M}_\theta$
+            \If{$d = \delta(D_{sim}, D_{obs}) < \epsilon$}
+            \State $\theta_i \leftarrow \theta$
+            \State $w_i = d$
+            \EndIf
+            \EndWhile
+            \State Return $(\theta_1,\ldots,\theta_N)$, $(w_1,\ldots,w_N)$
+            \EndProcedure
+      \end{algorithmic}
 \end{algorithm}
 Advantages of Approximate Bayesian Computation:
 \begin{itemize}
-    \item Likelihood-free: applicable when the likelihood has no analytical form or there is no likelihood.
-    \item Easy to implement.
+      \item Likelihood-free: applicable when the likelihood has no analytical form or there is no likelihood.
+      \item Easy to implement.
 \end{itemize}
 Disavantages of Approximate Bayesian Computation:
 \begin{itemize}
-    \item Which distances are proper to measure two data set? In the other word, is measuring
-          distance a proper method to approximate likelihood?
-    \item How to select a threshold so that the likelihood is closely approximated?
+      \item Which distances are proper to measure two data set? In the other word, is measuring
+            distance a proper method to approximate likelihood?
+      \item How to select a threshold so that the likelihood is closely approximated?
 \end{itemize}
 
 \section{Summary}

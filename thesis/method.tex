@@ -14,36 +14,44 @@ There are two frameworks designed towards two different use cases:
 \end{enumerate}
 
 \section{Generic framework}
+We present the generic frameworks for Bayesian parameter synthesis of pDTMC. The generic takes a
+pDTMC, a property of interest and observed data as input. In the core of the framework, we use
+Sequential Monte Carlo to  The generic framework based on Sequential Monte Carlo algorithm. However,
+particular implementations of Sequential Monte Carlo
 \begin{algorithm}[H]
-      \caption{Generic framework for Bayesian, Monte-Carlo parameter synthesis}
+      \caption{Generic framework for Bayesian parameter synthesis}
       \label{alg:generic-framework}
-      \hspace*{\algorithmicindent} \textbf{Input:}
-      \begin{itemize}
-            \item $\mathcal{M}_\theta$: parametric Discrete-Time Markov chain of parameter $\theta$
-            \item $\Phi$: bounded reachability property of interest.
-            \item $D_{obs}$: observed data.
-            \item $N$: number of particles.
-      \end{itemize}
-      \hspace*{\algorithmicindent} \textbf{Output:}
-      \begin{itemize}
-            \item $(\theta_1,\ldots,\theta_{N_{MH}})$: $N_{MH}$ sampled particles.
-            \item $(w_1,\ldots,w_{N_{MH}})$: corresponding weights of sampled particles.
-      \end{itemize}
+      \footnotesize{
+            \hspace*{\algorithmicindent} \textbf{Input:}
+            \begin{itemize}
+                  \item $\mathcal{M}_\theta$: parametric Discrete-Time Markov chain of parameter $\theta$
+                  \item $\Phi$: bounded reachability property of interest.
+                  \item $D_{obs}$: observed data.
+                  \item $N$: number of particles.
+            \end{itemize}
+            \hspace*{\algorithmicindent} \textbf{Output:}
+            \begin{itemize}
+                  \item $(\theta_1,\ldots,\theta_{N_{MH}})$: $N_{MH}$ sampled particles.
+                  \item $(w_1,\ldots,w_{N_{MH}})$: corresponding weights of sampled particles.
+            \end{itemize}
+      }
       \begin{algorithmic}[1]
-            \Procedure{Generic-Bayesian-Monte-Carlo}{}
+            \Procedure{Generic-Bayesian-Monte Carlo}{}
             \State $i \leftarrow 1$
             \While{$i \leq N$}
-            \State Sample $\theta$ by Sequential Monte-Carlo sampling algorithm.
+            \State Sample $\theta$ by Sequential Monte Carlo sampling algorithm.
             \State Verify instantiated model $\mathcal{M}_\theta$ against $\Phi$
             \If{$\mathcal{M}_\theta \models \Phi$}
+            \State $\theta_i \leftarrow \theta$
             \EndIf
             \EndWhile
+            \State Return $(\theta_1,\ldots,\theta_N)$
             \EndProcedure
       \end{algorithmic}
 \end{algorithm}
 
 \subsection{Selection of pertubation kernel}
-An analysis on the seletion of pertubation kernel is presented by \cite{silk2012optimizing}. For
+An analysis on the seletion of pertubation kernel is presented by Silk \cite{silk2012optimizing}. For
 simplicity and avoiding the propagation of false beliefs, we select uniform, component-wise
 pertubation kernel. In the Metropolis-Hastings step when the analytical form of likelihood is
 available, we implement Single Component Metropolis-Hastings. The transition kernel
@@ -52,28 +60,31 @@ the minimum and maximum values are extracted from local Metropolis-Hasting trace
 
 \section{Symbolic computation based frameworks}
 As we have analytical form for both target property and likelihood function, the framework is
-designed identical to the original Sequential Monte-Carlo algorithm \cite{del2006sequential}. The
+designed identical to the original Sequential Monte Carlo algorithm (Del \cite{del2006sequential}). The
 only difference is that our framework only accept parameter values that instantiate satisfying
-concrete DTMC models. As in Sequential Monte-Carlo sampler, the first step is to define
+concrete DTMC models. As in Sequential Monte Carlo sampler, the first step is to define
 Metropolis-Hastings step for each independent particle $\theta$.
+
 \begin{algorithm}[H]
-      \caption{Markov chain Monte-Carlo with rational functions}
-      \label{rf-mcmc-alg}
-      \hspace*{\algorithmicindent} \textbf{Input:}
-      \begin{itemize}
-            \item $\mathcal{M}_\theta$: parametric Discrete-Time Markov chain of parameter $\theta$
-            \item $\Phi$: bounded reachability property of interest.
-            \item $\pi(\theta)$: prior distribution on $\theta$.
-            \item $N_{MH}$: length of particle trace.
-            \item $Q(\theta^t|\theta^{t-1})$: transition kernel.
-            \item $D_{obs}$: observed data.
-            \item $P(D_{obs}|\theta):$ likelihood function.
-      \end{itemize}
-      \hspace*{\algorithmicindent} \textbf{Output:}
-      \begin{itemize}
-            \item $(\theta_1,\ldots,\theta_{N_{MH}})$: $N_{MH}$ sampled particles.
-            \item $(w_1,\ldots,w_{N_{MH}})$: corresponding weights of sampled particles.
-      \end{itemize}
+      \caption{Metropolis-Hastings with rational functions}
+      \label{alg:rf-mcmc}
+      \footnotesize{
+            \hspace*{\algorithmicindent} \textbf{Input:}
+            \begin{itemize}
+                  \item $\mathcal{M}_\theta$: parametric Discrete-Time Markov chain of parameter $\theta$
+                  \item $\Phi$: bounded reachability property of interest.
+                  \item $\pi(\theta)$: prior distribution on $\theta$.
+                  \item $N_{MH}$: length of particle trace.
+                  \item $Q(\theta^t|\theta^{t-1})$: transition kernel.
+                  \item $D_{obs}$: observed data.
+                  \item $P(D_{obs}|\theta):$ likelihood function.
+            \end{itemize}
+            \hspace*{\algorithmicindent} \textbf{Output:}
+            \begin{itemize}
+                  \item $(\theta_1,\ldots,\theta_{N_{MH}})$: $N_{MH}$ sampled particles.
+                  \item $(w_1,\ldots,w_{N_{MH}})$: corresponding weights of sampled particles.
+            \end{itemize}
+      }
       \begin{algorithmic}[1]
             \Procedure{RF-MCMC}{}
             \State $sat \leftarrow False$
@@ -86,12 +97,6 @@ Metropolis-Hastings step for each independent particle $\theta$.
             \EndWhile
             \State $\theta_1 \leftarrow  \theta_{cand}$
             \State $w_1 \leftarrow  \ln(P(D_{obs}|\theta_{cand}))$
-            \algstore{algctx}
-      \end{algorithmic}
-\end{algorithm}
-\begin{algorithm}
-      \begin{algorithmic}[H]
-            \algrestore{algctx}
             \State $i \leftarrow 2$
             \While{$i \leq N_{MH}$}
             \State $sat \leftarrow False $
@@ -120,29 +125,28 @@ Metropolis-Hastings step for each independent particle $\theta$.
       \end{algorithmic}
 \end{algorithm}
 
-Afterwards, we implement the main Sequential Monte-Carlo algorithm for the case where rational
-functions are obtainable.
 \begin{algorithm}[H]
-      \caption{Sequential Monte-Carlo with rational functions}
-      \label{rf-smc-alg}
-      \hspace*{\algorithmicindent} \textbf{Input:}
-      \begin{itemize}
-            \item $\mathcal{M}_\theta$: parametric Discrete-Time Markov chain of parameter $\theta$
-            \item $\Phi$: bounded reachability property of interest.
-            \item $\pi(\theta)$: prior distribution on $\theta$.
-            \item $N$: number of particles in the Sequential Monte-Carlo trace.
-            \item $M$: number of pertubation kernels
-            \item $F_t(\theta^t | \theta^{t-1}_1,\ldots,\theta^{t-1}_N), 1\leq t \leq M$: pertubation kernels
-            \item $N_{MH}$: number of particles in each Metropolis-Hastings step.
-            \item $Q_t(\theta^t|\theta^{t-1}), 1 \leq t \leq N_{MH}$: transition kernel for Metropolis-Hastings step.
-            \item $D_{obs}$: observed data for Bayesian inference or its summary statistic $S_{obs}$
-            \item $P(D_{obs}|\theta):$ likelihood function.
-      \end{itemize}
-      \hspace*{\algorithmicindent} \textbf{Output:}
-      \begin{itemize}
-            \item $(\theta_1,\ldots,\theta_N)$: $N$ sampled particles.
-            \item $(w_1,\ldots,w_N)$: corresponding weights of sampled particles.
-      \end{itemize}
+      \caption{Sequential Monte Carlo with rational functions}
+      \label{alg:rf-smc}
+      \footnotesize{
+            \hspace*{\algorithmicindent} \textbf{Input:}
+            \begin{itemize}
+                  \item $\mathcal{M}_\theta$: parametric Discrete-Time Markov chain of parameter $\theta$
+                  \item
+                  \item $\Phi$: bounded reachability property of interest.
+                  \item $\pi(\theta)$: prior distribution on $\theta$.
+                  \item $N$: number of particles in the Sequential Monte Carlo trace.
+                  \item $M$ pertubation kernels $F_t(\theta^t | \theta^{t-1}_1,\ldots,\theta^{t-1}_N), 1\leq t \leq M$
+                  \item $N_{MH}$: number of particles in each Metropolis-Hastings step.
+                  \item $Q_t(\theta^t|\theta^{t-1}), 1 \leq t \leq N_{MH}$: transition kernel for Metropolis-Hastings step.
+
+            \end{itemize}
+            \hspace*{\algorithmicindent} \textbf{Output:}
+            \begin{itemize}
+                  \item $(\theta_1,\ldots,\theta_N)$: $N$ sampled particles.
+                  \item $(w_1,\ldots,w_N)$: corresponding weights of sampled particles.
+            \end{itemize}
+      }
       \begin{algorithmic}[1]
             \Procedure{RF-SMC}{}
             \State $i \leftarrow 1$
@@ -152,13 +156,6 @@ functions are obtainable.
             \State $w_i \leftarrow P(D_{obs}|\theta_i)$
             \State $i \leftarrow i + 1$
             \EndWhile
-            \algstore{algctx}
-      \end{algorithmic}
-\end{algorithm}
-
-\begin{algorithm}
-      \begin{algorithmic}[H]
-            \algrestore{algctx}
             \State $t \leftarrow 1$
             \While{$t \leq M$}
             \State $i \leftarrow 1$ \algorithmiccomment{SMC correction step}
@@ -179,6 +176,9 @@ functions are obtainable.
             \EndProcedure
       \end{algorithmic}
 \end{algorithm}
+Since rational functions for the interested property $\Phi$ is available, as well as the analytical
+form of the likelihood $P(D_{obs}|\theta)$, we design a framework based Sequential Monte Carlo
+sampling algorithm with Metropolis-Hastings algorithm on pertubation step.
 
 \section{Simulation based frameworks.}
 Without the availability of analytical form of observational and interested properties, we face the
@@ -188,61 +188,60 @@ following obstacles:
             not available, we do not have the analytical form of likelihood. The abscence of
             likelihood suggests to exploit \textit{likelihood-free methods}. In this framework we
             use \textit{Approximate Bayesian Computation} in combination with \textit{Sequential
-                  Monte-Carlo method}.
+                  Monte Carlo method}.
       \item \textbf{Absence of rational function for verification of bounded reachability property:}
             the satisfaction of an instantiated model to a bounded path property cannot be computed.
             In the case that the number of states is too large, we use \textit{Statistical Model
                   Checking}.
 \end{itemize}
 For this case we present Statistical Model Checking, Approximate Bayesian Computation - Sequential
-Monte-Carlo method \textit{SMC-ABC-SMC} framework.
+Monte Carlo method \textit{SMC-ABC-SMC} framework. SMC-ABC-SMC differs from RF-SMC only on
+pertubation step.
+\begin{itemize}
+      \item In SMC-ABC-SMC framework, we work with a \textit{likelihood-free} setup, in which
+            there is no analytical form of the likelihood. As there is no likelihood function, we apply
+            Approximate Bayesian Computation and  accept the first particle whose simulation satisfies the
+            distance threshold.
+      \item There is also no rational function for the property
+            of interest $\Phi$, so we apply Statistical model checking with confidence $\alpha$ and indifference
+            width $\delta$.
+\end{itemize}
 
 \begin{algorithm}[H]
-      \caption{Sequential Monte-Carlo with Approximate Bayesian Computation and Statiscal Model Checking}
+      \caption{Sequential Monte Carlo with Approximate Bayesian Computation and Statiscal Model Checking}
       \label{smc-abc-smc-alg}
-      \hspace*{\algorithmicindent} \textbf{Input:}
-      \begin{itemize}
-            \item $\mathcal{M}_\theta$: parametric Discrete-Time Markov chain of parameter $\theta$
-            \item $\Phi$: bounded reachability property of interest.
-            \item $\pi(\theta)$: prior distribution on $\theta$.
-            \item $N$: number of particles in the Sequential Monte-Carlo trace.
-            \item $M$: number of pertubation kernels
-            \item $F_t(\theta^t | \theta^{t-1}_1,\ldots,\theta^{t-1}_N), 1\leq t \leq M$
-            \item $N_{MH}$: number of particles in each Metropolis-Hastings step.
-            \item $Q_t(\theta^t|\theta^{t-1}), 1 \leq t \leq N_{MH}$: transition kernel for Metropolis-Hastings step.
-            \item $D_{obs}$: observed data for Bayesian inference or its summary statistic $S_{obs}$
-            \item $\epsilon$: threshold for Approximate Bayesian Computation.
-            \item $\delta, \alpha$: indifference and $\alpha$-level for Statistical Model Checking using SPRT method.
-      \end{itemize}
-      \hspace*{\algorithmicindent} \textbf{Output:}
-      \begin{itemize}
-            \item $(\theta_1,\ldots,\theta_N)$: $N$ sampled particles.
-            \item $(w_1,\ldots,w_N)$: corresponding weights of sampled particles.
-      \end{itemize}
+      \footnotesize{
+            \hspace*{\algorithmicindent} \textbf{Input:}
+            \begin{itemize}
+                  \item $\mathcal{M}_\theta$: pDTMC of parameter $\theta$
+                  \item $\Phi$: bounded reachability property of interest.
+                  \item $D_{obs}$: observed data
+                  \item $\pi(\theta)$: prior distribution on $\theta$.
+                  \item $N$: number of particles in the Sequential Monte Carlo trace.
+                  \item $M$ pertubation kernels $F_t(\theta^t | \theta^{t-1}_1,\ldots,\theta^{t-1}_N), 1\leq t \leq M$
+                  \item $\epsilon$: distance threshold for Approximate Bayesian Computation.
+                  \item $\delta, \alpha$: indifference and $\alpha$-level for Statistical Model Checking using SPRT method.
+            \end{itemize}
+            \hspace*{\algorithmicindent} \textbf{Output:}
+            \begin{itemize}
+                  \item $(\theta_1,\ldots,\theta_N), (w_1,\ldots,w_N)$: $N$ sampled particles and corresponding weights.
+            \end{itemize}
+      }
       \begin{algorithmic}[1]
             \Procedure{SMC-ABC-SMC}{}
             \State $i \leftarrow 1$
             \While{$i \leq N$} \algorithmiccomment {SMC initialization}
             \State Draw $\theta$ from $\pi(\theta)$
-            \State $\theta_i \leftarrow \theta$
-            \State $w_i \leftarrow 1$
+            \State $\theta_i \leftarrow \theta$, $w_i \leftarrow 1$
             \EndWhile
-
-            \algstore{algctx}
-      \end{algorithmic}
-\end{algorithm}
-
-\begin{algorithm}
-      \begin{algorithmic}[H]
-            \algrestore{algctx}
             \State $t \leftarrow 1$
             \While{$t \leq M$}
             \State $i \leftarrow 1$ \algorithmiccomment{SMC correction step}
             \While{$i \leq N$}
             \State $w'_i \leftarrow \frac{w_i}{\sum_{i=1}^N w_i} $
             \EndWhile
-            \State Sample with replacement $(\theta'_1,\ldots,\theta'_N)$ \algorithmiccomment{SMC selection step} \\\hspace{1.5cm} from $(\theta_1,\ldots,\theta_N)$ with probabilities $(w'_1,\ldots,w'_N)$
-            \State $(\theta_1,\ldots,\theta_N) \leftarrow (\theta'_1,\ldots,\theta'_N)$
+            \State Sample (with replacement) $(\theta^t_1,\ldots,\theta^t_N)$ \\
+            \hspace{3cm} from $(\theta^{t-1}_1,\ldots,\theta^{t-1}_N)$, $(w^{t-1}_1,\ldots,w^{t-1}_N)$  \algorithmiccomment{SMC selection step}
             \State $i \leftarrow 1$
             \While{$i \leq N$} \algorithmiccomment {SMC pertubation step}
             \State $rejected \leftarrow True$
@@ -250,19 +249,15 @@ Monte-Carlo method \textit{SMC-ABC-SMC} framework.
             \State $sat \leftarrow False $
             \While{$sat = False$}
             \State Draw $\hat{\theta}^t_i$ from $F_t(\theta^t | \theta^{t-1}_1,\ldots,\theta^{t-1}_N), 1\leq t \leq M$
-            \State Do SPRT SMC on $\mathcal{M}_{\hat{\theta}^t}$ and $\Phi$
-            \If{$\mathcal{M}_{\hat{\theta}^t}\models\Phi$}
+            \If{$SPRT-SMC(\mathcal{M}_{\hat{\theta}^t}, \Phi, \epsilon, \delta)$ is SAT}
             \State $sat \leftarrow True$
             \EndIf
             \EndWhile
-            \State $D_{sim} \leftarrow Simulate(\mathcal{M}_{\hat{\theta}^t})$
-            \State $d = Distance(D_{sim}, D_{obs})$
-            \If{$d < \epsilon$}
+            \State Simulate $D_{sim}$ from $(\mathcal{M}_{\hat{\theta}^t})$
+            \If{$Distance(D_{sim}, D_{obs}) < \epsilon$}
             \State $rejected \leftarrow False$
-            \State $\theta_i \leftarrow \hat{\theta}^t$
-            \State $w_i \leftarrow d$
+            \State $\theta_i \leftarrow \hat{\theta}^t$, $w_i \leftarrow d$
             \EndIf
-
             \EndWhile
             \EndWhile
             \EndWhile
@@ -272,6 +267,6 @@ Monte-Carlo method \textit{SMC-ABC-SMC} framework.
 \end{algorithm}
 
 \section{Summary}
-In this chapter we presents two Sequential Monte-Carlo based frameworks, which based on rational
+In this chapter we presents two Sequential Monte Carlo based frameworks, which based on rational
 functions and simulations. In the following chapter, we benchmark the frameworks using different
 parametric DTMC to evaluate their performances.

@@ -11,7 +11,9 @@
 
 % Algorithm & code listing
 \usepackage{algorithm}
-\usepackage{algpseudocode}
+\usepackage[noend]{algpseudocode}
+\makeatletter
+\algrenewcommand\ALG@beginalgorithmic{\footnotesize}
 \usepackage{titling}
 \usepackage{listings}
 \usepackage{enumitem}
@@ -25,6 +27,7 @@
 \usepackage{subcaption}
 \usepackage{hyperref}
 \usepackage{courier}
+\usepackage{subfloat}
 
 % Bibliotheq
 \usepackage{biblatex}

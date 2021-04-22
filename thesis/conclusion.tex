@@ -6,16 +6,17 @@ synthesize test data. Therefore, these frameworks are applicable when we need no
 on the unknown attributes of a system, but also proactively verify the system against a desired property.\\
 There are many possible extensions to the presented frameworks, including but not limited to:
 \begin{itemize}
-    \item \textit{Statistical Model Checking}: we can use Absolute-Error Massart Bounds (proposed by
-          Molyneux \cite{molyneux2020abc}, but currently not supported by PRISM) on Statistical
-          Model Checking to achieve a better bound on the number of simulation.
-    \item \textit{Bayesian Model Checking}: Zuliani \cite{zuliani2013bayesian} presents a novel method that
-          improves Statistical Model Checking by using Bayesian approach.
-    \item \textit{Sampling algorithms}: different sampling algorithms can be used to estimate
-          posterior distribution. For example, PyMC3 library \cite{salvatier2016pymc3} uses
-          No-U-Turn Sampling algorithm by default to estimate posterior distribution.
-    \item \textit{Implementation improvement}: currently StormPy prohibits our implementation to be
-          parallelized, since StormPy's core classes are not serializable. Porting to C++ language
-          possibly has several benefits by achieving higher performance of C++ and exploiting the
-          data-parallelism of Sequential Monte-Carlo algorithm.
+      \item \textit{Statistical Model Checking}: we can use Absolute-Error Massart Bounds (proposed by
+            Molyneux \cite{molyneux2020abc}, but currently not supported by PRISM) on Statistical
+            Model Checking to achieve a better bound on the number of simulation.
+      \item \textit{Bayesian Model Checking}: Jha \cite{jha2009bayesian} and Zuliani
+            \cite{zuliani2013bayesian} presents a novel method that improves Statistical Model
+            Checking by using Bayesian approach.
+      \item \textit{Sampling algorithms}: different sampling algorithms can be used to estimate
+            posterior distribution. For example, PyMC3 library \cite{salvatier2016pymc3} uses
+            No-U-Turn Sampling algorithm by default to estimate posterior distribution.
+      \item \textit{Implementation improvement}: currently StormPy prohibits our implementation to be
+            parallelized, since StormPy's core classes are not serializable. Porting to C++ language
+            possibly has several benefits by achieving higher performance of C++ and exploiting the
+            data-parallelism of Sequential Monte Carlo algorithm.
 \end{itemize}

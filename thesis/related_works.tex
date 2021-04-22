@@ -13,24 +13,25 @@ The theoretical background of model checking DTMC is presented by Baier et al
 \cite{baier2008principles}. An introduction to parametric DTMC and current methods on parameter
 synthesis is presented by the tutorial by Katoen \cite{katoen2016probabilistic}. More in-depth
 surveys and discoveries on parametric model checking and parameter synthesis is presented by Junges
-\cite{junges2020parameter} and \cite{hutschenreiter2017parametric}. Polgreen
+\cite{junges2020parameter} and Hutschenreiter \cite{hutschenreiter2017parametric}. Polgreen
 \cite{polgreen2016data}, and Haesaert \cite{haesaert2015data} present Bayesian approach on
 data-informed parameter synthesis and model verification. Jha \cite{jha2009bayesian} pioneered the
-first algorithm for Bayesian approach on Statistical Model Checking, namelyBayesian Sequential
+first algorithm for Bayesian approach on Statistical Model Checking, namely Bayesian Sequential
 Hypothesis Testing.
 
 %% Bayesian inference: optimzation methodds
-Monte-Carlo sampling algorithms used in this thesis are presented by Metropolis
-\cite{metropolis1953equation}, Del Moral \cite{del2006sequential}, and Toni
-\cite{toni2009approximate}. A comparision between different Monte-Carlo sampling algorithms,
-including Markov-chain Monte-Carlo, Sequential Monte-Carlo, Hamiltonian Monte-Carlo, and Hamiltonian
-Sequential Monte-Carlo is presented in \cite{daviet2018inference}. Silk \cite{silk2012optimizing}
-discussed different approaches on the pertubation kernel selection of Sequential Monte-Carlo and
-Sequential Monte-Carlo with Approximate Bayesian Computation algorithms.
+Markov Chain Monte Carlo sampling algorithms used in this thesis are presented by Metropolis
+\cite{metropolis1953equation}, and Hastings \cite{hastings1970monte}. Del Moral
+\cite{del2006sequential} designed Sequential Monte Carlo to address the problem of Markov Chain
+Monte Carlo. Toni \cite{toni2009approximate}. A comparision between different Monte Carlo
+sampling algorithms, including Markov-chain Monte Carlo, Sequential Monte Carlo, Hamiltonian
+Monte Carlo, and Hamiltonian Sequential Monte Carlo is presented in \cite{daviet2018inference}. Silk
+\cite{silk2012optimizing} discussed different approaches on the pertubation kernel selection of
+Sequential Monte Carlo and Sequential Monte Carlo with Approximate Bayesian Computation algorithms.
 
 %% Tools: PRISM and STORM
 The model checking step in the frameworks presented by this thesis are implemented using Storm model
 checker \cite{hensel2020probabilistic}. Storm provides well documented and easy to use APIs to embed
 model checking to software projects programmatically. However, Storm does not support Statistical
-Model Checking. Thus, Statistical Model Checking step in simulation-based frameworks is implemented
-using PRISM \cite{kwiatkowska2011prism}.
+Model Checking. Thus, the Statistical Model Checking step in simulation-based frameworks is
+implemented using PRISM \cite{kwiatkowska2011prism}.

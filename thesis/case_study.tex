@@ -25,7 +25,7 @@ All experiments are conducted in the following system:
 
 \section{ZeroConfiguration Protocol}
 \subsection{System description}
-Zero-configuration protocol (\textit{zeroconf} for short) is a protocol used in IPv4 network to
+Zero-configuration protocol (\textit{zeroconf} for short) \cite{ZeroConf} is a protocol used in IPv4 network to
 allocate newly attached device an unique IP address without any intervention from network operators.
 \begin{algorithm}[H]
     \caption{IPv4 Zeroconf procedure.}
@@ -198,11 +198,8 @@ the a pDTMC as a formalism of the Zeroconf protocol of $N$ probes.
     \label{fig:zeroconf-10}
     \caption{IPv4 ZeroConf model, 10 probes}
 \end{figure}
-We want to verify the following property:
-\begin{align*}
-    \text{Eventually, an IP is successfully allocated with at most $N$ probes with probability of at least 75 percents.}
-\end{align*}
-In PCTL formula
+We want to verify the following property: \textit{"Eventually, an IP is successfully allocated with
+    at most $N$ probes with probability of at least 75 percents."} In PCTL formula
 \begin{align*}
     P_{\geq 0.75} ( \texttt{true} \quad \mathsf{U}^{\leq N} \quad \texttt{"OK"} )
 \end{align*}
@@ -211,8 +208,8 @@ In PCTL formula
 \subsubsection{True parameters and synthetic data}
 We use the following true parameter:
 \begin{enumerate}
-    \item Zeroconf 4 probes: $(p,q)=(0.10554747, 0.44965874)$
-    \item Zeroconf 10 probes: $(p,q)=(0.19777902, 0.62182433)$
+    \item Zeroconf 4 probes: $(p,q)=(0.105547, 0.449658)$
+    \item Zeroconf 10 probes: $(p,q)=(0.197779, 0.621824)$
 \end{enumerate}
 Observation data $D_{obs}$ is from simulating the instantiated DTMC of true parameters $10000$ times.
 \begin{figure}[H]
@@ -226,7 +223,7 @@ Observation data $D_{obs}$ is from simulating the instantiated DTMC of true para
     \begin{subfigure}{0.48\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/zeroconf10_data.png}
-        \caption{True parameters $(p,q)=(0.19777902, 0.62182433)$, $10000$ chain simulations.}
+        \caption{True parameters $(p,q)=(0.197779, 0.621824)$, $10000$ chain simulations.}
     \end{subfigure}
 \end{figure}
 
@@ -236,14 +233,14 @@ Parameter synthesis for Zeroconf pDTMC of 4 probes.
     \begin{tabular}{|l|c|l|}
         \hline
         \multicolumn{1}{|c|}{\textbf{Zeroconf, 4 probes}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Rational function\\ SMC\end{tabular}}                                   & \begin{tabular}[c]{@{}l@{}}Statistical model checking\\ ABC-SMC\end{tabular} \\ \hline
-        True parameter                                    & \multicolumn{2}{c|}{(0.10554747, 0.44965874)}                                                                  \\ \hline
+        True parameter                                    & \multicolumn{2}{c|}{(0.105547, 0.449658)}                                                                      \\ \hline
         Number of states                                  & \multicolumn{2}{c|}{9}                                                                                         \\ \hline
         Number of BSCCs                                   & \multicolumn{2}{c|}{2}                                                                                         \\ \hline
         Target property                                   & \multicolumn{2}{c|}{$P_{\geq 0.75} [!(i>2) \mathsf{U}^{\leq 4} (\texttt{"OK"})]$}                              \\ \hline
         Synthetic data                                    & \multicolumn{2}{c|}{$(41, 9959)$}                                                                              \\ \hline
-        Inferred parameter point                          & \multicolumn{1}{l|}{$(0.18895572, 0.46055455)$}                                   & $(0.17646959, 0.35532204)$ \\ \hline
-        L2 distance to true parameter                     & \multicolumn{1}{l|}{$0.08411690302113349$}                                        & $0.11802271422141228$      \\ \hline
-        Run time (hh:mm:ss)                               & \multicolumn{1}{l|}{0:06:05.137928}                                               & 0:54:52.112848             \\ \hline
+        Inferred parameter point                          & \multicolumn{1}{l|}{$(0.188956, 0.460554)$}                                       & $(0.176469, 0.355322)$     \\ \hline
+        L2 distance to true parameter                     & \multicolumn{1}{l|}{$0.084117$}                                                   & $0.118023$                 \\ \hline
+        Run time (hh:mm:ss)                               & \multicolumn{1}{l|}{0:06:05}                                                      & 0:54:52                    \\ \hline
     \end{tabular}
     \caption{SIR(5,1,0) parameter estimation results.}
 \end{table}
@@ -268,14 +265,14 @@ Parameter synthesis for Zeroconf pDTMC of 10 probes.
     \begin{tabular}{|l|c|l|}
         \hline
         \multicolumn{1}{|c|}{\textbf{Zeroconf, 4 probes}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Rational function\\ SMC\end{tabular}}                                    & \begin{tabular}[c]{@{}l@{}}Statistical model checking\\ ABC-SMC\end{tabular} \\ \hline
-        True parameter                                    & \multicolumn{2}{c|}{(0.19777902, 0.62182433)}                                                                   \\ \hline
+        True parameter                                    & \multicolumn{2}{c|}{(0.197779, 0.621824)}                                                                       \\ \hline
         Number of states                                  & \multicolumn{2}{c|}{14}                                                                                         \\ \hline
         Number of BSCCs                                   & \multicolumn{2}{c|}{2}                                                                                          \\ \hline
         Target property                                   & \multicolumn{2}{c|}{$P_{\geq 0.75} [!(i>2) \mathsf{U}^{\leq 10} (\texttt{"OK"})]$}                              \\ \hline
         Synthetic data                                    & \multicolumn{2}{c|}{$(22, 9978)$}                                                                               \\ \hline
-        Inferred parameter point                          & \multicolumn{1}{l|}{$(0.30180755, 0.45709018)$}                                    & $(0.37877446, 0.40586992)$ \\ \hline
-        L2 distance to true parameter                     & \multicolumn{1}{l|}{$0.19483140118558434$}                                         & $0.2817723545992011$       \\ \hline
-        Run time (hh:mm:ss)                               & \multicolumn{1}{l|}{0:09:29.760715}                                                & 0:37:56.507119             \\ \hline
+        Inferred parameter point                          & \multicolumn{1}{l|}{$(0.301807, 0.457090)$}                                        & $(0.378774, 0.405870)$     \\ \hline
+        L2 distance to true parameter                     & \multicolumn{1}{l|}{$0.194831$}                                                    & $0.281772$                 \\ \hline
+        Run time (hh:mm:ss)                               & \multicolumn{1}{l|}{0:09:29}                                                       & 0:37:56                    \\ \hline
     \end{tabular}
     \caption{SIR(5,1,0) parameter estimation results.}
 \end{table}
@@ -340,7 +337,8 @@ is $n'\in\{0,1,\ldots,n\}$. We model the bee colony with a DTMC $\mathcal{M}=(S,
 Semantics of \textit{semi-synchronous} Markov population models for bees colony are developed by
 \cite{hajnal2019data}.
 \begin{itemize}
-    \item \textit{Synchronous model}:
+    \item \textit{Synchronous model}: all bees decide to sting or not to sting in a transition.
+    \item \textit{Asynchronous model}: bees may not sting in a transition but probably stings in the next transition.
 \end{itemize}
 In \textit{semisynchronous model}, we assume that the behaviour is initally synchronous. From all
 succeeding states from initial states, the updates are of asynchronous semantics.
@@ -348,9 +346,10 @@ succeeding states from initial states, the updates are of asynchronous semantics
     We model a colony of 3 bees using semisynchronous semantics. In the following DTMC model, each
     individual bee is encode by an integer represents its state
     \begin{itemize}
-        \item 0: bee never stings.
-        \item 1: bee stings and dies.
-        \item 2: bee does not sting in 2 consecutive observations.
+        \item $0$: bee never stings.
+        \item $1$: bee stings and dies.
+        \item $2$: bee does not sting in $2$ consecutive observations.
+        \item $k$: bee does not sting in $k$ consecutive observations.
     \end{itemize}
     Let $p, q_1, q_2$ represent the probabilities that a bee stings without any stimulation and a
     bee stings at 1 and 2 attemps, respectively. We then construct the following pDTMC
@@ -360,7 +359,7 @@ succeeding states from initial states, the updates are of asynchronous semantics
             \tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1]
             \node[state,initial]    (A)                     {init};
             \node[state]            (B)[right of=A]         {$2, 2, 1 $};
-            \node[state]            (C)[above of=B]         {$0, 0, 0$};
+            \node[state,accepting]            (C)[above of=B]         {$0, 0, 0$};
             \node[state]            (D)[below of=B]         {$2, 1, 1$};
             \node[state,accepting]  (E)[below of=D]         {$1, 1, 1$};
             \node[state]            (F)[right of=B]         {$0, 2, 1$};
@@ -376,21 +375,27 @@ succeeding states from initial states, the updates are of asynchronous semantics
             edge    node{$1-q_1$}            (F)
             edge    node{$q_1$}              (D)
 
+            (C)
+            edge [loop right] node {1} (C)
+
             (D)
             edge    node{$1-q_2$}          (G)
             edge    node{$q_2$}              (E)
+            (E)
+            edge [loop right] node {1} (W)
             (F)
             edge    node{$q_1$}              (G)
-            edge    node{$1 - q_1$}          (H);
+            edge    node{$1 - q_1$}          (H)
+            (G)
+            edge [loop right] node {1} (G)
+
+            ;
         \end{tikzpicture}
         \caption{Semisynchronous model of 3 bees, 3 parameters $p, q_1, q_2$)}
     \end{figure}
 \end{example}
-We verify the following property:
-\begin{align*}
-    \text{With probability of at least 25 percents, at least a half of bees population survives.}
-\end{align*}
-In PCTL formula
+We verify the following property: \textit{"With probability of at least 25 percents, at least a half
+    of bees population survives."} In PCTL formula:
 \begin{align*}
     P_{\geq 0.25} ( \texttt{true} \quad \mathsf{U} \quad \texttt{"|Survived| > 0.5N"} )
 \end{align*}
@@ -401,10 +406,10 @@ We use the following true parameter:
 \begin{table}[]
     \begin{tabular}{|l|l|l|}
         \hline
-                        & Semisynchronous model, 3 bees        & Semisynchronous model, 5 bees       \\ \hline
-        Number of BSCCs & 4                                    & 6                                   \\ \hline
-        True parameter  & (0.66562362, 0.83040077, 0.83977757) & \begin{tabular}[c]{@{}l@{}}(0.2783698,  0.30599383, 0.4897924,\\   0.73725233, 0.76658066)\end{tabular}          \\ \hline
-        Synthetic data  & (344,   54, 1390, 8212)              & (1940,   11,  216, 2682, 4200, 951) \\ \hline
+                        & Semisynchronous model, 3 bees    & Semisynchronous model, 5 bees    \\ \hline
+        Number of BSCCs & 4                                & 6                                \\ \hline
+        True parameter  & $(0.665623, 0.830401, 0.839778)$ & \begin{tabular}[c]{@{}l@{}}($0.278370,  0.305994, 0.489792,$\\ $0.737252, 0.766581$)\end{tabular}       \\ \hline
+        Synthetic data  & (344, 54, 1390, 8212)            & (1940, 11, 216, 2682, 4200, 951) \\ \hline
     \end{tabular}
 \end{table}
 Observation data $D_{obs}$ is from simulating the instantiated DTMC of true parameters $10000$ times.
@@ -430,10 +435,11 @@ Parameter synthesis for semisynchronous model of 3 bees.
         \hline
         {\color[HTML]{232627} Semisynchronous model, 3 bees} & \begin{tabular}[c]{@{}l@{}}SMC with\\ rational function\end{tabular}                                & \begin{tabular}[c]{@{}l@{}}ABC-SMC with\\ statistical model checking\end{tabular} \\ \hline
         True parameter                                       & \multicolumn{2}{c|}{(0.66562362, 0.83040077, 0.83977757)}                              \\ \hline
-        Estimated parameter                                  & \begin{tabular}[c]{@{}c@{}}(0.67138814, 0.57502566,\\   0.52550228)\end{tabular}                                & \begin{tabular}[c]{@{}c@{}}(0.81165139, 0.62107331,\\   0.5441299)\end{tabular} \\ \hline
-        L2 distance                                          & 0.40499214733462613                                       & 0.3905759806675119         \\ \hline
-        Time elapsed                                         & 0:05:55.157159                                            & 1:08:47.830380             \\ \hline
+        Estimated parameter                                  & \begin{tabular}[c]{@{}c@{}}(0.671388, 0.575026,\\ 0.525502)\end{tabular}                                & \begin{tabular}[c]{@{}c@{}}(0.81165139, 0.62107331,\\   0.5441299)\end{tabular} \\ \hline
+        L2 distance                                          & 0.404992                                                  & 0.390576                   \\ \hline
+        Time elapsed                                         & 0:05:55                                                   & 1:08:47                    \\ \hline
     \end{tabular}
+    \caption{Results summary on semisynchronous 3 bees model}
 \end{table}
 
 
@@ -442,11 +448,12 @@ Parameter synthesis for semisynchronous model of 5 bees.
     \begin{tabular}{|l|l|l|}
         \hline
         {\color[HTML]{232627} Semisynchronous model, 5 bees} & \begin{tabular}[c]{@{}l@{}}SMC with\\ rational function\end{tabular}                      & \begin{tabular}[c]{@{}l@{}}ABC-SMC with\\ statistical model checking\end{tabular} \\ \hline
-        True parameter                                       & \multicolumn{2}{c|}{\begin{tabular}[c]{@{}c@{}}(0.2783698,  0.30599383, 0.4897924,\\   0.73725233, 0.76658066)\end{tabular}}                              \\ \hline
-        Estimated parameter                                  & \begin{tabular}[c]{@{}l@{}}(0.57656519, 0.58972387,\\  0.49033413, 0.55439667,\\  0.52443301)\end{tabular}                      & \begin{tabular}[c]{@{}l@{}}(0.36121979, 0.31600669,\\  0.5456908, 0.64396223,\\  0.59120587)\end{tabular} \\ \hline
-        L2 distance                                          & 0.511366013681474                               & 0.22259463218787823        \\ \hline
-        Time elapsed                                         & 0:29:31.224466                                  & 5:52:05.296708             \\ \hline
+        True parameter                                       & \multicolumn{2}{c|}{\begin{tabular}[c]{@{}c@{}}(0.278370,  0.305994, 0.489792,\\   0.737252, 0.766581)\end{tabular}}                              \\ \hline
+        Estimated parameter                                  & \begin{tabular}[c]{@{}l@{}}(0.576565, 0.589724,\\  0.490334, 0.554397,\\ 0.524433)\end{tabular}                      & \begin{tabular}[c]{@{}l@{}}(0.36121979, 0.31600669,\\  0.5456908, 0.64396223,\\  0.59120587)\end{tabular} \\ \hline
+        L2 distance                                          & 0.511366                                        & 0.222595                   \\ \hline
+        Time elapsed                                         & 0:29:31                                         & 5:52:05                    \\ \hline
     \end{tabular}
+    \caption{Results summary on semisynchronous 3 bees model}
 \end{table}
 
 \subsection{Discussion}
@@ -460,14 +467,14 @@ be conducted to have enough data to conclude the effectiveness of two frameworks
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{SIR model}
 \subsection{System}
-\textit{SIR} model  is a population model, which is widely used in modeling epidemics. In a
-\text{SIR} model, each individual is of one among three types:
+\textit{SIR} model (Kermack \cite{kermack1927contribution}) is a model widely used in modeling
+epidemics. In a \text{SIR} model, each individual is of one among three types:
 \begin{itemize}
     \item \textit{Susceptible (S)}
     \item \textit{Infected (S)}
     \item \textit{Recovered (S)}
 \end{itemize}
-SIR system is a stochastic system modeled by reactions between S, I and R. In this thesis we use
+SIR is a stochastic system modeled by reactions between S, I and R. In this thesis we use
 only 2 reactions.
 \begin{align*}
     R_1: & S + I \xrightarrow{\alpha} 2I \\
@@ -477,19 +484,21 @@ only 2 reactions.
 \begin{algorithm}[H]
     \caption{Generate SIR CTMC from reactions.}
     \label{alg:gen-sir-ctmc}
-    \hspace*{\algorithmicindent} \textbf{Input:}
-    \begin{itemize}
-        \item $(S_0, I_0, R_0)$: initial population.
-        \item Reactions of rate $\alpha,\beta$
-              \begin{align*}
-                  R_1: & S + I \xrightarrow{\alpha} 2I \\
-                  R_2: & I     \xrightarrow{\beta} R
-              \end{align*}
-    \end{itemize}
-    \hspace*{\algorithmicindent} \textbf{Output:}
-    \begin{itemize}
-        \item CTMC $\mathcal{C}$
-    \end{itemize}
+    \footnotesize{
+        \hspace*{\algorithmicindent} \textbf{Input:}
+        \begin{itemize}
+            \item $(S_0, I_0, R_0)$: initial population.
+            \item Reactions of rate $\alpha,\beta$
+                  \begin{align*}
+                      R_1: & S + I \xrightarrow{\alpha} 2I \\
+                      R_2: & I     \xrightarrow{\beta} R
+                  \end{align*}
+        \end{itemize}
+        \hspace*{\algorithmicindent} \textbf{Output:}
+        \begin{itemize}
+            \item CTMC $\mathcal{C}$
+        \end{itemize}
+    }
     \begin{algorithmic}[1]
         \Procedure{Explore}{$s$,$i$,$r$}
         \If{$i = 0$}
@@ -696,8 +705,8 @@ such that $(s^t,i^t,r^t) = (s^{t+k},i^{t+k},r^{t+k})$ then $k=0$, because all re
         \caption{$SIR(3,1,0)$ Uniformized DTMC model with parameters$(\alpha, \beta)$ and uniformization rate $(3\alpha + 4\beta)$}
     \end{figure}
 \end{example}
-We check the following property: "With probability of at least 25 percents, the number of infected individuals does not exceed half of the population until the system is stabilized."
-In PCTL formula:
+We check the following property: \textit{"With probability of at least 25 percents, the number of infected
+    individuals does not exceed half of the population until the system is stabilized."}. In PCTL formula:
 \begin{align*}
     P_{\geq 0.25} ( !(i > (S_0 + i_0 + R_0)/2) \quad \mathsf{U} \quad (i = 0) )
 \end{align*}
@@ -726,7 +735,6 @@ We evaluate simulation-based and rational function based frameworks on different
         \includegraphics[width=\linewidth]{figures/sir1510_data.png}
         \caption{SIR(5,1,0) synthetic data}
     \end{subfigure}
-    \includegraphics[width=0.45\linewidth]{figures/sir510_data.png}
     \caption{Synthetic data $D_{obs}$ using selected true parameter.}
 \end{figure}
 
@@ -734,14 +742,14 @@ We evaluate simulation-based and rational function based frameworks on different
     \begin{tabular}{|l|c|l|}
         \hline
         \multicolumn{1}{|c|}{\textbf{SIR(5,1,0)}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Rational function\\ SMC\end{tabular}}            & \begin{tabular}[c]{@{}l@{}}Statistical model checking\\ ABC-SMC\end{tabular} \\ \hline
-        True parameter                            & \multicolumn{2}{c|}{(0.03405521, 0.08773454)}                                           \\ \hline
+        True parameter                            & \multicolumn{2}{c|}{(0.034055, 0.087734)}                                               \\ \hline
         Number of states                          & \multicolumn{2}{c|}{27}                                                                 \\ \hline
         Number of BSCCs                           & \multicolumn{2}{c|}{6}                                                                  \\ \hline
         Target property                           & \multicolumn{2}{c|}{$P_{\geq 0.25} [!(i>3) U^{<6} (i=0)]$}                              \\ \hline
         Synthetic data                            & \multicolumn{2}{c|}{(1098, 1377, 1296, 1312, 1466, 3451)}                               \\ \hline
-        Inferred parameter point                  & \multicolumn{1}{l|}{(0.02547391, 0.0676129)}               & (0.02307652, 0.06481155)   \\ \hline
-        L2 distance to true parameter             & \multicolumn{1}{l|}{0.021875082353604854}                  & 0.02011985105552338        \\ \hline
-        Run time (hh:mm:ss)                       & \multicolumn{1}{l|}{0:19:34.397596}                        & 3:51:36.893424             \\ \hline
+        Inferred parameter point                  & \multicolumn{1}{l|}{(0.025473, 0.067613)}                  & (0.023077, 0.064812)       \\ \hline
+        L2 distance to true parameter             & \multicolumn{1}{l|}{0.021875}                              & 0.020120                   \\ \hline
+        Run time (hh:mm:ss)                       & \multicolumn{1}{l|}{0:19:34}                               & 3:51:36                    \\ \hline
     \end{tabular}
     \caption{SIR(5,1,0) parameter estimation results.}
 \end{table}
@@ -768,14 +776,14 @@ In the experiment with $SIR(5,1,0)$ model we can see that rational-function base
     \begin{tabular}{|l|c|l|}
         \hline
         \multicolumn{1}{|c|}{\textbf{SIR(10,1,0)}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Rational function\\ SMC\end{tabular}}                                        & \begin{tabular}[c]{@{}l@{}}Statistical model checking\\ ABC-SMC\end{tabular} \\ \hline
-        True parameter                             & \multicolumn{2}{c|}{(0.02549012, 0.0692981)}                                                                        \\ \hline
+        True parameter                             & \multicolumn{2}{c|}{(0.025490, 0.06930)}                                                                            \\ \hline
         Number of states                           & \multicolumn{2}{c|}{77}                                                                                             \\ \hline
         Number of BSCCs                            & \multicolumn{2}{c|}{11}                                                                                             \\ \hline
         Target property                            & \multicolumn{2}{c|}{$P_{\geq 0.25} [!(i>5) U^{<11} (i=0)]$}                                                         \\ \hline
         Synthetic data                             & \multicolumn{2}{c|}{(1002, 1258, 1123, 902,  770,  651,  497,  420,  496,  685, 2196)}                              \\ \hline
-        Inferred parameter point                   & \multicolumn{1}{l|}{(0.0140951  0.06632789)}                                           & (0.02255187, 0.06641589)   \\ \hline
-        L2 distance to true parameter              & \multicolumn{1}{l|}{0.011775762120972396}                                              & 0.004115880723356161       \\ \hline
-        Run time (hh:mm:ss)                        & \multicolumn{1}{l|}{2:45:02.154117}                                                    & 9:27:41.345284             \\ \hline
+        Inferred parameter point                   & \multicolumn{1}{l|}{(0.014095  0.066328)}                                              & (0.022552, 0.066416)       \\ \hline
+        L2 distance to true parameter              & \multicolumn{1}{l|}{0.011776}                                                          & 0.004116                   \\ \hline
+        Run time (hh:mm:ss)                        & \multicolumn{1}{l|}{2:45:02}                                                           & 9:27:41                    \\ \hline
     \end{tabular}
     \caption{SIR(10,1,0) parameter estimation results.}
 \end{table}
@@ -785,15 +793,15 @@ In the experiment with $SIR(5,1,0)$ model we can see that rational-function base
     \begin{subfigure}{0.48\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/sir1010_rfsmc.png}
-        \caption{Sampled particles using Rational Functions SMC}
+        \caption{SIR(10,1,0), sampled particles using Rational Functions SMC}
     \end{subfigure}
     \hfill
     \begin{subfigure}{0.48\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/sir1010_abcsmc.png}
-        \caption{Sampled particles using Statiscal Model Checking ABC-SMC}
+        \caption{SIR(10,1,0), sampled particles using Statiscal Model Checking ABC-SMC}
     \end{subfigure}
-    \caption{SIR(10,1,0) parameter synthesis results.}
+    \caption{ parameter synthesis results.}
 \end{figure}
 
 In the experiment with $SIR(10,1,0)$ model we can see that  simulation based method deliver closer estimation to true parameter.
@@ -802,14 +810,14 @@ In the experiment with $SIR(10,1,0)$ model we can see that  simulation based met
     \begin{tabular}{|l|c|l|}
         \hline
         \multicolumn{1}{|c|}{\textbf{SIR(15,1,0)}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Rational function\\ SMC\end{tabular}}                                         & \begin{tabular}[c]{@{}l@{}}Statistical model checking\\ ABC-SMC\end{tabular} \\ \hline
-        True parameter                             & \multicolumn{2}{c|}{(0.01724649, 0.06778604)}                                                                        \\ \hline
+        True parameter                             & \multicolumn{2}{c|}{(0.017246, 0.067786)}                                                                            \\ \hline
         Number of states                           & \multicolumn{2}{c|}{27}                                                                                              \\ \hline
         Number of BSCCs                            & \multicolumn{2}{c|}{6}                                                                                               \\ \hline
         Target property                            & \multicolumn{2}{c|}{$P_{\geq 0.25} [!(i>7) U^{<16} (i=0)]$}                                                          \\ \hline
         Synthetic data                             & \multicolumn{2}{c|}{(50,181,302,455,539,567,582,566,541,553,574,528,512,586,875,2589,)}                              \\ \hline
-        Inferred parameter point                   & \multicolumn{1}{l|}{(0.02307652, 0.06481155)}                                           & (0.01758384, 0.06535699)   \\ \hline
-        L2 distance to true parameter              & \multicolumn{1}{l|}{0.006544985909916083}                                               & 0.005519695496673707       \\ \hline
-        Run time (hh:mm:ss)                        & \multicolumn{1}{l|}{1:07:36.442146}                                                     & 3:05:22.61795              \\ \hline
+        Inferred parameter point                   & \multicolumn{1}{l|}{(0.023077, 0.064816)}                                               & (0.017584, 0.065357)       \\ \hline
+        L2 distance to true parameter              & \multicolumn{1}{l|}{0.006545}                                                           & 0.005520                   \\ \hline
+        Run time (hh:mm:ss)                        & \multicolumn{1}{l|}{1:07:36}                                                            & 3:05:22                    \\ \hline
     \end{tabular}
     \caption{SIR(15,1,0) parameter estimation results.}
 \end{table}
@@ -837,14 +845,14 @@ generate synthetic data.
     \begin{tabular}{|l|c|l|}
         \hline
         \multicolumn{1}{|c|}{\textbf{SIR(15,1,0)}, BSCC merged} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Rational function\\ SMC\end{tabular}}             & \begin{tabular}[c]{@{}l@{}}Statistical model checking\\ ABC-SMC\end{tabular} \\ \hline
-        True parameter                                          & \multicolumn{2}{c|}{(0.01724649, 0.06778604)}                                            \\ \hline
+        True parameter                                          & \multicolumn{2}{c|}{(0.017246, 0.067786)}                                                \\ \hline
         Number of states                                        & \multicolumn{2}{c|}{27}                                                                  \\ \hline
         Number of BSCCs                                         & \multicolumn{2}{c|}{6}                                                                   \\ \hline
         Target property                                         & \multicolumn{2}{c|}{$P_{\geq 0.25} [!(i>7) U^{<16} (i=0)]$}                              \\ \hline
         Synthetic data                                          & \multicolumn{2}{c|}{(421,  834, 1126, 1362, 1851, 4406)}                                 \\ \hline
-        Inferred parameter point                                & \multicolumn{1}{l|}{(0.02307652, 0.06481155)}               & (0.01758384, 0.06535699)   \\ \hline
-        L2 distance to true parameter                           & \multicolumn{1}{l|}{0.006544985909916083}                   & 0.005519695496673707       \\ \hline
-        Run time (hh:mm:ss)                                     & \multicolumn{1}{l|}{1:07:36.442146}                         & 3:05:22.61795              \\ \hline
+        Inferred parameter point                                & \multicolumn{1}{l|}{(0.023077, 0.064812)}                   & (0.01758384, 0.06535699)   \\ \hline
+        L2 distance to true parameter                           & \multicolumn{1}{l|}{0.006545}                               & 0.005520                   \\ \hline
+        Run time (hh:mm:ss)                                     & \multicolumn{1}{l|}{1:07:36}                                & 3:05:22                    \\ \hline
     \end{tabular}
     \caption{SIR(5,1,0) parameter estimation results.}
 \end{table}
@@ -866,5 +874,8 @@ generate synthetic data.
 
 \subsection{Discussion}
 Unlike experiments with unmerged BSCCs, the experiment with merged BSCCs and simulation based
-framework shows no general pattern of distance among satisfying parameter values.
+framework shows no general pattern of distance among satisfying parameter values. It is
+hypothetically because of the noisy data that leads to a non-converging evaluation of distance
+between simulated data and observed data. A proposed way to solve the problem is to use a decreasing
+threshold scheme, in which $\epsilon$ decrease after each pertubation.
 
