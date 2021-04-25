@@ -1,14 +1,18 @@
 \begin{abstract}
-    We present frameworks for data-informed parameter synthesis of Markov population processes.
-    Given statistics data of the population at its steady-state, the object is to synthesize a set
-    of parameters so that a temporal property of interest is satisfied. We design Bayesian
-    frameworks for parameter synthesis in both cases: when the closed form of the interested
-    property is obtainable, and when only simulation is possible. The frameworks are constructed
-    with different sampling and optimization techniques to approximate the posterior distribution.
-    Later, we evaluate the frameworks using different population models of different size using
-    synthetic data generated from a known true parameter. By measuring the distance between
-    synthesized parameters and true parameters and visualize sampled parameter values with their
-    corresponding weights, we show that our frameworks are capable of deriving a set of satisfying
-    parameter values, as well as an estimation which is close to the true parameter.
+    %% [Motivation]
+    Population models are mathematical models to study the dynamics of a population. Markov
+    population processes are Markov chains of continuous or discrete time, in which each state
+    represents a population size. We present frameworks for data-informed parameter synthesis of
+    parametric Markov population processes. Given experiment data for the population at its
+    steady-state, parameter synthesis aims to synthesize a set of parameters to satisfy a temporal
+    property of interest. We design Bayesian frameworks for parameter synthesis in two cases: (i)
+    when the exact likelihood function of the property of interest is available, and (ii) when it
+    has to be approximated by means of Monte-Carlo methods. The frameworks are constructed with
+    different sampling and optimization techniques to approximate the posterior distribution. Later,
+    we evaluate the frameworks using various population models of different sizes using synthetic
+    data generated from a known true parameter. By measuring the distance between estimated
+    parameters and true parameters and visualize synthesized parameter values with their
+    corresponding weights, we show that our frameworks can derive a set of satisfying parameter
+    values and an estimation that is close to the true parameter.
 \end{abstract}
 
