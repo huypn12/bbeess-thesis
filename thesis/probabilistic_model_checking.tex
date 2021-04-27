@@ -205,37 +205,39 @@ vary and are real numbers.
 \begin{definition}[Exit rate \cite{katoen2001faster}]
       \rm
       Let $\mathcal{C} = (S,\mathbf{R}, \iota_{init}, AP, L)$ be a CTMC. We define the \textit{exit
-            rate} $E(s), s\in S$ as the row sum of the rate matrix $\mathbf{R}$
+            rate} $\mathbf{E}(s), s\in S$ as the row sum of the rate matrix $\mathbf{R}$
       \begin{align*}
-            E(s) = \sum_{s'\in S} \mathbf{R}(s, s')
+            \mathbf{E}(s) = \sum_{s'\in S} \mathbf{R}(s, s')
       \end{align*}
 \end{definition}
-CTMC is a strong formalism to model systems with regarding to real-time properties. However, PCTL is
-not applicable to specify a property in CTMC. As the frameworks constructed in this thesis apply to
-DTMC and PCTL, we transform CTMCs into DTMCs through a process of  \textit{uniformization}
-\cite{katoen2001faster}. Uniformization discretizes a CTMC by transforming it in to a CTMC which has
-uniform exit rates among states.
+
+CTMC is a strong formalism to model systems with regarding to real-time properties. In this thesis,
+we transform CTMCs into DTMCs through a process of \textit{uniformization} \cite{katoen2001faster}.
+Uniformization discretizes a CTMC by transforming it in to a CTMC which has uniform exit rates among
+states, so that we can approximate the uniformized CTMC using a DTMC by removing the exit rates.
+Katoen \cite{katoen2001faster} show that the uniformization of CTMC perserves the transient
+probabilities. Baier \cite{baier2002simulation} proved that the time-bounded until formulas remain
+unaffected as we transform a CTMC to its equivalent uniformized form. Through uniformization, we can
+check time-bounded reachability propety. Furthermore, transforming a CTMC to an equivalent DTMC
+allow us to obtain symbolic form of PCTL formula, thus enables a more efficient evaluation of
+properties.
 
 \begin{definition}[CTMC uniformization \cite{katoen2001faster}]
       \rm
       Let $\mathcal{C} = (S,\mathbf{R}, \iota_{init}, AP, L)$ be a CTMC with exit rate $E(s), s\in S$. We
       define the \textit{uniformization rate} $r$ such that
       \begin{align*}
-            \forall s\in S: r \geq E(s), r\in\mathbb{R}_{>0}
+            \forall s\in S: r \geq \mathbf{E}(s), r\in\mathbb{R}_{>0}
       \end{align*}
       The \textit{uniformized CTMC} $unif(r, \mathcal{C})=(S, \bar{\mathbf{R}}, \iota_{init}, AP, L )$ such that
       \begin{align*}
             \forall s, s'\in S & : \bar{\mathbf{R}}(s,s')=
             \begin{cases}
-                  \frac{\mathbf{R}(s,s')}{r}                      & \text{if $s \neq s'$} \\ \quad \\
-                  \frac{\mathbf{R}(s,s')}{r} + 1 - \frac{E(s)}{r} & \text{if $s = s'$}
+                  \frac{\mathbf{R}(s,s')}{r}                               & \text{if $s \neq s'$} \\ \quad \\
+                  \frac{\mathbf{R}(s,s')}{r} + 1 - \frac{\mathbf{E}(s)}{r} & \text{if $s = s'$}
             \end{cases}
       \end{align*}
 \end{definition}
-
-Katoen \cite{katoen2001faster} show that the uniformization of CTMC perserves the transient
-probabilities. Baier \cite{baier2002simulation} proved that the time-bounded until formulas remain
-unaffected as we transform a CTMC to its equivalent uniformized form.
 
 \begin{example}[Uniformized CTMC]
       After uniformizing the CTMC in Figure \ref{fig:ctmc} by uniformization rate $r=4$, we obtain the followig DTMC
@@ -263,12 +265,14 @@ unaffected as we transform a CTMC to its equivalent uniformized form.
 
 \section{Property specification}
 \subsection{Probabilistic Computational Tree Logic}
-Model checking verifies a formalism of a system \textit{(model)} against a property of interest. We
+Model checking verifies a system \textit{(model)} against a property of interest. We
 formalize a property by a \textit{temporal logic}, specifically \textit{Probabilistic Computational
-      Tree Logic} (or \textit{PCTL}). Firstly introduced by Clarke et al. \cite{clarke1986automatic}, PCTL
-is widely used in model checking of discrete-time stochastic models and supported by most
-probabilistic model checking tools \cite{dehnert2017storm}, \cite{kwiatkowska2011prism}.
-\begin{definition}[PCTL] The syntax of PCTL consists of state formulas and path formulas.
+      Tree Logic} (or \textit{PCTL}). Firstly introduced by Hansson et al. \cite{hansson1994logic}, PCTL
+is widely used in model checking of discrete-time stochastic models and supported by
+probabilistic model checking tools Storm \cite{dehnert2017storm}, and PRISM \cite{kwiatkowska2011prism}.
+\begin{definition}[PCTL \cite{baier2008principles}]
+      \rm
+      The syntax of PCTL consists of state formulas and path formulas.
       \begin{itemize}
             \item State formulas are defined over $AP$
                   \begin{align*}
@@ -282,17 +286,17 @@ probabilistic model checking tools \cite{dehnert2017storm}, \cite{kwiatkowska201
                   where $\Phi,\Phi_1,\Phi_2$ are state formulas, and $n\in \mathbb{N}$.
       \end{itemize}
 \end{definition}
-PCTL properties is applicable on discrete-time stochastic models such as DTMC, as the times between
-state transitions are uniform. In a DTMC, a PCTL state formula is verified at each state, while a
-PCTL path formula is verified through a trace from an execution path.\\
+\noindent  In a DTMC, a PCTL state formula is verified at each state, while a PCTL path formula is
+verified through a trace from an execution path.\\
 The algorithm to model check DTMC against PCTL properties is described in detail in Katoen
 \cite{baier2008principles}. Given a DTMC $\mathcal{M}$ and a PCTL property $\Phi$, general algorithm
-for checking $\mathcal{M}\models\Phi$ has complexity of polynomial to $|\mathcal{M}|$ and linear to
-$|\Phi|$ \cite{katoen2013model}.
-\begin{theorem}[Complexity of checking a DTMC against a PCTL formula.]
-      For finite DTMC $\mathcal{M}$ and PCTL state-formula $\Phi$,the PCTL model-checking problem can be solved in time
+for checking $\mathcal{M}\models\Phi$ has time complexity polynomial to $|\mathcal{M}|$ and linear
+to $|\Phi|$.
+\begin{theorem}[Complexity of checking a DTMC against a PCTL formula \cite{katoen2013model}]
+      For finite DTMC $\mathcal{M}$ and PCTL state-formula $\Phi$,the PCTL model-checking problem
+      can be solved in time
       \begin{align*}
-            \mathcal{O}(poly(size(D)\cdot n_{max} \cdot |\Phi|)
+            \mathcal{O}(poly(size(D)\cdot n_{max} \cdot |\Phi|))
       \end{align*}
       where
       \begin{align*}
@@ -305,37 +309,30 @@ $|\Phi|$ \cite{katoen2013model}.
 \end{theorem}
 
 \subsection{State explosion problem}
-The soundness of the model checking relies heavily on how the system is modeled. In fact, the model
-checking is only as sound and valid as the model.
+\textit{State-explosion problem} occurs when the size of a model state space grows exponentially as
+the number of state variables in the system increases \cite{clarke2011model}. As a finite-state
+abstraction of a system, each state in a model consists of state variables, which encode a property
+of the system it models. However, due to the combinatorial explosion, the state-space grows
+exponentially in size. For example, consider a distributed software system, in which a
+\textit{global state} is a composition of
 \begin{enumerate}
-      \item Which formalism is used?
-      \item How the system is encoded into states and transitions?
+      \item $N$ 8-bit integer variables, and
+      \item $M$ communication channels of capacity $Q$.
 \end{enumerate}
-For example, we consider a distributed software system, in which a \textit{global state} is a
-composition of
-\begin{enumerate}
-      \item values of all variables, and
-      \item states of all communication channels.
-\end{enumerate}
-It is obvious that the number of possible states grows exponentially as more variables and
-communication channels are added to the system.\\
-\textit{State-explosion problem} occurs when the size of the system state space grows exponentially
-as the number of state variables in the system increases \cite{clarke2011model}. As discussed
-before, the complexity of model checking a PCTL property against a DTMC model is polynomial to the
-DTMC's state-space. However, the state-explosion problem renders model checking computationally
-expensive. One possible way to cope with state-explosion problem and to reduce the computational cost is to use \textit{statistical model
-      checking}.
+The total number of global states is $2^{8N}Q^M$. The size of state-space grows exponentially as we
+add new variables and/or communication channels. As discussed before, the complexity of model
+checking a PCTL property against a DTMC model is polynomial to the DTMC's state-space. However, the
+state-explosion problem renders model checking computationally expensive. One possible way to cope
+with state-explosion problem and to reduce the computational cost is to use \textit{statistical
+      model checking}.
 
 \section{Statistical model checking}
 Statistical model checking is a simulation-based approach to model check a stochastic model
 $\mathcal{D}$ against a PCTL property $\Phi$. The essential concept of probabilistic model
-checking is to simulate $N$ traces from $\mathcal{M}$, verify if each trace satisfies $\Phi$, then
-estimate probability $P(\mathcal{M}\models\Phi)$ by a statistical, frequentist approach.\\
-In statistical model checking of, different methods are applied to \textit{quantitative} and
-\textit{qualitative}
-questions.\footnote{\url{https://www-verimag.imag.fr/Statistical-Model-Checking-814.html\#nb3}}
+checking is to simulate a number of traces from $\mathcal{M}$, monitor if each trace satisfies $\Phi$, then
+estimate probability $P(\mathcal{M}\models\Phi)$ by a statistical inference \cite{agha2018survey}.\\
 Given a stochastic model $\mathcal{M}$ and a property $\Phi$, statistical model checking solves the
-following problems:
+\textit{qualitative} and \textit{quantitative} problem\footnote{\url{https://www-verimag.imag.fr/Statistical-Model-Checking-814.html\#nb3}}:
 \begin{enumerate}
       \item \textbf{Quantitative}: Estimate the probability $p = Pr(\mathcal{M}\models\Phi)$. In other
             words, it checks $\mathcal{M}$ the property \begin{align*}
@@ -348,9 +345,22 @@ following problems:
             where $J\subseteq[0,1]$ is an interval.
 \end{enumerate}
 
+\begin{table}[H]
+      \centering
+      \begin{tabular}{|l|l|l|}
+            \hline
+                   & {\color[HTML]{232627} Quantitative} & Qualitative                         \\ \hline
+            Input  & \begin{tabular}[c]{@{}l@{}}Model $\mathcal{M}$\\ Property $P_{=?}(\Phi)$\end{tabular}          & \begin{tabular}[c]{@{}l@{}}Model $\mathcal{M}$\\ Property $P_J(\Phi), J\subseteq[0,1]$\end{tabular}          \\ \hline
+            Output & $p=P(\mathcal{M}\models\Phi)$       & $P(\mathcal{M}\models\Phi) \in J$ ? \\ \hline
+      \end{tabular}
+      \caption{Input and output of quantitative and qualitative statistical model checking}
+\end{table}
+
+
+
 \subsection{Statistical model checking of quantitative properties.}
-Given an approximation $\epsilon$ and a confidential
-level $\alpha$, we estimate $\hat{p}$ as an estimation of $p$ such that
+Given an \textit{approximation parameter} $\epsilon$ and a \textit{confidential parameter}
+$\alpha$, we estimate $\hat{p}$ as an estimation of $p$ such that
 \begin{align*}
       Pr(|p-\hat{p}| \leq \epsilon) \geq 1 - \alpha
 \end{align*}
@@ -359,18 +369,22 @@ property $\Phi$ is Bernoulli trial (satisfied or not satisfied), the number of s
 estimated using different bounds. Chernoff \cite{chernoff2014career} presents Chernoff inequality to
 estimate $N$ for Bernoulli trials. Hoeffding \cite{hoeffding1963probability} later extends Chernoff
 inequality to general cases.\\
-Let $Sat(N)$ be number of satisfying trace in $N$ sampled traces. By applying Chernoff-Hoeffding
+Let $Sat(N)$ be number of satisfying traces in $N$ sampled traces. By applying Chernoff-Hoeffding
 inequality we obtain
 \begin{align*}
       P(|\frac{Sat(N)}{N}-p| > \epsilon)                                    & \leq 2\exp{\frac{-N\epsilon^2}{4}}     \\
       \llap{$\Leftrightarrow$ \qquad} P[|\frac{Sat(N)}{N}-p| \leq \epsilon] & \geq 1 - 2\exp{\frac{-N\epsilon^2}{4}}
 \end{align*}
-Replace $\alpha = 2\exp{\frac{-N\epsilon^2}{4}}$ and $\hat{p}=\frac{Sat(N)}{N}$, we have
+Replacing $\alpha = 2\exp{\frac{-N\epsilon^2}{4}}$ and $\hat{p}=\frac{Sat(N)}{N}$, we have
 \begin{align*}
-      P[|\hat{N} - p| \leq \epsilon]                  & \geq 1 - 2\alpha                                \\
-      \llap{$\Leftrightarrow$ \qquad \qquad \qquad} N & \geq 4\frac{\log{\frac{2}{\alpha}}}{\epsilon^2}
+      P[|\hat{N} - p| \leq \epsilon]                  & \geq 1 - 2\alpha                               \\
+      \llap{$\Leftrightarrow$ \qquad \qquad \qquad} N & \geq 4\frac{\ln{\frac{2}{\alpha}}}{\epsilon^2}
 \end{align*}
-The estimation algorithm is described in detail in [1].
+For example, given approximation parameter $\epsilon=0.01$ and confidence parameter $\alpha=0.05$,
+we obtain $N\geq 147556$. However, if we want a more precise estimation, for example
+$\epsilon=0.005$, then the total number of simulation runs $N\geq 590221$. In other words, the total
+number of simulation runs is proportional to the quadratic reciprocal of the approximation parameter
+$\epsilon$. The estimation algorithm is described in detail in \cite{herault2004approximate}.
 \begin{algorithm}[H]
       \caption{Statistical Model Checking, APMC method.}
       \label{alg:smc-apmc}
@@ -379,16 +393,13 @@ The estimation algorithm is described in detail in [1].
             \begin{itemize}[noitemsep,topsep=0pt]
                   \item $\mathcal{D}$: a DTMC
                   \item $\alpha, \epsilon$: confidence level and approximation, respectively.
-                  \item $\Phi = P_{=?}(\varphi) $: a PCTL property in $\mathcal{D}$
+                  \item $\Phi = P_{=?}(\varphi) $: a PCTL property to be evaluated $\mathcal{D}$
             \end{itemize}
-            \hspace*{\algorithmicindent} \textbf{Output:} $\hat{p}$: an estimation of $p$
+            \hspace*{\algorithmicindent} \textbf{Output:} $\hat{p}$: an estimation of $p$, ($p = Pr(\mathcal{D} \models \varphi)$)
       }
-      \begin{align*}
-            p = Pr(\mathcal{D} \models \varphi)
-      \end{align*}
       \begin{algorithmic}[1]
             \Procedure{SMC-APMC}{}
-            \State $N \leftarrow 4\frac{\log{\frac{2}{\alpha}}}{\epsilon^2}$
+            \State $N \leftarrow 4\frac{\ln{\frac{2}{\alpha}}}{\epsilon^2}$
             \State $A \leftarrow 0$
             \State $i \leftarrow 1$
             \While{$i \leq N$}
@@ -401,9 +412,9 @@ The estimation algorithm is described in detail in [1].
             \EndProcedure
       \end{algorithmic}
 \end{algorithm}
-The Chernoff-Hoeffding gives more close estimation of $N$, thus it helps reducing the computational
-cost, while still maintain estimation accuracy. In case $\Phi$ has probabilistic bound, we use
-hypothesis test as the outcome of checking $\mathcal{D}$ against $\Phi$ is Boolean.
+The Chernoff-Hoeffding gives a lower bound of total simulation runs $N$ to estimate a satisfaction
+property with a specific error margin. In case $\Phi$ has probabilistic bound, we use hypothesis
+test as the outcome of checking $\mathcal{D}$ against $\Phi$ is Boolean.
 
 \subsection{Statistical model checking of qualitative properties.}
 Wald \cite{wald1945sequential} introduces Sequential Probability Ratio Test (SPRT in short) to perform
@@ -424,12 +435,12 @@ probability of success in a single Bernoulli trial is $p$, we have
 \begin{align*}
       P(A | p) = {N \choose A} \cdot p^A(1-p)^{N-A}
 \end{align*}
-As a new simulation trace $t$ is drawn from $\mathcal{D}$, SPRT updates the set of satisfying traces $A$. It then
-computes the likelihood ratio based on $A$:
+As a new trace $t$ is collected from a simulation run on $\mathcal{D}$, SPRT updates the set of
+satisfying traces $A$. It then computes the likelihood ratio based on $A$:
 \begin{align*}
-      R = \frac{P(A | p + \delta)}{P(A | p - \delta)}
+      R = \frac{P(A | p + \epsilon)}{P(A | p - \epsilon)}
 \end{align*}
-Let $\alpha$ and $\beta$ be error of type I and type II, respectively.
+Let $\alpha$ and $\beta$ be error of type I and type II, respectively, that is,
 \begin{align*}
        & \alpha = Pr(\mathcal{D} \models \Phi | \text{Accept}\quad H_1) \\
        & \beta =  Pr(\mathcal{D} \nvDash \Phi | \text{Accept}\quad H_0)
@@ -484,7 +495,8 @@ traces reach either of the two bounds $p_0$ or $p_1$.
 In order to generalize the model and encompass the unknown features of the interested system in
 DTMC, we introduce \textit{parameters} into transition probabilities. In this thesis we assume that
 parameters' domain is $\mathbb{R}$.
-\begin{definition}{Rational functions}
+\begin{definition}[Rational functions]
+      \rm
       Let $\theta=\{x_1,\ldots,x_n\}$ be a variable; let $\mathbf{Pol}[\mathbf{x}]$ be the set of
       all polynomial functions over $\mathbf{x}$. A rational function $h(\mathbf{x})$ is defined
       as following.
@@ -496,6 +508,7 @@ parameters' domain is $\mathbb{R}$.
 With the set of parameters and rational functions being formally defined, we define parametric
 Discrete-time Markov chain based the definition on \cite{junges2019parameter}.
 \begin{definition}[Parametric discrete-time Markov chain]
+      \rm
       A \textit{parametric discrete-time Markov chain} (pDTMC in short) $\mathcal{M}_\theta$ is a tuple $(S, \theta,
             \mathbf{P}, \iota_{init}, AP, L)$ where
       \begin{itemize}
@@ -522,14 +535,48 @@ A parametric DTMC instantiates a non-parametric DTMC by an assignment of its var
       Discrete-time Markov chain if $f{\mathbf{v(\theta)}}$ evaluates to a real value for all
       $f\in\mathbf{P}$.
 \end{definition}
-\begin{example}[Parametric Knuth-Yao die]
-      A DTMC modelling Knuth-Yao die to simulate a 6-faced die by two unfair coins with probability of
-      one side $p$ and $q$. Image taken from \cite{katoen2016probabilistic}.
+\begin{example}[Parametric Knuth-Yao die \cite{knuth1976complexity}]
+      An algorithm by Knuth \cite{knuth1976complexity} to simulate a 6-faced die by two possibly
+      unfair coins with probabilities of showing head are $p$ and $q$.
       \begin{figure}[H]
             \centering
-            \includegraphics[width=0.5\textwidth]{figures/knuth_die_pq.png}
+            \begin{forest}
+                  for tree={
+                  edge = {->},
+                  circle,
+                  minimum size=1cm,
+                  inner sep=0pt,
+                  l+=20pt,
+                  draw,
+                  math content,
+                  tier/.wrap pgfmath arg={tier #1}{level()},
+                  anchor=center
+                  },
+                  [S_0, initial
+                  [S_1, edge label={node[midway, above left]{$p$}}, name=s1
+                  [S_3, edge label={node[midway, below right]{$q$}}, name=s3
+                  [\textbf{1}, edge label={node[midway, left]{$1-p$}}, accepting,]
+                  ]
+                  [S_4, edge label={node[midway, above right]{$1-q$}},
+                  [\textbf{2}, edge label={node[midway, above left]{$1-p$}}, accepting,],
+                  [\textbf{3}, edge label={node[midway, above right]{$p$}}, accepting]
+                  ]
+                  ]
+                  [S_2, edge label={node[midway, above right]{$1-p$}}, name=s2
+                  [S_5, edge label={node[midway, below right]{$q$}}, name=s5
+                  [\textbf{4}, edge label={node[midway, left]{$1-p$}}, accepting,]
+                  ]
+                  [S_6, edge label={node[midway, above right]{$1-q$}}
+                        [\textbf{5}, edge label={node[midway, above left]{$1-p$}}, accepting,]
+                        [\textbf{6}, edge label={node[midway, above right]{$p$}}, accepting,]
+                  ]
+                  ]
+                  ]
+                  \draw[->] (s3) to [bend left] node[above left]{$p$} (s1);
+                  \draw[->] (s5) to [bend left] node[above left]{$p$} (s2);
+            \end{forest}
+            \caption{Knuth Die by two possibly unfair coins.}
             \label{fig:knuth-die-pq}
-            \caption{Knuth's die with two coins.}
       \end{figure}
 \end{example}
 
@@ -545,8 +592,9 @@ Katoen \cite{katoen2013model} summarizes the following methods on parameter synt
       \item \textit{Computing symbolic reachability probabilities}: using states elimination to obtain symbolic
             rational function of a reachability property \cite{daws2004symbolic}
             \cite{hahn2011probabilistic}.
-      \item \textit{Candidate region generation and checking}: partition the parameter space into \textit{safe}
-            and \textit{unsafe} regions using non-linear interval arithmetic Kiatkowska \cite{kwiatkowska2006symmetry}.
+      \item \textit{Candidate region generation and checking}: partition the parameter space into
+            \textit{safe} and \textit{unsafe} regions using non-linear interval arithmetic
+            (Kwiatkowska \cite{kwiatkowska2006symmetry}) or SMT solvers such as Z3 \cite{de2008z3}.
       \item \textit{Parameter lifting} is another parameter space partitioning method; it introduces
             new transitions into the original pDTMC through \textit{relaxation} and
             \textit{substitution}. The procedure results in a non-parametric transition system with
@@ -554,8 +602,9 @@ Katoen \cite{katoen2013model} summarizes the following methods on parameter synt
             candidate region generation and checking method.
 \end{enumerate}
 In this thesis we use only symbolic model checking \cite{daws2004symbolic}.
-\begin{example}{Parametric Knuth's die}
-      Using the example of parametric Knuth-Yao die $\mathcal{M}_{p}$.
+\begin{example}[Parametric Knuth-Yao die \cite{knuth1976complexity}]
+      Using the example of parametric Knuth-Yao die as in Figure \ref{fig:knuth-die-pq}, we obtain
+      the following symbolic rational functions for each possible outcome of rolling the die.
       \begin{lstlisting}
         P(F "1") = (p^2*q+(-1)*p*q)/(p*q+(-1))
         P(F "2") = ((p)^2 * (q+(-1)))/(p*q+(-1))
@@ -569,20 +618,22 @@ With the symbolic rational function $f_\Phi(\theta)$ of $\Phi$ obtained, we assi
 to $\theta$, then replace all symbolic parameters by their concrete value to check if
 $\mathcal{M}_\theta \models \Phi$.
 \begin{example}
-      Given a pDTMC of Knuth die $\mathcal{M}_{(p,q)}, (p,q)\in[0,1]\times[0,1] $ and a reachability
-      property $\Phi = P_{\geq 0.2} (\texttt{F "one"})$, synthesize parameter $(p,q)$ so that
-      $\mathcal{M}_{(p,q)} \models \Phi$. A simple Monte Carlo search on parameter space gives the
-      following satisfying points:
+      Given a pDTMC of Knuth die $\mathcal{M}_{(p,q)}, (p,q)\in[0,1]\times[0,1]$ and a reachability
+      property $\Phi = P_{\geq 0.2} (\texttt{F "one"})$, synthesize parameter
+      $(p,q)\in[0,1]\times[0,1]$ so that $\mathcal{M}_{(p,q)} \models \Phi$. We perform a Monte
+      Carlo search on parameter space. Specifically, we sample $p*$ and $q*$ independently using
+      uniform distribution $Uniform(0,1)$, then discard the pairs $(p*,q*)$ that instantiate
+      $\mathcal{M}_{(p*,q*)}\nvDash \Phi$. The accepted pairs of $(p*,q*)$ are then visualized as follow:
       \begin{figure}[H]
             \centering
-            \includegraphics[width=0.5\textwidth]{figures/knuth_die_trueparams.png}
+            \includegraphics[width=0.7\textwidth]{figures/knuth_die_trueparams.png}
             \label{fig:knuth-die-pq-trueparams}
-            \caption{Knuth's die with two coins, a sample of $(p,q)$ such that $\mathcal{M}_{(p,q)} \models \Phi$}
+            \caption{Samples of $(p*,q*)$ that instantiate $\mathcal{M}_{(p*,q*)} \models \Phi$.}
       \end{figure}
 \end{example}
 
 \subsection{Summary}
-In this chapter we introduce the essential theoretical concepts on discrete-time models,
+In this chapter we introduced the essential theoretical concepts on discrete-time models,
 probabilistic temporal logic, and parameter synthesis problem. However, the parameter synthesis
 methods presented exhaustively search on parameter space for satisfying parameter values. In the
 next chapter, we present Bayesian inference methods for later construction of data-informed
