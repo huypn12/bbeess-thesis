@@ -1,31 +1,26 @@
 \chapter{Probabilistic model checking}
-We use Discrete-time Markov chain as the formalism to model stochastic population process. In this
+Discrete-time Markov chain is a formalism often used to model stochastic population process. In this
 chapter, we present essential concepts on probabilistic model checking, including probabilistic
 models and properties. We also briefly present a general deterministic model checking algorithm for
-a specific temporal logic, namely PCTL. Due to the state space explosion, applying deterministic
-model checking algorithm is possible to be computationally expensive. Therefore, we also present a
-simulation based model checking, namely \textit{statistical model checking} for bounded and
-unbounded path property. Since statistical model checking relies only on simulation of stochastic
-models, it is advantageous for checking models with large space size. We also introduce definitions
-of parametric model and parameter synthesis problems, as well as the symbolic computing approach to
+a specific temporal logic, namely Probabilistic Computational Tree Logic (or PCTL in short). Due to
+the state space explosion, applying deterministic model checking algorithm is often computationally
+expensive. Therefore, we also present a simulation based model checking, namely statistical model
+checking (or SMC in short) for bounded and unbounded path property. We also introduce definitions
+of parametric DTMC and the parameter synthesis problem, as well as the symbolic computing approach to
 verify parametric models.
 
 
 \section{Markov models}
 \subsection{Discrete Time Markov chain}
-Markov models are stochastic models of discrete or continous time which satisfy memoryless property.
-\begin{definition}[Discrete-time memoryless property]
-      Let $X$ be a random variable of geometric distribution. $X$ has memoryless property if and only if
-      \begin{align*}
-            Pr(X = t + m | X > m) = Pr(X > m) \forall t,m \in \mathbb{N} k \geq 1
-      \end{align*}
-\end{definition}
-Markov model can be non-deterministic \textit{(Markov Decision Process)}. However, in this thesis we
-consider only Markov models without non-determinism. The following definitions of discrete-time and
-continuous-time Markov chains follows the definitions presented by Baier \cite{baier2008principles}.
-\begin{definition}[Discrete Time Markov Chain]
-      A Discrete-time Markov chain (DTMC) $\mathcal{M}$ is a tuple $(S,\mathbf{P}, \iota_{init}, AP, L)$,
-      in which
+Markov models are stochastic models evolving in discrete or continuous time, which satisfy
+\textit{memoryless property}. Memoryless property is a property of probability distributions, which
+refers to the independent of the probability distribution on its previous states. Discrete-time
+Markov chain is a Markov model of finite state-space and countable (discrete) time. In a
+discrete-time Markov chain, times between any state transition are uniform.
+\begin{definition}[Discrete Time Markov Chain \cite{baier2008principles}]
+      \rm
+      A \textit{Discrete-time Markov chain} (or DTMC in short) $\mathcal{M}$ is a tuple
+      $(S,\mathbf{P}, \iota_{init}, AP, L)$, in which
       \begin{itemize}
             \item $S$ is a countable, non-emty set of \textit{states}
             \item $\mathbf{P}:S\times S \rightarrow [0,1]$ is the \textit{transition probability}
@@ -43,85 +38,126 @@ continuous-time Markov chains follows the definitions presented by Baier \cite{b
 \end{definition}
 
 \begin{example}[Knuth-Yao die]
-      Knuth-Yao die to simulate a 6-faced die by a fair coin. In this Knuth's die DTMC, there are 6
-      BSCCs, each of them represents an outcome of a die tossing. Image taken from
-      \cite{katoen2016probabilistic}
+      \rm
+      Knuth and Yao \cite{knuth1976complexity} introduced an algorithm to simulate a fair dice by a
+      fair coin. The algorithm terminates returning one among six possible outcome of a die tossing
+      (from one to six). We formalize the algorithm by a DTMC with 6 BSCCs, each of them represents
+      a possible outcome of a die tossing. The probabilities to reach each BSCC among the six is $1/6$.
       \begin{figure}[H]
             \centering
-            \includegraphics[width=0.5\textwidth]{figures/knuth_die.png}
+            \begin{forest}
+                  for tree={
+                  edge = {->},
+                  circle,
+                  minimum size=1cm,
+                  inner sep=0pt,
+                  l+=15pt,
+                  draw,
+                  math content,
+                  tier/.wrap pgfmath arg={tier #1}{level()},
+                  anchor=center
+                  },
+                  [S_0, initial
+                  [S_1, edge label={node[midway, above left]{$\frac{1}{2}$}}, name=s1
+                  [S_3, edge label={node[midway, below right]{$\frac{1}{2}$}}, name=s3
+                  [\textbf{1}, edge label={node[midway, left]{$\frac{1}{2}$}}, accepting,]
+                  ]
+                  [S_4, edge label={node[midway, above right]{$\frac{1}{2}$}},
+                  [\textbf{2}, edge label={node[midway, above left]{$\frac{1}{2}$}}, accepting,],
+                  [\textbf{3}, edge label={node[midway, above right]{$\frac{1}{2}$}}, accepting]
+                  ]
+                  ]
+                  [S_2, edge label={node[midway, above right]{$\frac{1}{2}$}}, name=s2
+                  [S_5, edge label={node[midway, below right]{$\frac{1}{2}$}}, name=s5
+                  [\textbf{4}, edge label={node[midway, left]{$\frac{1}{2}$}}, accepting,]
+                  ]
+                  [S_6, edge label={node[midway, above right]{$\frac{1}{2}$}}
+                        [\textbf{5}, edge label={node[midway, above left]{$\frac{1}{2}$}}, accepting,]
+                        [\textbf{6}, edge label={node[midway, above right]{$\frac{1}{2}$}}, accepting,]
+                  ]
+                  ]
+                  ]
+                  \draw[->] (s3) to [bend left] node[above left]{$\frac{1}{2}$} (s1);
+                  \draw[->] (s5) to [bend left] node[above left]{$\frac{1}{2}$} (s2);
+            \end{forest}
+            \caption{DTMC model of Knuth-Yao algorithm. The accepting states $1$ to $6$ represent a face of a fair die.}
             \label{fig:knuth-die}
       \end{figure}
 \end{example}
 
 \begin{definition}[Strongly Connected Component]
-      Let $\mathcal{M}=(S,\mathbf{P}, \iota_{init}, AP,L)$ a DTMC. A subset $S'\subset S$ is strongly
-      connected if and only if for every pair $s_1,s_2\in S'$ there is a path between $s_1$ and $s_2$
-      which consists of only of state in $S'$. If there exist no $S''\subseteq S$, such that $S\subset
-            S''$ and $S''$ is strongly connected, then $S'$ is a \textit{Strongly Connected Component}, or
-      \textit{SCC} in short.
+      \rm
+      Let $\mathcal{M}=(S,\mathbf{P}, \iota_{init}, AP,L)$ be a DTMC. A subset $S'\subset S$ is
+      \textit{strongly connected} if and only if for every pair $s_1,s_2\in S'$ there is a path
+      between $s_1$ and $s_2$ which consists of only states in $S'$. If $S'$ has no superset
+      $S''\subseteq S$, such that $S''$ is strongly connected, then $S'$ is a \textit{Strongly
+            Connected Component}, or \textit{SCC} in short.
 \end{definition}
 
 \begin{definition}[Bottom Strongly Connected Component]
-      Let $\mathcal{M}=(S,\mathbf{P}, \iota_{init}, AP,L)$ a DTMC and $S'\in S$ a Strongly Connected
-      Component. $S'$ is also a \textit{Bottom Strongly Connected Component}, or \textit{BSCC} for
-      short, if and only if there exist no state $s \in S\\S'$ that is reachable from any state in
-      $S'$. If $|S'|=1$ then $S'$ is a \textit{trivial BSCC}. We denote $BSCC(\mathcal{M})\in S$ is
-      the set of all BSCCs of $\mathcal{M}$.
+      \rm
+      Let $\mathcal{M}=(S,\mathbf{P}, \iota_{init}, AP,L)$ be a DTMC and $S'\in S$ a Strongly
+      Connected Component. $S'$ is also a \textit{Bottom Strongly Connected Component} (or
+      \textit{BSCC} in short), if and only if there exist no state $s \in S\backslash S'$ that is reachable
+      from any state in $S'$. If $|S'|=1$ then $S'$ is a \textit{trivial BSCC}. We denote
+      $BSCC(\mathcal{M})\in S$ is the set of all BSCCs of $\mathcal{M}$.
 \end{definition}
-Intuitively, BSCCs are arbsobing; once a path in a DTMC reaches a state in a BSCC, it visits  all
+
+\noindent Intuitively, BSCCs are arbsobing; once a path in a DTMC reaches a state in a BSCC, it visits  all
 states in the BSCC infinitely often. It is proven by \cite{baier2008principles} that any run on a
 DTMC $\mathcal{M}$ ends in $BSCC(\mathcal{M})$ almost surely.
 \begin{theorem}[Long-run theorem]
-      Let $\mathcal{M}=(S,\mathbf{P}, \iota_{init}, AP,L)$ a DTMC.
+      \rm
+      Let $\mathcal{M}=(S,\mathbf{P}, \iota_{init}, AP,L)$ be a DTMC. Let $BSCC(\mathcal{M})$ be the
+      set of all BSCCs of $\mathcal{M}$. Then, the probability of reaching a BSCC and visit all of
+      its states infinitely often is equal to 1. Formally
       \begin{align*}
             Pr(\Diamond BSCC(\mathcal{M})) = 1
       \end{align*}
 \end{theorem}
 
-In this thesis we concern the \textit{steady-state distribution} of a DTMC.
-\begin{definition}[Steady-state distribution]
-      Let $\mathcal{M}=(S,\mathbf{P}, \iota_{init}, AP,L)$ a DTMC and vector $v_t$ be a transient state distribution
+\noindent In this thesis, we use the experiment data as the \textit{steady-state distribution} of a
+DTMC.
+\begin{theorem}[Steady-state distribution]
+      \rm
+      Let $\mathcal{M}=(S,\mathbf{P}, \iota_{init}, AP,L)$ be a DTMC and a vector $\nu_t \in
+            [0,1]^{|S|}$ be a transient state distribution at time $t\in\mathbb{N}$ defined by
       \begin{align*}
-            v_t = (Pr(X_t=s_1),\ldots,Pr(X_t=s_N)), s_0,\ldots,s_N \in S
+            \nu_t = (Pr(X_t=s_1),\ldots,Pr(X_t=s_{|S|})) \quad s_1,\ldots,s_{|S|} \in S
       \end{align*}
-      A transient state distribution $v$ of $\mathcal{M}$ is a steady-state distribution of $\mathcal{M}$ if and only if
+      A transient state distribution $\nu$ of $\mathcal{M}$ is a \textit{steady-state distribution}
+      of $\mathcal{M}$ if and only if
       \begin{align*}
-            v = vP
+            t\rightarrow \infty: \nu_t = \nu_t P
       \end{align*}
-\end{definition}
-As a result from long-run theorem, if $BSCC(\mathcal{M})\neq \emptyset$ then there exists a
-steady-state distribution $v = (Pr(X=s_1),\ldots,Pr(X=s_{|S|}))$, such that
-\begin{align*}
-      \forall 1 \leq i \leq |S|: P[X=s_i] \neq 0 \Leftrightarrow s_i \in BSCC(\mathcal{M})
-\end{align*}
+\end{theorem}
+\noindent As a result from long-run theorem, we have the following lemma regarding the existence of
+the steady state distribution in DTMC with BSCC(s)
+\begin{lemma}[]
+      \rm
+      Let $\mathcal{M}=(S,\mathbf{P}, \iota_{init}, AP,L)$ be a DTMC and $BSCC(\mathcal{M})$ be the
+      set of all BSCCs of $\mathcal{M}$. If $BSCC(\mathcal{M})\neq \emptyset$ then there exists a
+      steady-state distribution $\nu = (Pr(X=s_1),\ldots,Pr(X=s_{|S|}))$, such that
+      \begin{align*}
+            \forall i: 1 \leq i \leq |S|: P(X=s_i) \neq 0
+      \end{align*}
+      if and only if
+      \begin{align*}
+            s_i \in BSCC(\mathcal{M})
+      \end{align*}
+\end{lemma}
 
 
 \subsection{Continuous-time Markov chain}
 The discrete-time memoryless property can also be extended into continuous-time memoryless property.
-In continous-time, memoryless property has the following form
-\begin{definition}[Continuous-time memoryless property]
-      Let X be a continuous random variable of exponentially distribution. X has memoryless property
-      if and only if
-      \begin{align*}
-            Pr(X > t + \delta | X > t) = Pr(X > \delta), \forall t,\delta \in \mathbb{R}_{\geq 0}
-      \end{align*}
-\end{definition}
-Based on continuous-time memory less property, we introduce the definition of \textit{Continous-time
-      Markov chain} \cite{katoen2013model}.
-\begin{definition}[Continuous-time Markov chain]
-      A Continuous-time Markov chain (CTMC) $\mathcal{C}$ is a tuple $(S,\mathbf{P}, \mathbf{r}, \iota_{init}, AP, L)$
+Continuous-time Markov chain is often used to model a system, in which times between transitions
+vary and are real numbers.
+\begin{definition}[Continuous-time Markov chain \cite{katoen2001faster}]
+      A \textit{Continuous-time Markov chain} (or CTMC in short) $\mathcal{C}$ is a tuple
+      $(S,\mathbf{P}, \mathbf{R}, \iota_{init}, AP, L)$, where
       \begin{itemize}
             \item $S$ is a countable, non-emty set of \textit{states}
-            \item $\mathbf{P}:S\times S \rightarrow [0,1]$ is the \textit{transition probability}
-                  function such that
-                  \begin{align*}
-                        \forall s \in S : \sum_{s'\in S}\mathbf{P}(s, s') = 1
-                  \end{align*}
-            \item $\mathbf{r}:S \rightarrow \mathbb{R}_{>0}$ is the \textit{exit rate} function
-                  such that
-                  \begin{align*}
-                        \forall s \in S : \sum_{s'\in S}\mathbf{P}(s, s') = 1
-                  \end{align*}
+            \item $\mathbf{R}:S\times S \rightarrow \mathbb{R}_{>0}$ is the \textit{rate matrix}.
             \item $\iota_{init}: S \rightarrow [0,1]$ is the \textit{initial distribution} such that
                   \begin{align*}
                         \sum_{s\in S}\iota_{init}(s) = 1
@@ -132,80 +168,98 @@ Based on continuous-time memory less property, we introduce the definition of \t
 \end{definition}
 
 \begin{example}[CTMC]
-      An example of a CTMC with 3 states.
+      We give an example of a CTMC $\mathcal{C}=(S,\mathbf{R}, \iota_{init}, AP, L)$, where
+      \begin{itemize}
+            \item State set $S=\{S_0, S_1, S_2\}$
+            \item Initial state $\iota_{init} = \{S_0\}$
+            \item Transition rate matrix
+                  $$
+                        \mathbf{R} = \begin{bmatrix}
+                              0           & 2 & 0           \\
+                              \frac{4}{3} & 0 & \frac{8}{3} \\
+                              0           & 3 & 0
+                        \end{bmatrix}
+                  $$
+      \end{itemize}
       \begin{figure}[H]
             \centering
             \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=3cm]
                   \tikzstyle{every state}=[fill=white,draw=black,thick,text=black]
-                  \node[initial, state, label=above:2]    (S0)                   {$S_0$};
-                  \node[state, label=above:4]    (S1)[right of=S0]      {$S_1$};
-                  \node[state, label=above:3]    (S2)[right of=S1]      {$S_2$};
+                  \node[state, initial]    (S0)                   {$S_0$};
+                  \node[state]             (S1)[right of=S0]      {$S_1$};
+                  \node[state]             (S2)[right of=S1]      {$S_2$};
                   \path
-
                   (S0)
-                  edge [bend left=20] node{$1$} (S1)
-
+                  edge [bend left=20] node{$2$} (S1)
                   (S1)
-                  edge [bend left=20] node{$\frac{2}{3}$} (S2)
-                  edge [bend left=20] node{$\frac{1}{3}$} (S0)
-
+                  edge [bend left=20] node{$\frac{8}{3}$} (S2)
+                  edge [bend left=20] node{$\frac{4}{3}$} (S0)
                   (S2)
-                  edge [bend left=20] node{$1$} (S1);
+                  edge [bend left=20] node{$3$} (S1);
             \end{tikzpicture}
             \label{fig:ctmc}
+            \caption{An example of a CTMC with 3 states.}
       \end{figure}
-      \label{example:ctmc}
 \end{example}
 
-Continous-time Markov chain has a wide range of applications, especially in bioinformatics where
-chemical reaction network \cite{feinberg1980chemical} \cite{anderson2011continuous}. However, the
-frameworks in this thesis apply for discrete-time Markov models, thus we do not use continuous-time
-Markov chain to model systems of interest directly. Instead, we do not use Continuous-time Markov
-models directly. Instead, we transform CTMCs into DTMCs through uniformization \cite{katoen2016probabilistic}
-\begin{definition}[CTMC Uniformization]
-      Let $\mathcal{C} = (S,\mathbf{P}, \mathbf{r}, \iota_{init}, AP, L)$ be a CTMC. We define the
-      \textit{uniformization rate} $r$ such that
+\begin{definition}[Exit rate \cite{katoen2001faster}]
+      \rm
+      Let $\mathcal{C} = (S,\mathbf{R}, \iota_{init}, AP, L)$ be a CTMC. We define the \textit{exit
+            rate} $E(s), s\in S$ as the row sum of the rate matrix $\mathbf{R}$
       \begin{align*}
-            \forall s\in S: r \geq \mathbf{r}(s), r\in\mathbb{R}_{>0}
+            E(s) = \sum_{s'\in S} \mathbf{R}(s, s')
       \end{align*}
-      The \textit{uniformized CTMC} $unif(r, \mathcal{C})=(S, \bar{\mathbf{P}}, \bar{\mathbf{r}}, \iota_{init}, AP, L )$ such that
+\end{definition}
+CTMC is a strong formalism to model systems with regarding to real-time properties. However, PCTL is
+not applicable to specify a property in CTMC. As the frameworks constructed in this thesis apply to
+DTMC and PCTL, we transform CTMCs into DTMCs through a process of  \textit{uniformization}
+\cite{katoen2001faster}. Uniformization discretizes a CTMC by transforming it in to a CTMC which has
+uniform exit rates among states.
+
+\begin{definition}[CTMC uniformization \cite{katoen2001faster}]
+      \rm
+      Let $\mathcal{C} = (S,\mathbf{R}, \iota_{init}, AP, L)$ be a CTMC with exit rate $E(s), s\in S$. We
+      define the \textit{uniformization rate} $r$ such that
       \begin{align*}
-            \forall s\in S     & : \bar{\mathbf{r}}(s)     \\
-            \forall s, s'\in S & : \bar{\mathbf{P}}(s,s')=
+            \forall s\in S: r \geq E(s), r\in\mathbb{R}_{>0}
+      \end{align*}
+      The \textit{uniformized CTMC} $unif(r, \mathcal{C})=(S, \bar{\mathbf{R}}, \iota_{init}, AP, L )$ such that
+      \begin{align*}
+            \forall s, s'\in S & : \bar{\mathbf{R}}(s,s')=
             \begin{cases}
-                  \frac{\mathbf{r}(s)}{r}\mathbf{P}(s,s')                               & \text{if $s \neq s'$} \\ \quad \\
-                  \frac{\mathbf{r}(s)}{r}\mathbf{P}(s,s') + 1 - \frac{\mathbf{r}(s)}{r} & \text{if $s = s'$}
+                  \frac{\mathbf{R}(s,s')}{r}                      & \text{if $s \neq s'$} \\ \quad \\
+                  \frac{\mathbf{R}(s,s')}{r} + 1 - \frac{E(s)}{r} & \text{if $s = s'$}
             \end{cases}
       \end{align*}
 \end{definition}
 
+Katoen \cite{katoen2001faster} show that the uniformization of CTMC perserves the transient
+probabilities. Baier \cite{baier2002simulation} proved that the time-bounded until formulas remain
+unaffected as we transform a CTMC to its equivalent uniformized form.
+
 \begin{example}[Uniformized CTMC]
-      We uniformize the CTMC in Example \ref{example:ctmc} by uniformization rate $r=4$.
+      After uniformizing the CTMC in Figure \ref{fig:ctmc} by uniformization rate $r=4$, we obtain the followig DTMC
       \begin{figure}[H]
             \centering
             \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=3cm]
                   \tikzstyle{every state}=[fill=white,draw=black,thick,text=black]
-                  \node[initial, state, label=above:4]    (S0)          {$S_0$};
-                  \node[state, label=above:4]    (S1)[right of=S0]      {$S_1$};
-                  \node[state, label=above:4]    (S2)[right of=S1]      {$S_2$};
+                  \node[state, initial]    (S0)            {$S_0$};
+                  \node[state, ]    (S1)[right of=S0]      {$S_1$};
+                  \node[state, ]    (S2)[right of=S1]      {$S_2$};
                   \path
-
                   (S0)
                   edge [bend left=20] node{$\frac{1}{2}$} (S1)
-
                   (S1)
                   edge [bend left=20] node{$\frac{2}{3}$} (S2)
                   edge [bend left=20] node{$\frac{1}{3}$} (S0)
-
                   (S2)
                   edge [bend left=20] node{$\frac{3}{4}$} (S1);
             \end{tikzpicture}
+            \caption{Uniformized DTMC}
             \label{fig:uniformized-ctmc}
       \end{figure}
 \end{example}
-It has been shown by Katoen \cite{katoen2013model} that uniformization preserves the transient
-probability distributions. Furthermore, in this thesis we concern steady state data and state
-property, thus uniformizing exit rate does not affect the validity of our constructed frameworks.
+
 
 \section{Property specification}
 \subsection{Probabilistic Computational Tree Logic}
@@ -250,7 +304,7 @@ $|\Phi|$ \cite{katoen2013model}.
       \end{align*}
 \end{theorem}
 
-\subsection{State exlosion problem}
+\subsection{State explosion problem}
 The soundness of the model checking relies heavily on how the system is modeled. In fact, the model
 checking is only as sound and valid as the model.
 \begin{enumerate}
@@ -272,7 +326,7 @@ DTMC's state-space. However, the state-explosion problem renders model checking 
 expensive. One possible way to cope with state-explosion problem and to reduce the computational cost is to use \textit{statistical model
       checking}.
 
-\section{Statistical Model checking}
+\section{Statistical model checking}
 Statistical model checking is a simulation-based approach to model check a stochastic model
 $\mathcal{D}$ against a PCTL property $\Phi$. The essential concept of probabilistic model
 checking is to simulate $N$ traces from $\mathcal{M}$, verify if each trace satisfies $\Phi$, then
@@ -313,8 +367,8 @@ inequality we obtain
 \end{align*}
 Replace $\alpha = 2\exp{\frac{-N\epsilon^2}{4}}$ and $\hat{p}=\frac{Sat(N)}{N}$, we have
 \begin{align*}
-      P[|\hat{N} - p| \leq \epsilon]    & \geq 1 - 2\alpha                                \\
-      \llap{$\Leftrightarrow$ \qquad} N & \geq 4\frac{\log{\frac{2}{\alpha}}}{\epsilon^2}
+      P[|\hat{N} - p| \leq \epsilon]                  & \geq 1 - 2\alpha                                \\
+      \llap{$\Leftrightarrow$ \qquad \qquad \qquad} N & \geq 4\frac{\log{\frac{2}{\alpha}}}{\epsilon^2}
 \end{align*}
 The estimation algorithm is described in detail in [1].
 \begin{algorithm}[H]
@@ -322,7 +376,7 @@ The estimation algorithm is described in detail in [1].
       \label{alg:smc-apmc}
       \footnotesize{
             \hspace*{\algorithmicindent} \textbf{Input:}
-            \begin{itemize}
+            \begin{itemize}[noitemsep,topsep=0pt]
                   \item $\mathcal{D}$: a DTMC
                   \item $\alpha, \epsilon$: confidence level and approximation, respectively.
                   \item $\Phi = P_{=?}(\varphi) $: a PCTL property in $\mathcal{D}$
@@ -352,7 +406,7 @@ cost, while still maintain estimation accuracy. In case $\Phi$ has probabilistic
 hypothesis test as the outcome of checking $\mathcal{D}$ against $\Phi$ is Boolean.
 
 \subsection{Statistical model checking of qualitative properties.}
-Wald \cite{wald1945sequential} introduces Sequential Probability Ratio Test (SPRT) to perform
+Wald \cite{wald1945sequential} introduces Sequential Probability Ratio Test (SPRT in short) to perform
 hypothesis test on sequential statistical analysis, in which the sample size $N$ is not know
 a-priori. SPRT updates a cummulative sum and stop when it has enough information to decide whether
 to statistically accept null hypothesis or alternative hypothesis.\\
@@ -363,16 +417,17 @@ checking. Given a DTMC $\mathcal{D}$ and a PCTL property $\Phi$ with probabilist
 approximation width $\epsilon$:
 \begin{align*}
        & H_0: \hat{p} \geq p + \epsilon \\
-       & H_0: \hat{p} < p - \epsilon
+       & H_1: \hat{p} < p - \epsilon
 \end{align*}
-Among $N$ simulated traces from $\mathcal{D}$, the probability to have $A$ satisfying traces given
-probability of success in a single Bernoulli trial is $p$:
+Let $A$ be the set of satisfying traces among total $N$ simulated traces from $\mathcal{D}$. Given
+probability of success in a single Bernoulli trial is $p$, we have
 \begin{align*}
       P(A | p) = {N \choose A} \cdot p^A(1-p)^{N-A}
 \end{align*}
-At each simulation $i$, SPRT compute the likelihood ratio based on accumulated number of success trials:
+As a new simulation trace $t$ is drawn from $\mathcal{D}$, SPRT updates the set of satisfying traces $A$. It then
+computes the likelihood ratio based on $A$:
 \begin{align*}
-      R_i = \frac{P(A_i | p + \delta)}{P(A | p - \delta)}
+      R = \frac{P(A | p + \delta)}{P(A | p - \delta)}
 \end{align*}
 Let $\alpha$ and $\beta$ be error of type I and type II, respectively.
 \begin{align*}
@@ -391,13 +446,13 @@ traces reach either of the two bounds $p_0$ or $p_1$.
       \label{alg:smc-sprt}
       \footnotesize{
             \hspace*{\algorithmicindent} \textbf{Input:}
-            \begin{itemize}
+            \begin{itemize}[noitemsep,topsep=0pt]
                   \item $\mathcal{D}$: a DTMC
                   \item $\alpha, \beta$: probability of type I and type II error respectively.
                   \item $\epsilon$: approximation width.
                   \item $\Phi = P_{\geq p}(\varphi)$: a PCTL property in $\mathcal{D}$
             \end{itemize}
-            \hspace*{\algorithmicindent} \textbf{Output:} $(\mathcal{D} \models \Phi)$ or $(\mathcal{D} \models \Phi)$
+            \hspace*{\algorithmicindent} \textbf{Output:} $(\mathcal{D} \models \Phi)$ or $(\mathcal{D} \nvDash \Phi)$
       }
       \begin{algorithmic}[1]
             \Procedure{SMC-SPRT}{}
@@ -406,14 +461,16 @@ traces reach either of the two bounds $p_0$ or $p_1$.
             \State $N \leftarrow 0$
             \State $A \leftarrow 0$
             \While{$\texttt{True}$}
-            \State $R_i \leftarrow \frac{P(A_i | p + \delta)}{P(A | p - \delta)}$
-            \If{$R_i \geq p_1$}
-            \State Accept $H_1$
-            \State Return
+            \State Simulate a trace $T$ from $\mathcal{D}$
+            \If{$T \models \Phi$}
+            \State Append $T$ to $A$
+            \EndIf
+            \State $R \leftarrow \frac{P(A | p + \delta)}{P(A | p - \delta)}$
+            \If{$R \geq p_1$}
+            \State Accept $H_1$, return $(\mathcal{D} \nvDash \Phi)$
             \Else
-            \If{$R_i \leq p_0$}
-            \State Accept $H_0$
-            \State Return
+            \If{$R \leq p_0$}
+            \State Accept $H_0$, return $(\mathcal{D} \models \Phi)$
             \EndIf
             \EndIf
             \EndWhile
@@ -422,8 +479,8 @@ traces reach either of the two bounds $p_0$ or $p_1$.
 \end{algorithm}
 
 
-\section{Parametric model}
-\subsection{Parametric Discrete Time Markov chain}
+\section{Parametric model checking}
+\subsection{Parametric discrete-time Markov chain}
 In order to generalize the model and encompass the unknown features of the interested system in
 DTMC, we introduce \textit{parameters} into transition probabilities. In this thesis we assume that
 parameters' domain is $\mathbb{R}$.
@@ -438,8 +495,8 @@ parameters' domain is $\mathbb{R}$.
 \end{definition}
 With the set of parameters and rational functions being formally defined, we define parametric
 Discrete-time Markov chain based the definition on \cite{junges2019parameter}.
-\begin{definition}[Discrete Time Markov Chain]
-      A parametric Discrete-time Markov chain (pDTMC) $\mathcal{M}_\theta$ is a tuple $(S, \theta,
+\begin{definition}[Parametric discrete-time Markov chain]
+      A \textit{parametric discrete-time Markov chain} (pDTMC in short) $\mathcal{M}_\theta$ is a tuple $(S, \theta,
             \mathbf{P}, \iota_{init}, AP, L)$ where
       \begin{itemize}
             \item $S$ is a countable, non-emty set of \textit{states}
@@ -498,7 +555,7 @@ Katoen \cite{katoen2013model} summarizes the following methods on parameter synt
 \end{enumerate}
 In this thesis we use only symbolic model checking \cite{daws2004symbolic}.
 \begin{example}{Parametric Knuth's die}
-      We continue the example with Knuth die model $\mathcal{M}_{p}$. Assume the
+      Using the example of parametric Knuth-Yao die $\mathcal{M}_{p}$.
       \begin{lstlisting}
         P(F "1") = (p^2*q+(-1)*p*q)/(p*q+(-1))
         P(F "2") = ((p)^2 * (q+(-1)))/(p*q+(-1))
