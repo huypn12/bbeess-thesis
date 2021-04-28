@@ -180,12 +180,18 @@ section we discuss different approaches for posterior distribution approximation
 
 \subsubsection{Markov chain Monte Carlo}
 In case the posterior distribution has no analytical form or its analytical form is difficult to
-sample from directly, we use \textit{Metropolis-Hastings} algorithm  (\textit{MH} in short).\\
-invented by Metropolis \cite{metropolis1953equation} and later generalized by Hastings \cite{hastings1970monte}
-Metropolis-Hastings algorithm is a \textit{Monte Carlo Markov Chain} algorithm. In its essential,
-Metropolis-Hastings algorithm draws sample from an unknown distribution. Using the MH algorithm, we
-can estimate the parameter by posterior mean, without knowing the analytical form of posterior
-distribution itself.
+sample from directly, we use \textit{Metropolis-Hastings} algorithm  (\textit{MH} in short). Firstly
+introduced by Metropolis \cite{metropolis1953equation} and later generalized by Hastings
+\cite{hastings1970monte} Metropolis-Hastings algorithm is a \textit{Monte Carlo Markov Chain}
+algorithm. In its essential, Metropolis-Hastings algorithm draws sample from an unknown
+distribution. Using the MH algorithm, we can estimate the parameter by posterior mean, without
+knowing the analytical form of posterior distribution itself. A special case of MH algorithm is
+Gibbs sampling algorithm \cite{geman1984stochastic}, in which candidates are accepted with
+probability 1. Gibbs sampling can be used to draw samples from multivariate posteriors when the
+parameter is of high dimensional. Quality of data can also impacts the estimation result from
+Metropolis-Hastings algorithm; in case of experiment data is acquired from a small sample size,
+statistical techniques to improve data quality can be used, for example \textit{bootstrapping}
+\cite{efron1992bootstrap}.
 
 \begin{algorithm}[H]
     \caption{Metropolis-Hastings Algorithm}
@@ -201,62 +207,68 @@ distribution itself.
             \item $N$ number of particles.
         \end{itemize}
         \hspace*{\algorithmicindent} \textbf{Output:}
-        \begin{itemize}[noitemsep]
+        \begin{itemize}[noitemsep,topsep=0pt]
             \item $(\theta_1,\ldots,\theta_N)$ sample of $N$ particles
             \item $(w_1,\ldots,w_N)$ corresponding likelihoods.
         \end{itemize}
     }
     \begin{algorithmic}[1]
         \Procedure{Metropolis-Hastings}{}
-        \State Draw $\theta_0$ from $\pi(\theta)$
-        \State $i \leftarrow 0$
-        \While{maxIteration not reached}
-        \State $L \leftarrow P(D|\theta)$
-        \State Draw a point $\theta' $ from the proposal distribution.
-        \State $L' \leftarrow P(D|\theta')$
-        \If{ $\ln(L') - \ln(L) > 0$ }
-        \State Add $\theta'$ to $Trace$
-        \State $\theta = \theta'$
+        \State Draw $\theta_{cand}$ from $\pi(\theta)$
+        \State $\theta_1 \leftarrow  \theta_{cand}$
+        \State $w_1 \leftarrow  \ln(P(D_{obs}|\theta_{cand}))$
+        \State $i \leftarrow 2$
+        \While{$i \leq N_{MH}$}
+        \State Draw $\theta_{cand}$ from $Q(\theta'|\theta_{i-1})$
+        \If{ $\ln(P(D_{obs}|\theta_{cand})) - \ln(P(D_{obs}|\theta_{i-1})) > 0$ }
+        \State $\theta_i \leftarrow \theta_{cand}$
+        \State $w_i \leftarrow \ln(P(D_{obs}|\theta_{cand}))$
+        \State $i \leftarrow i + 1$
         \Else
-        \State Draw a random number $x$ from $Uniform(0,1)$
-        \If{$x \leq \xi$, ($\xi$ very small, e.g $10^{-8}$)}
-        \State Add $\theta'$ to $Trace$ (avoiding local maxima)
-        \State $\theta = \theta'$
+        \State Draw a random number $u$ from $Uniform(0,1)$
+        \If{$u \leq \xi$, ($\xi$ small, e.g $10^{-2}$)}
+        \State $\theta_i \leftarrow \theta_{cand}$
+        \State $w_i \leftarrow \ln(P(D_{obs}|\theta_{cand}))$
+        \State $i \leftarrow i + 1$
         \EndIf
         \EndIf
         \EndWhile
+        \State Return $(\theta_1,\ldots,\theta_{N}})$, $(w_1,\ldots,w_{N}})$
         \EndProcedure
     \end{algorithmic}
 \end{algorithm}
 
 The likelihood function can be implemented as log-likelihood to avoid underflow error.
-Advantages of Metropolis-Hastings are
+Advantages of Metropolis-Hastings are:
 \begin{itemize}
-    \item Parameter transition only needs the computation of likelihood function.
+    \item[+] Parameter transition only needs the computation of likelihood function.
           Therefore, Monte Carlo Markov Chain can be used in general Bayesian inference,
           in which we are not guaranteed to have an analytical form of posterior.
-    \item Computationally efficient; as marginal distribution is cancelled out, and likelihood can
+    \item[+] Computationally efficient; as marginal distribution is cancelled out, and likelihood can
           be replaced by log-likelihood, Metropolis-Hastings simplifies the computation of Bayes formula
           and avoid infinitesimal values.
-    \item Simple to implement.
+    \item[+] Simple to implement.
 \end{itemize}
 Disadvantages of Metropolis-Hastings are
 \begin{enumerate}
-    \item Particle in Metropolis-Hastings algorithm moves in a linear Markov chain; it is highly
+    \item[-] Particle in Metropolis-Hastings algorithm moves in a linear Markov chain; it is highly
           probable to be stuck in a local maximum or minimum.
-    \item Not parallelizable; since there is only one linear chain, and current step depends on
+    \item[-] Not parallelizable; since there is only one linear chain, and current step depends on
           previous step, Metropolis-Hastings algorithm does not scale up to multi-processors.
 \end{enumerate}
-The next algorithm, \textit{Sequential Monte Carlo}, address the issues of Metropolis-Hastings.
+The next algorithm, \textit{Sequential Monte Carlo}, addresses the issues of Metropolis-Hastings.
 
 \subsubsection{Sequential Monte Carlo}
-Sequential Monte Carlo method is firstly proposed by \cite{del2006sequential}.  Instead of having
+Sequential Monte Carlo method is firstly proposed by Del \cite{del2006sequential}. Instead of having
 one particle moving in its parameter space, Sequential Monte Carlo estimates by using $N$ particles
-moving independently. Sequential Monte Carlo uses  starting by a \textit{pertubation kernel}.
+moving independently. In its initial step, Sequential Monte Carlo draws a parameter candidate from
+the prior distribution. In each iteration, it then mutates parameter candidates through a series of
+\textit{perturbation kernels} and select parameter candidates for the next iteration with regarding
+to their weights. By sampling from $N$ independently moving particles, Sequential Monte Carlo method
+has a significant advantage of easily parallelizable. Furthermore, Daviet \cite{daviet2018inference}
+shows that Sequential Monte Carlo delivers better performance on approximating multimodal
+distribution.
 
-Therefore Sequential Monte Carlo method has a significant advantage of easily
-parallelizable. Comparision between \cite{daviet2018inference}
-good for multimodal
 \begin{algorithm}[H]
     \caption{Sequential Monte Carlo Algorithm}
     \label{alg:smc}
@@ -268,7 +280,7 @@ good for multimodal
             \item $\pi(\theta)$: prior distribution
             \item $P(D|\theta)$: Likelihood function.
             \item $Q(\theta^t|\theta^{t-1})$: Transition kernel.
-            \item $F_t(\theta^t|\theta_1^{t-1},\ldots,\theta_N^{t-1})$: Pertubation kernels
+            \item $F_t(\theta^t|\theta_1^{t-1},\ldots,\theta_N^{t-1})$: Perturbation kernels
             \item $N$ number of particles.
         \end{itemize}
         \hspace*{\algorithmicindent} \textbf{Output:}
@@ -295,7 +307,7 @@ good for multimodal
         \State Sample with replacement $(\theta'_1,\ldots,\theta'_N)$ \algorithmiccomment{SMC selection step} \\\hspace{1.5cm} from $(\theta_1,\ldots,\theta_N)$ with probabilities $(w'_1,\ldots,w'_N)$
         \State $(\theta_1,\ldots,\theta_N) \leftarrow (\theta'_1,\ldots,\theta'_N)$
         \State $i \leftarrow 1$
-        \While{$i \leq N$} \algorithmiccomment {SMC pertubation step}
+        \While{$i \leq N$} \algorithmiccomment {SMC perturbation step}
         \State Draw $\hat{\theta}^t_i$ from $F_t(\theta^t | \theta^{t-1}_1,\ldots,\theta^{t-1}_N), 1\leq t \leq M$
         \State $(\theta^*_1,\ldots,\theta^*_{N_{MH}}), (w^*_1,\ldots,w^*_{N_{MH}}) \leftarrow Metropolis-Hastings(\hat{\theta}^t_i)$
         \State $\theta_i \leftarrow \theta^*_{N_{MH}}$
@@ -306,7 +318,7 @@ good for multimodal
         \EndProcedure
     \end{algorithmic}
 \end{algorithm}
-Selection of kernel function for SMC is mentioned in \cite{silk2012optimizing}.\\
+Selection of kernel function for SMC is mentioned by Filippi \cite{filippi2013optimality}, and Silk \cite{silk2012optimizing}.\\
 Advantages of Sequential Monte Carlo algorithm:
 \begin{itemize}
     \item[+] Approximate multimodal distributions: since Sequential Monte Carlo consists of $N$
@@ -317,28 +329,30 @@ Advantages of Sequential Monte Carlo algorithm:
 \end{itemize}
 However, Sequential Monte Carlo also has disadvantages:
 \begin{itemize}
-    \item Selection of pertubation and transition kernel is not trivial.
-    \item More difficult to implement.
+    \item[-] Selection of perturbation and transition kernel is not trivial.
+    \item[-] More difficult to implement.
 \end{itemize}
 
 \subsubsection{Approximate Bayesian Computation}
-The methods mentioned before is used with an assumption that the likelihood $P(D_{obs}|\theta)$ has
-an analytical form; the analytical can be evaluated without introducing computational burden.
+The methods mentioned before are used with an assumption that the likelihood $P(D_{obs}|\theta)$ has
+an analytical form; the analytical form can be evaluated without introducing computational burden.
 However for situations in which the likelihood has no analytical form, or the analytical form is
-expensive to be evaluated, we use a class of \textit{likelihood-free} methods. Likelihood-free
-methods in Bayesian inference estimates the likelihood $P(D_{obs}|\theta)$ ,
-estimate it or replace it by other measures. Approximate Bayesian Computation is a widely used
-likelihood-free method for approximating posterior distribution. Instead of estimating the
-likelihood $P(D|\theta)$ directly, we sample a observable data set $\hat{D}$ and define a distance
-measure $\delta(D, \hat{D})$. Approximate Bayesian Computation accepts a set of tuples
-$(\hat{\theta}, \hat{D})$, each satisfies that $\delta(D_{obs},D_{sim}) < \epsilon,
-    \epsilon\in\mathbf{R}_{\leq 0}$.
+expensive to be evaluated, we use a class of \textit{likelihood-free methods}. Likelihood-free
+methods in Bayesian inference estimates the likelihood $P(D_{obs}|\theta)$, or replace it by other
+measures. \textit{Approximate Bayesian Computation} (or \textit{ABC} in short)
+\cite{toni2009approximate} is a widely used likelihood-free method for approximating posterior
+distribution. Instead of estimating the likelihood $P(D|\theta)$ directly, we define a distance
+measure $\delta(D_1, D_2)$ where $D_1$ and $D_2$ denote observable data. Given a parameter candidate
+$\hat{\theta}$ that specifies a model $\mathcal{M}_\theta$. The ABC algorithm accepts $\hat{\theta}$
+if a simulation run on $\mathcal{M}_\theta$ delivers observable data $D_{sim}$ such that
+$\delta(D_{obs},D_{sim}) < \epsilon$, where $\epsilon\in\mathbf{R}_{\leq 0}$ is the distance
+threshold.
 \begin{algorithm}[H]
     \caption{Approximate Bayesian Computation}
     \label{alg:abc-reject}
     \footnotesize{
         \hspace*{\algorithmicindent} \textbf{Input:}
-        \begin{itemize}[noitemsep]
+        \begin{itemize}[noitemsep,topsep=0pt]
             \item Model $\mathcal{M}_\theta$
             \item $D_{obs}$: observation data
             \item $\pi(\theta)$: prior distribution
@@ -370,18 +384,18 @@ $(\hat{\theta}, \hat{D})$, each satisfies that $\delta(D_{obs},D_{sim}) < \epsil
 \end{algorithm}
 Advantages of Approximate Bayesian Computation:
 \begin{itemize}
-    \item Likelihood-free: applicable when the likelihood has no analytical form or there is no likelihood.
-    \item Easy to implement.
+    \item[+] Likelihood-free: applicable when the likelihood has no analytical form or there is no likelihood.
+    \item[+] Easy to implement.
 \end{itemize}
 Disavantages of Approximate Bayesian Computation:
 \begin{itemize}
-    \item Which distances are proper to measure two data set? In the other word, is measuring
+    \item[-] Which distances are proper to measure two data set? In the other word, is measuring
           distance a proper method to approximate likelihood?
-    \item How to select a threshold so that the likelihood is closely approximated?
+    \item[-] How to select a threshold so that the likelihood is closely approximated?
 \end{itemize}
 
 \section{Summary}
-We introduces basic concepts on Bayesian parameter inference and posterior estimation. Since the
+We introduced basic concepts on Bayesian parameter inference and posterior estimation. Since the
 posterior distributions normally have no analytical form, the presented sampling and
 optimization methods which are essentials to posterior estimation. In the following chapter we
 propose a data-driven approach for parameter synthesis combining Approximate Bayesian computation,
