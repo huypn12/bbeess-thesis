@@ -61,8 +61,7 @@ differences in each iteration of the Sequential Monte Carlo algorithm.
         \EndWhile
         \State Estimate $\hat{\theta}$ using posterior mean.
         \State Compute $\hat{p}=P(\mathcal{M}_{\hat{\theta}}\models\Phi)$
-        \State Verify $\mathcal{M}_{\hat{\theta}} \models\Phi$ by $\hat{p}$
-        \State Return $(\theta_1,\ldots,\theta_{N})$, $(w_1,\ldots,w_{N})$, $\hat{\theta}$
+        \State Return $(\theta_1,\ldots,\theta_{N})$, $(w_1,\ldots,w_{N})$, $\hat{\theta}$, $\hat{p}$
         \EndProcedure
     \end{algorithmic}
 \end{algorithm}
@@ -121,9 +120,73 @@ perturbated at pertubation $t$ using an uniform kernel $Uniform(\theta_i-\delta,
 In the SMC algorithm with exact likelihood is available, we select Metropolis-Hastings transition
 kernel $Q(\theta^t|\theta^{t-1})$ identical to the perturbation kernel.
 
-\section{Symbolic computation based frameworks}
-The framework is
-designed identical to the original Sequential Monte Carlo algorithm (Del \cite{del2006sequential}).
+\section{RF-SMC framework}
+We design RF-SMC framework based on Sequential Monte Carlo algorithm to work with rational
+functions. Firstly, we design Metropolis-Hastings algorithm to mutate particles in each
+perturbation.
+
+\begin{algorithm}[H]
+    \caption{Metropolis-Hastings with rational functions}
+    \label{alg:rf-mcmc}
+    \footnotesize{
+        \hspace*{\algorithmicindent} \textbf{Input:}
+        \begin{itemize}[noitemsep,topsep=0pt]
+            \item $\mathcal{M}_\theta$: parametric Discrete-Time Markov chain of parameter $\theta$
+            \item $\Phi$: bounded reachability property of interest.
+            \item $\pi(\theta)$: prior distribution on $\theta$.
+            \item $D_{obs}$: observed data.
+            \item $P(D_{obs}|\theta):$ likelihood function.
+            \item $N_{MH}$: length of particle trace.
+            \item $Q(\theta^t|\theta^{t-1})$: transition kernel.
+        \end{itemize}
+        \hspace*{\algorithmicindent} \textbf{Output:}
+        \begin{itemize}[noitemsep,topsep=0pt]
+            \item $(\theta_1,\ldots,\theta_{N_{MH}})$, $(w_1,\ldots,w_{N_{MH}})$: $N_{MH}$ sampled
+                  particles and their weights.
+        \end{itemize}
+    }
+    \begin{algorithmic}[1]
+        \Procedure{RF-MH}{}
+        \State $sat \leftarrow False$
+        \While{$sat = False$}
+        \State Draw $\theta_{cand}$ from $\pi(\theta)$
+        \State Evaluate $val \leftarrow RF_{\Phi}(\theta)$
+        \If{$val$ satisfies the boundary of $\Phi$}
+        \State $sat \leftarrow True$
+        \EndIf
+        \EndWhile
+        \State $\theta_1 \leftarrow  \theta_{cand}$
+        \State $w_1 \leftarrow  \ln(P(D_{obs}|\theta_{cand}))$
+        \State $i \leftarrow 2$
+        \While{$i \leq N_{MH}$}
+        \State $sat \leftarrow False $
+        \While{$sat = False$}
+        \State Draw $\theta_{cand}$ from $Q(\theta'|\theta_{i-1})$
+        \State Evaluate $val \leftarrow RF_{\Phi}(\theta)$
+        \If{$val$ satisfies the boundary of $\Phi$}
+        \State $sat \leftarrow True$
+        \EndIf
+        \EndWhile
+        \If{ $\ln(P(D_{obs}|\theta_{cand})) - \ln(P(D_{obs}|\theta_{i-1})) > 0$ }
+        \State $\theta_i \leftarrow \theta_{cand}$
+        \State $w_i \leftarrow \ln(P(D_{obs}|\theta_{cand}))$
+        \State $i \leftarrow i + 1$
+        \Else
+        \State Draw a random number $u$ from $Uniform(0,1)$
+        \If{$u \leq \xi$, ($\xi$ small, e.g $10^{-2}$)}
+        \State $\theta_i \leftarrow \theta_{cand}$
+        \State $w_i \leftarrow \ln(P(D_{obs}|\theta_{cand}))$
+        \State $i \leftarrow i + 1$
+        \EndIf
+        \EndIf
+        \EndWhile
+        \State Return $(\theta_1,\ldots,\theta_{N_{MH}})$, $(w_1,\ldots,w_{N_{MH}})$
+        \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+The only difference to the original Metropolis-Hastings algorithm is that the following algorithm
+only accept parameter values $\theta$ that instantiate DTMC models which satisfy the property of
+interest.
 \begin{algorithm}[H]
     \caption{Sequential Monte Carlo with rational functions}
     \label{alg:rf-smc}
@@ -172,78 +235,14 @@ designed identical to the original Sequential Monte Carlo algorithm (Del \cite{d
         \EndWhile
         \State Estimate $\hat{\theta}$ using posterior mean.
         \State Compute $\hat{p}=P(\mathcal{M}_{\hat{\theta}} \models\Phi)$
-        \State Verify $\mathcal{M}_{\hat{\theta}} \models\Phi$ by $\hat{p}$
-        \State Return $(\theta_1,\ldots,\theta_{N})$, $(w_1,\ldots,w_{N})$, $\hat{\theta}$
+        \State Return $(\theta_1,\ldots,\theta_{N})$, $(w_1,\ldots,w_{N})$, $\hat{\theta}$, $\hat{p}$
         \EndProcedure
     \end{algorithmic}
 \end{algorithm}
 
-\noindent As in the original Sequential Monte Carlo algorithm, we design Metropolis-Hastings algorithm to
-mutate particles in the perturbation steps.
-\begin{algorithm}[H]
-    \caption{Metropolis-Hastings with rational functions}
-    \label{alg:rf-mcmc}
-    \footnotesize{
-        \hspace*{\algorithmicindent} \textbf{Input:}
-        \begin{itemize}[noitemsep,topsep=0pt]
-            \item $\mathcal{M}_\theta$: parametric Discrete-Time Markov chain of parameter $\theta$
-            \item $\Phi$: bounded reachability property of interest.
-            \item $\pi(\theta)$: prior distribution on $\theta$.
-            \item $N_{MH}$: length of particle trace.
-            \item $Q(\theta^t|\theta^{t-1})$: transition kernel.
-            \item $D_{obs}$: observed data.
-            \item $P(D_{obs}|\theta):$ likelihood function.
-        \end{itemize}
-        \hspace*{\algorithmicindent} \textbf{Output:}
-        \begin{itemize}[noitemsep,topsep=0pt]
-            \item $(\theta_1,\ldots,\theta_{N_{MH}})$, $(w_1,\ldots,w_{N_{MH}})$: $N_{MH}$ sampled
-                  particles and their corresponding weights
-        \end{itemize}
-    }
-    \begin{algorithmic}[1]
-        \Procedure{RF-MH}{}
-        \State $sat \leftarrow False$
-        \While{$sat = False$}
-        \State Draw $\theta_{cand}$ from $\pi(\theta)$
-        \State Evaluate $val \leftarrow RF_{\Phi}(\theta)$
-        \If{$val$ satisfies the boundary of $\Phi$}
-        \State $sat \leftarrow True$
-        \EndIf
-        \EndWhile
-        \State $\theta_1 \leftarrow  \theta_{cand}$
-        \State $w_1 \leftarrow  \ln(P(D_{obs}|\theta_{cand}))$
-        \State $i \leftarrow 2$
-        \While{$i \leq N_{MH}$}
-        \State $sat \leftarrow False $
-        \While{$sat = False$}
-        \State Draw $\theta_{cand}$ from $Q(\theta'|\theta_{i-1})$
-        \State Evaluate $val \leftarrow RF_{\Phi}(\theta)$
-        \If{$val$ satisfies the boundary of $\Phi$}
-        \State $sat \leftarrow True$
-        \EndIf
-        \EndWhile
-        \If{ $\ln(P(D_{obs}|\theta_{cand})) - \ln(P(D_{obs}|\theta_{i-1})) > 0$ }
-        \State $\theta_i \leftarrow \theta_{cand}$
-        \State $w_i \leftarrow \ln(P(D_{obs}|\theta_{cand}))$
-        \State $i \leftarrow i + 1$
-        \Else
-        \State Draw a random number $u$ from $Uniform(0,1)$
-        \If{$u \leq \xi$, ($\xi$ small, e.g $10^{-2}$)}
-        \State $\theta_i \leftarrow \theta_{cand}$
-        \State $w_i \leftarrow \ln(P(D_{obs}|\theta_{cand}))$
-        \State $i \leftarrow i + 1$
-        \EndIf
-        \EndIf
-        \EndWhile
-        \State Return $(\theta_1,\ldots,\theta_{N_{MH}})$, $(w_1,\ldots,w_{N_{MH}})$
-        \EndProcedure
-    \end{algorithmic}
-\end{algorithm}
-The only difference to the original Metropolis-Hastings algorithm is that the following algorithm
-only accept parameter values $\theta$ that instantiate DTMC models which satisfy the property of
-interest.
 
-\section{Simulation based frameworks.}
+
+\section{SMC-ABC-SMC framework}
 Without the availability of analytical form to evaluate steady-state distribution and the property of
 interest, we face the following obstacles:
 \begin{itemize}
@@ -256,7 +255,7 @@ interest, we face the following obstacles:
           Model Checking.
 \end{itemize}
 For this case we present Statistical Model Checking, Approximate Bayesian Computation - Sequential
-Monte Carlo method \textit{SMC-ABC-SMC} framework. SMC-ABC-SMC differs from RF-SMC only in their
+Monte Carlo method \textit{(SMC-ABC-SMC)} framework. SMC-ABC-SMC differs from RF-SMC only in their
 perturbation step.
 \begin{itemize}
     \item In SMC-ABC-SMC framework, we work with a \textit{likelihood-free} setup, in which there is
@@ -325,13 +324,17 @@ perturbation step.
         \EndWhile
         \State Estimate $\hat{\theta}$ using posterior mean.
         \State Compute $\hat{p}=P(\mathcal{M}_{\hat{\theta}}\models\Phi)$
-        \State Verify $\mathcal{M}_{\hat{\theta}} \models\Phi$ by $\hat{p}$
-        \State Return $(\theta_1,\ldots,\theta_{N})$, $(w_1,\ldots,w_{N})$, $\hat{\theta}$
+        \State Return $(\theta_1,\ldots,\theta_{N})$, $(w_1,\ldots,w_{N})$, $\hat{\theta}$, $\hat{p}$
         \EndProcedure
     \end{algorithmic}
 \end{algorithm}
 
 \section{Summary}
-In this chapter we presents two Sequential Monte Carlo based frameworks, which based on rational
-functions and simulations. In the following chapter, we benchmark the frameworks using different
-parametric DTMC to evaluate their performances.
+In this chapter we presents two Sequential Monte Carlo based frameworks for Bayesian parameter
+synthesis of parametric DTMC:
+\begin{enumerate}
+    \item \textit{RF-SMC}: rational functions based Sequential Monte Carlo, and
+    \item \textit{SMC-ABC-SMC}: simulation based Sequential Monte Carlo
+\end{enumerate}
+In the following chapter, we benchmark the frameworks using different parametric DTMCs to evaluate
+the performances of presented frameworks.

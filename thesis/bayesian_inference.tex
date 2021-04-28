@@ -233,12 +233,11 @@ statistical techniques to improve data quality can be used, for example \textit{
         \EndIf
         \EndIf
         \EndWhile
-        \State Return $(\theta_1,\ldots,\theta_{N}})$, $(w_1,\ldots,w_{N}})$
+        \State Return $(\theta_1,\ldots,\theta_{N})$, $(w_1,\ldots,w_{N})$
         \EndProcedure
     \end{algorithmic}
 \end{algorithm}
-
-The likelihood function can be implemented as log-likelihood to avoid underflow error.
+\noindent The likelihood function can be implemented as log-likelihood to avoid underflow error.
 Advantages of Metropolis-Hastings are:
 \begin{itemize}
     \item[+] Parameter transition only needs the computation of likelihood function.
@@ -267,14 +266,14 @@ the prior distribution. In each iteration, it then mutates parameter candidates 
 to their weights. By sampling from $N$ independently moving particles, Sequential Monte Carlo method
 has a significant advantage of easily parallelizable. Furthermore, Daviet \cite{daviet2018inference}
 shows that Sequential Monte Carlo delivers better performance on approximating multimodal
-distribution.
+distribution compared to Metropolis-Hastings algorithm.
 
 \begin{algorithm}[H]
     \caption{Sequential Monte Carlo Algorithm}
     \label{alg:smc}
     \footnotesize{
         \hspace*{\algorithmicindent} \textbf{Input:}
-        \begin{itemize}[noitemsep]
+        \begin{itemize}[noitemsep,topsep=0pt]
             \item Model $\mathcal{M}_\theta$
             \item $D_{obs}$: observation data
             \item $\pi(\theta)$: prior distribution
@@ -284,7 +283,7 @@ distribution.
             \item $N$ number of particles.
         \end{itemize}
         \hspace*{\algorithmicindent} \textbf{Output:}
-        \begin{itemize}[noitemsep]
+        \begin{itemize}[noitemsep,topsep=0pt]
             \item $(\theta_1,\ldots,\theta_N)$ sample of $N$ particles
             \item $(w_1,\ldots,w_N)$ corresponding likelihoods.
         \end{itemize}
@@ -318,12 +317,13 @@ distribution.
         \EndProcedure
     \end{algorithmic}
 \end{algorithm}
-Selection of kernel function for SMC is mentioned by Filippi \cite{filippi2013optimality}, and Silk \cite{silk2012optimizing}.\\
-Advantages of Sequential Monte Carlo algorithm:
+\noindent Selection of kernel function for SMC is mentioned by Filippi \cite{filippi2013optimality},
+and Silk \cite{silk2012optimizing}. Sequential Monte Carlo algorithm has several advantages compared
+to Metropolis-Hastings algorithm.
 \begin{itemize}
     \item[+] Approximate multimodal distributions: since Sequential Monte Carlo consists of $N$
-          particles moving independently and later selected with replacement, it is less likely to fall
-          into a local maximum or minimum.
+          particles moving independently and later selected with replacement, it is less likely to
+          fall into a local maximum or minimum.
     \item[+] Parallelizable: Sequential Monte Carlo has trivially data-parallelism, in contrast to
           Metropolis-Hastings where no parallelization is possible.
 \end{itemize}
@@ -346,7 +346,23 @@ measure $\delta(D_1, D_2)$ where $D_1$ and $D_2$ denote observable data. Given a
 $\hat{\theta}$ that specifies a model $\mathcal{M}_\theta$. The ABC algorithm accepts $\hat{\theta}$
 if a simulation run on $\mathcal{M}_\theta$ delivers observable data $D_{sim}$ such that
 $\delta(D_{obs},D_{sim}) < \epsilon$, where $\epsilon\in\mathbf{R}_{\leq 0}$ is the distance
-threshold.
+threshold. ABC algorithm can be used together with Markov chain Monte Carlo algorithm (ABC-MCMC
+\cite{sadegh2014approximate} \cite{plagnol2004approximate}), or with Sequential Monte Carlo sampling
+algorithm (ABC-SMC \cite{sisson2007sequential} \cite{molyneux2020abc}). Advantages of Approximate
+Bayesian Computation are:
+\begin{itemize}
+    \item[+] Likelihood-free: applicable when the likelihood has no analytical form or there is no
+          likelihood.
+    \item[+] Easy to implement.
+\end{itemize}
+However, Approximate Bayesian Computation has drawbacks:
+\begin{itemize}
+    \item[-] How to select a distance threshold $\epsilon$ so that the posterior is closely
+          approximated? \cite{sisson2007sequential}
+    \item[-] How to choose a summary statistic to capture sufficient information?
+          \cite{csillery2010approximate}
+\end{itemize}
+
 \begin{algorithm}[H]
     \caption{Approximate Bayesian Computation}
     \label{alg:abc-reject}
@@ -361,7 +377,7 @@ threshold.
             \item $N$ number of particles.
         \end{itemize}
         \hspace*{\algorithmicindent} \textbf{Output:}
-        \begin{itemize}[noitemsep]
+        \begin{itemize}[noitemsep,topsep=0pt]
             \item $(\theta_1,\ldots,\theta_N)$: $N$ sampled particles.
             \item $(w_1,\ldots,w_N)$: corresponding weights of sampled particles.
         \end{itemize}
@@ -382,17 +398,7 @@ threshold.
         \EndProcedure
     \end{algorithmic}
 \end{algorithm}
-Advantages of Approximate Bayesian Computation:
-\begin{itemize}
-    \item[+] Likelihood-free: applicable when the likelihood has no analytical form or there is no likelihood.
-    \item[+] Easy to implement.
-\end{itemize}
-Disavantages of Approximate Bayesian Computation:
-\begin{itemize}
-    \item[-] Which distances are proper to measure two data set? In the other word, is measuring
-          distance a proper method to approximate likelihood?
-    \item[-] How to select a threshold so that the likelihood is closely approximated?
-\end{itemize}
+
 
 \section{Summary}
 We introduced basic concepts on Bayesian parameter inference and posterior estimation. Since the

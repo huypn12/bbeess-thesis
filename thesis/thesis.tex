@@ -14,6 +14,7 @@
 \usepackage[noend]{algpseudocode}
 \makeatletter
 \algrenewcommand\ALG@beginalgorithmic{\footnotesize}
+\def\NoNumber#1{{\def\alglinenumber##1{}\State #1}\addtocounter{ALG@line}{-1}}
 \usepackage{titling}
 \usepackage{listings}
 \usepackage{enumitem}
@@ -23,7 +24,7 @@
 \usepackage[pdf]{graphviz}
 \usepackage{tikz}
 \usetikzlibrary{automata,arrows,positioning,calc}
-
+\usepackage{forest}
 
 % Utils
 \usepackage{caption}
@@ -72,11 +73,9 @@
 \include{introduction}
 \include{probabilistic_model_checking}
 \include{bayesian_inference}
-\include{related_works}
 \include{method}
 \include{case_study}
 \include{conclusion}
-\include{appendix.tex}
 
 \printbibliography
 \end{document}

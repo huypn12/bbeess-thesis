@@ -3,19 +3,18 @@ To evaluate the effectiveness of the presented frameworks, we use three case stu
 study, we benchmark the frameworks using the following steps:
 \begin{enumerate}
     \item Describe the system of concern.
-    \item Construct pDTMC models and formalize a reachability property.
-    \item Select model true parameters and generate synthetic data.
+    \item Construct parametric DTMC models and formalize a reachability property.
+    \item Select model true parameters arbitrarily random and generate synthetic data from it.
     \item Apply the frameworks for both rational functions and simulation-based setups.
     \item Visualize the parameter synthesis and inference result.
     \item Measure runtime among different model sizes.
     \item Discussion on results.
 \end{enumerate}
-Three case studies include firstly a simple and standard case study \textit{IPv4 ZeroConfiguration
-    Protocol}. The second case study comes from the experiments of the Department of Biology at the
-University of Konstanz on the defensive behaviour of bee colonies\cite{hajnal2019data}. Third case
-study is an epidemics model; it is introduced in order to show the expansion of the model
-state-space as the system has more states to be encoded.\\
-All experiments are conducted in the following system:
+The first case study is \textit{IPv4 ZeroConfiguration Protocol}. The second case study comes from
+the experiments of the Department of Biology at the University of Konstanz on the defensive
+behaviour of bee colonies\cite{hajnal2019data}. The third case study is an epidemics model; it is
+introduced in order to show the expansion of the model state-space as the system has more states
+to be encoded. All experiments are conducted in the following system:
 \begin{itemize}
     \item Intel Xeon W-2135 processor, 64GB RAM, OpenSUSE 15.2
     \item Python 3.8.8, StormPy 1.6.3, Storm stable, PRISM 4.6
@@ -30,19 +29,15 @@ allocate newly attached device an unique IP address without any intervention fro
 \begin{algorithm}[H]
     \caption{IPv4 Zeroconf procedure.}
     \label{alg:gen-sir-ctmc}
-    \hspace*{\algorithmicindent} \textbf{Input:}
-    \begin{itemize}
-        \item $N$: number of probes.
-    \end{itemize}
-    \hspace*{\algorithmicindent} \textbf{Output:}
-    \begin{itemize}
-        \item An unused address
-    \end{itemize}
+    \footnotesize{
+        \hspace*{\algorithmicindent} \textbf{Input:} $N$: number of probes.\\
+        \hspace*{\algorithmicindent} \textbf{Output:} An unused address, or abort with error.
+    }
     \begin{algorithmic}[1]
         \Procedure{Zeroconf}{}
         \State Select an address $ip$ randomly
         \State $i = 1$
-        \While $i \leq N$
+        \While{$i \leq N$}
         \State Broadcast message asking if $ip$ is already in use.
         \If{Received reply that $ip$ is in use}
         \State Select an address $ip$ randomly
@@ -67,32 +62,32 @@ We introduce two real parameters $(p, q) \in [0,1]\times[0,1]$.
     \item $q$: received a reply that $ip$ is in use.
 \end{itemize}
 By replace non-determinisms (timeout and address occupied) by probability distribution, we construct
-the a pDTMC as a formalism of the Zeroconf protocol of $N$ probes.
+the a parametric DTMC as a formalism of the Zeroconf protocol of $N$ probes.
 \begin{figure}[H]
     \centering
-    \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=2cm]
-        \tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1]
+    \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=2.5cm]
+        \tikzstyle{every state}=[font=\footnotesize, fill=white,draw=black,thick,text=black,scale=1]
         \node[state, initial]    (A)            {$S_0$};
         \node[state]    (B)[below of=A]         {};
-        \node[state]    (I)[below of=B]         {$\text{OK}$};
+        \node[state,accepting]    (I)[below of=B]         {$\text{OK}$};
 
         \node[state]    (C)[right of=A]         {$S_1$};
         \node[state]    (D)[right of=C]         {$S_2$};
         \node[state]    (E)[right of=D]         {$S_3$};
         \node[state]    (F)[right of=E]         {$S_4$};
         \node[state]    (G)[below of=F]         {};
-        \node[state]    (H)[below of=G]         {$\text{Failed}$};
+        \node[state,accepting]    (H)[below of=G]         {$\text{Failed}$};
 
         \path
         (A)
         edge    node{$q$}       (C)
-        edge    node{$1-q$}     (B)
+        edge    node[left]{$1-q$}     (B)
 
         (B)
-        edge    node{$1$}     (I)
+        edge    node[left]{$1$}     (I)
 
         (I)
-        edge [loop below] node{} (I)
+        edge [loop below] node{$1$} (I)
 
         (C)
         edge    node{$p$}          (D)
@@ -100,149 +95,71 @@ the a pDTMC as a formalism of the Zeroconf protocol of $N$ probes.
 
         (D)
         edge    node{$p$}          (E)
-        edge  [bend left]  node{$1-p$}        (A)
+        edge  [bend left=50]  node{$1-p$}        (A)
 
         (E)
         edge    node{$p$}          (F)
-        edge  [bend left]  node{$1-p$}        (A)
+        edge  [bend left=60]  node{$1-p$}        (A)
 
         (F)
         edge    node{$p$}          (G)
-        edge [bend left]  node{$1-p$}        (A)
+        edge [bend left=70]  node{$1-p$}        (A)
 
         (G)
         edge    node{$1$}          (H)
 
         (H)
-        edge [loop below] node{} (G);
+        edge [loop below] node{$1$} (G);
 
     \end{tikzpicture}
     \label{fig:zeroconf-4}
-    \caption{IPv4 ZeroConf model, 4 probes}
+    \caption{Example of an IPv4 Zeroconf model with 4 probes}
 \end{figure}
-
-\begin{figure}[H]
-    \centering
-    \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=1.5cm]
-        \tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=0.75]
-        \node[state, initial]    (A)            {$S_0$};
-        \node[state]    (B)[below of=A]         {};
-        \node[state]    (I)[below of=B]         {$\text{OK}$};
-
-        \node[state]    (C)[right of=A]         {$S_1$};
-        \node[state]    (D)[right of=C]         {$S_2$};
-        \node[state]    (E)[right of=D]         {$S_3$};
-        \node[state]    (F)[right of=E]         {$S_4$};
-        \node[state]    (J)[right of=F]         {$S_5$};
-        \node[state]    (K)[right of=J]         {$S_6$};
-        \node[state]    (L)[right of=K]         {$S_7$};
-        \node[state]    (M)[right of=L]         {$S_8$};
-        \node[state]    (N)[right of=M]         {$S_9$};
-        \node[state]    (O)[right of=N]         {$S_{10}$};
-
-        \node[state]    (G)[below of=O]         {};
-        \node[state]    (H)[below of=G]         {$\text{Failed}$};
-
-        \path
-        (A)
-        edge    node{$q$}       (C)
-        edge    node{$1-q$}     (B)
-
-        (B)
-        edge    node{$1$}     (I)
-
-        (I)
-        edge [loop below] node{} (I)
-
-        (C)
-        edge    node{$p$}          (D)
-        edge [bend left] node{$1-p$}        (A)
-
-        (D)
-        edge    node{$p$}          (E)
-        edge  [bend left]  node{$1-p$}        (A)
-
-        (E)
-        edge    node{$p$}          (F)
-        edge  [bend left]  node{$1-p$}        (A)
-
-        (F)
-        edge    node{$p$}          (J)
-        edge [bend left]  node{$1-p$}        (A)
-
-        (J)
-        edge    node{$p$}          (K)
-        edge [bend left]  node{$1-p$}        (A)
-        (K)
-        edge    node{$p$}          (L)
-        edge [bend left]  node{$1-p$}        (A)
-        (L)
-        edge    node{$p$}          (M)
-        edge [bend left]  node{$1-p$}        (A)
-        (M)
-        edge    node{$p$}          (N)
-        edge [bend left]  node{$1-p$}        (A)
-        (N)
-        edge    node{$p$}          (O)
-        edge [bend left]  node{$1-p$}        (A)
-        (O)
-        edge    node{$p$}          (G)
-        edge [bend left]  node{$1-p$}        (A)
-
-        (G)
-        edge    node{$1$}          (H)
-
-        (H)
-        edge [loop below] node{} (G);
-    \end{tikzpicture}
-    \label{fig:zeroconf-10}
-    \caption{IPv4 ZeroConf model, 10 probes}
-\end{figure}
-We want to verify the following property: \textit{"Eventually, an IP is successfully allocated with
-    at most $N$ probes with probability of at least 75 percents."} In PCTL formula
+\noindent We want to verify the following property: \textit{"Eventually, an IP is successfully
+    allocated with at most $N$ probes with probability of at least 75 percents."} In PCTL formula
 \begin{align*}
     P_{\geq 0.75} ( \texttt{true} \quad \mathsf{U}^{\leq N} \quad \texttt{"OK"} )
 \end{align*}
 
 \subsection{Evaluation}
 \subsubsection{True parameters and synthetic data}
-We use the following true parameter:
-\begin{enumerate}
-    \item Zeroconf 4 probes: $(p,q)=(0.105547, 0.449658)$
-    \item Zeroconf 10 probes: $(p,q)=(0.197779, 0.621824)$
-\end{enumerate}
-Observation data $D_{obs}$ is from simulating the instantiated DTMC of true parameters $10000$ times.
-\begin{figure}[H]
-    \centering
-    \begin{subfigure}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/zeroconf4_data.png}
-        \caption{True parameters , $10000$ chain simulations.}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/zeroconf10_data.png}
-        \caption{True parameters $(p,q)=(0.197779, 0.621824)$, $10000$ chain simulations.}
-    \end{subfigure}
-\end{figure}
+We select a true parameter $(p, q)$ arbitrarily random.
+\begin{table}[H]
+    \begin{tabular}{|l|l|l|}
+        \hline
+        Model $\mathcal{M}$         & Zeroconf, 4 probes                                                  & Zeroconf, 10 probes                                                  \\ \hline
+        Number of BSCCs             & 2                                                                   & 2                                                                    \\ \hline
+        Number of states            & 9                                                                   & 14                                                                   \\ \hline
+        True parameter $\theta$     & (0.105547, 0.449658)                                                & (0.197779, 0.621824)                                                 \\ \hline
+        Number of samples           & 10000                                                               & 10000                                                                \\ \hline
+        Synthetic data $D_{obs}$    & (41, 9959)                                                          & (22, 9978)                                                           \\ \hline
+        Property of interest $\Phi$ & $P_{\geq 0.75} (\texttt{true} \mathsf{U}^{\leq 4} (\texttt{"OK"}))$ & $P_{\geq 0.75} (\texttt{true} \mathsf{U}^{\leq 10} (\texttt{"OK"}))$ \\ \hline
+        \begin{tabular}[c]{@{}l@{}}Satisfaction property\\ $P(\mathcal{M}_\theta\models\Phi)$\end{tabular}   & 0.946409                                                            & 0.952067                                                             \\ \hline
+    \end{tabular}
+    \caption{Synthetic data for Zeroconf model of 4 and 10 probes.}
+\end{table}
+
 
 \subsubsection{Parameter synthesis results}
-Parameter synthesis for Zeroconf pDTMC of 4 probes.
+In the following parameter synthesis experiment, we set the number of samples in Sequential Monte
+Carlo $N=200$ and the number of perturbation kernels $M=19$. Perturbation and transition kernel are
+selected as described in Chapter 4. In RF-SMC, the length of Metropolis-Hasting is $N_{MH}=50$. In
+SMC-ABC-SMC, the distance threshold is $\epsilon=0.25$.\\
+First, we present the parameter synthesis result for Zeroconf parametric DTMC of 4 probes. The
+property of interest is
+\begin{align*}
+    P_{\geq 0.75} (\texttt{true} \mathsf{U}^{\leq 4} (\texttt{"OK"}))
+\end{align*}
 \begin{table}[H]
-    \begin{tabular}{|l|c|l|}
+    \begin{tabular}{|l|l|l|}
         \hline
-        \multicolumn{1}{|c|}{\textbf{Zeroconf, 4 probes}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Rational function\\ SMC\end{tabular}}                                   & \begin{tabular}[c]{@{}l@{}}Statistical model checking\\ ABC-SMC\end{tabular} \\ \hline
-        True parameter                                    & \multicolumn{2}{c|}{(0.105547, 0.449658)}                                                                      \\ \hline
-        Number of states                                  & \multicolumn{2}{c|}{9}                                                                                         \\ \hline
-        Number of BSCCs                                   & \multicolumn{2}{c|}{2}                                                                                         \\ \hline
-        Target property                                   & \multicolumn{2}{c|}{$P_{\geq 0.75} [!(i>2) \mathsf{U}^{\leq 4} (\texttt{"OK"})]$}                              \\ \hline
-        Synthetic data                                    & \multicolumn{2}{c|}{$(41, 9959)$}                                                                              \\ \hline
-        Inferred parameter point                          & \multicolumn{1}{l|}{$(0.188956, 0.460554)$}                                       & $(0.176469, 0.355322)$     \\ \hline
-        L2 distance to true parameter                     & \multicolumn{1}{l|}{$0.084117$}                                                   & $0.118023$                 \\ \hline
-        Run time (hh:mm:ss)                               & \multicolumn{1}{l|}{0:06:05}                                                      & 0:54:52                    \\ \hline
+        Method                                           & RF-SMC               & SMC-ABC-SMC          \\ \hline
+        Estimated parameter $\hat{\theta}$               & (0.188956, 0.460554) & (0.176469, 0.355322) \\ \hline
+        True parameter $\theta$                          & (0.105547, 0.449658) & (0.105547, 0.449658) \\ \hline
+        L2 distance $\Vert \theta, \hat{\theta} \Vert_2$ & 0.084117             & 0.118023             \\ \hline
+        \begin{tabular}[c]{@{}l@{}}Satisfaction property\\ $P(\mathcal{M}_{\hat{\theta}}\models\Phi)$\end{tabular}                        & 0.893715             & 0.918133             \\ \hline
     \end{tabular}
-    \caption{SIR(5,1,0) parameter estimation results.}
+    \caption{Parameter estimation results for Zeroconf model of 4 probes.}
 \end{table}
 
 \begin{figure}[H]
@@ -258,23 +175,26 @@ Parameter synthesis for Zeroconf pDTMC of 4 probes.
         \includegraphics[width=\linewidth]{figures/zeroconf4_sim.png}
         \caption{Sampled particles using Statiscal Model Checking ABC-SMC}
     \end{subfigure}
+    \caption{Parameter synthesis results for Zeroconf model of 4 probes.}
 \end{figure}
 
-Parameter synthesis for Zeroconf pDTMC of 10 probes.
+\newpage
+\noindent We present parameter synthesis results for Zeroconf parametric DTMC of 10 probes. We use
+the same RF-SMC and SMC-ABC-SMC framework configuration as in the parameter synthesis of the
+Zeroconf model with four probes.
+\begin{align*}
+    P_{\geq 0.75} (\texttt{true} \mathsf{U}^{\leq 10} (\texttt{"OK"}))
+\end{align*}
 \begin{table}[H]
-    \begin{tabular}{|l|c|l|}
+    \begin{tabular}{|l|l|l|}
         \hline
-        \multicolumn{1}{|c|}{\textbf{Zeroconf, 4 probes}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Rational function\\ SMC\end{tabular}}                                    & \begin{tabular}[c]{@{}l@{}}Statistical model checking\\ ABC-SMC\end{tabular} \\ \hline
-        True parameter                                    & \multicolumn{2}{c|}{(0.197779, 0.621824)}                                                                       \\ \hline
-        Number of states                                  & \multicolumn{2}{c|}{14}                                                                                         \\ \hline
-        Number of BSCCs                                   & \multicolumn{2}{c|}{2}                                                                                          \\ \hline
-        Target property                                   & \multicolumn{2}{c|}{$P_{\geq 0.75} [!(i>2) \mathsf{U}^{\leq 10} (\texttt{"OK"})]$}                              \\ \hline
-        Synthetic data                                    & \multicolumn{2}{c|}{$(22, 9978)$}                                                                               \\ \hline
-        Inferred parameter point                          & \multicolumn{1}{l|}{$(0.301807, 0.457090)$}                                        & $(0.378774, 0.405870)$     \\ \hline
-        L2 distance to true parameter                     & \multicolumn{1}{l|}{$0.194831$}                                                    & $0.281772$                 \\ \hline
-        Run time (hh:mm:ss)                               & \multicolumn{1}{l|}{0:09:29}                                                       & 0:37:56                    \\ \hline
+        Method                                           & RF-SMC               & SMC-ABC-SMC          \\ \hline
+        True parameter $\theta$                          & (0.197779, 0.621824) & (0.197779, 0.621824) \\ \hline
+        Estimated parameter $\hat{\theta}$               & (0.301807, 0.457090) & (0.378774, 0.405870) \\ \hline
+        L2 distance $\Vert \theta, \hat{\theta} \Vert_2$ & 0.194831             & 0.281772             \\ \hline
+        \begin{tabular}[c]{@{}l@{}}Satisfaction property\\ $P(\mathcal{M}_{\hat{\theta}}\models\Phi)$\end{tabular}                       & 0.952067             & 0.966142             \\ \hline
     \end{tabular}
-    \caption{SIR(5,1,0) parameter estimation results.}
+    \caption{Parameter estimation results for Zeroconf model of 10 probes.}
 \end{table}
 
 \begin{figure}[H]
@@ -290,28 +210,67 @@ Parameter synthesis for Zeroconf pDTMC of 10 probes.
         \includegraphics[width=\linewidth]{figures/zeroconf10_sim.png}
         \caption{Sampled particles using Statiscal Model Checking ABC-SMC}
     \end{subfigure}
+    \caption{Parameter synthesis results for Zeroconf model of 10 probes.}
+\end{figure}
+
+\subsection{Performance}
+To measure the performance of RF-SMC and SMC-ABC-SMC, we measure the physical runtime to finish
+\textit{(total runtime)}, as well as the average physical run time of one perturbation kernel
+\textit{(average perturbation runtime)}.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|l|}
+        \hline
+        Method                     & RF-SMC & SMC-ABC-SMC \\ \hline
+        Total runtime (minutes)    & 6.083  & 54.867      \\ \hline
+        \begin{tabular}[c]{@{}l@{}}Average perturbation\\ runtime (minutes)\end{tabular} & 0.32   & 2.88        \\ \hline
+    \end{tabular}
+    \caption{Physical runtime on Zeroconf model with 4 probes.}
+\end{table}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|l|}
+        \hline
+        Method                     & RF-SMC & SMC-ABC-SMC \\ \hline
+        Total runtime (minutes)    & 9.50   & 37.93       \\ \hline
+        \begin{tabular}[c]{@{}l@{}}Average perturbation\\ runtime (minutes)\end{tabular} & 0.501  & 1.978       \\ \hline
+    \end{tabular}
+    \caption{Physical runtime on Zeroconf model with 10 probes.}
+\end{table}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/zeroconf_runtime_total.png}
+        \caption{Total runtime}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/zeroconf_runtime_avg.png}
+        \caption{Average perturbation runtime}
+    \end{subfigure}
+    \caption{Physical runtime on Zeroconf model of different sizes.}
 \end{figure}
 
 \subsection{Discussion}
-For both model, rational function evaluation is faster than simulation. The simplicity of graphical
-model gives simple rational function, so evaluating it is much faster than simulation, which
-requires a lot of system calls to random generators. Both rational function evaluation and
-simulation scheme are able to deliver a satisfying parameter estimation point. However, in Zeroconf
-model of 10 probes, simulation has an advantage as the model transitions are simple topologically,
-while rational function suffers from numerical error.
+For both models, rational function evaluation is faster than simulation. The simplicity of the
+graphical model gives simple rational functions, so evaluating it is much faster than simulation,
+which requires many system calls to random generators. Both rational function evaluation and
+simulation schemes are able to deliver a satisfying parameter estimation point.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Bees colony}
+\section{Social feedback in honeybee colonies}
 \subsection{System description}
 We study the collective behavior of a bee colony. Each bee in a colony possibly stings after
-observing a threat in the surrounding environment, and warn other bees by releasing a special
+observing a threat in the surrounding environment and warns other bees by releasing a special
 substance, pheromone. By sensing the pheromone released in the environment, other bees in the colony
-may also sting. Assume that each bee in a colony decides its next action (to sting or not to sting)
-based only on the current state of the environment, and the number of bees who sting or not sting
-can be modeled as a Markov process. To reduce the complexity of the model, we make another
-assumption that the states of the bees colony are observed after uniform time duration, hence the
+may also sting. Assume that each bee in a colony decides its following action (to sting or not to
+sting) based only on the current state of the environment; we model the number of bees who sting or
+not sting by Markov population processes. To reduce the complexity of the model, we make another
+assumption that the states of the bee colony are observed after a uniform time duration. Hence the
 model is of discrete-time. However, since stinging leads to the termination of an individual bee, it
-reduces the total defense capability as well.
+reduces the total defense capability.
 
 \subsection{Model and properties}
 With parametric Discrete-time Markov chain as the model, we study how the actions of a single bee
@@ -332,19 +291,12 @@ is $n'\in\{0,1,\ldots,n\}$. We model the bee colony with a DTMC $\mathcal{M}=(S,
     S_{init}, AP,L)$, such that
 \begin{itemize}
     \item $|S_{init}|=1$
-    \item There exists $n+1$ tSCCs which encode the population at the end of the experiment.
+    \item There exists $n+1$ BSCCs which encode the population at the end of the experiment.
 \end{itemize}
-Semantics of \textit{semi-synchronous} Markov population models for bees colony are developed by
-\cite{hajnal2019data}.
-\begin{itemize}
-    \item \textit{Synchronous model}: all bees decide to sting or not to sting in a transition.
-    \item \textit{Asynchronous model}: bees may not sting in a transition but probably stings in the next transition.
-\end{itemize}
-In \textit{semisynchronous model}, we assume that the behaviour is initally synchronous. From all
-succeeding states from initial states, the updates are of asynchronous semantics.
-\begin{example}{Semisynchronous model of 3 bees.}
-    We model a colony of 3 bees using semisynchronous semantics. In the following DTMC model, each
-    individual bee is encode by an integer represents its state
+Semantics of Markov population models for bees colony are developed by \cite{hajnal2019data}.
+\begin{example}{Parametric DTMC model of 3 bees.}
+    We model a colony of 3 bees using parametric DTMC. In the following DTMC model, each individual
+    bee is encode by an integer represents its state
     \begin{itemize}
         \item $0$: bee never stings.
         \item $1$: bee stings and dies.
@@ -352,16 +304,16 @@ succeeding states from initial states, the updates are of asynchronous semantics
         \item $k$: bee does not sting in $k$ consecutive observations.
     \end{itemize}
     Let $p, q_1, q_2$ represent the probabilities that a bee stings without any stimulation and a
-    bee stings at 1 and 2 attemps, respectively. We then construct the following pDTMC
+    bee stings at 1 and 2 attemps, respectively. We then construct the following parametric DTMC
     \begin{figure}[H]
         \centering
-        \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=4cm]
-            \tikzstyle{every state}=[fill=white,draw=black,thick,text=black,scale=1]
+        \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=3cm, font=\footnotesize]
+            \tikzstyle{every state}=[font=\footnotesize , fill=white,draw=black,thick,text=black,scale=1]
             \node[state,initial]    (A)                     {init};
             \node[state]            (B)[right of=A]         {$2, 2, 1 $};
-            \node[state,accepting]            (C)[above of=B]         {$0, 0, 0$};
+            \node[state,accepting]  (C)[above of=B]         {$0, 0, 0$};
             \node[state]            (D)[below of=B]         {$2, 1, 1$};
-            \node[state,accepting]  (E)[below of=D]         {$1, 1, 1$};
+            \node[state,accepting]  (E)[below of=A]         {$1, 1, 1$};
             \node[state]            (F)[right of=B]         {$0, 2, 1$};
             \node[state,accepting]  (G)[right of=D]         {$0, 1, 1$};
             \node[state,accepting]  (H)[right of=F]         {$0, 0, 1$};
@@ -382,16 +334,14 @@ succeeding states from initial states, the updates are of asynchronous semantics
             edge    node{$1-q_2$}          (G)
             edge    node{$q_2$}              (E)
             (E)
-            edge [loop right] node {1} (W)
+            edge [loop left] node {1} (W)
             (F)
             edge    node{$q_1$}              (G)
             edge    node{$1 - q_1$}          (H)
             (G)
-            edge [loop right] node {1} (G)
-
-            ;
+            edge [loop right] node {1} (G);
         \end{tikzpicture}
-        \caption{Semisynchronous model of 3 bees, 3 parameters $p, q_1, q_2$)}
+        \caption{Parametric DTMC model of 3 bees with 3 parameters $p, q_1, q_2$}
     \end{figure}
 \end{example}
 We verify the following property: \textit{"With probability of at least 25 percents, at least a half
@@ -402,77 +352,160 @@ We verify the following property: \textit{"With probability of at least 25 perce
 
 \subsection{Evaluation}
 \subsubsection{True parameters and synthetic data}
-We use the following true parameter:
-\begin{table}[]
+In the following experiment, we select arbitrary true parameters and use them to generate synthetic
+data by simulating the instantiated models $10000$ times to obtain steady-state distribution. Let
+$S$ be the number of survived bees at the steady state.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|l|l|}
+        \hline
+        Model $\mathcal{M}$         & 3 bees                                         & 5 bees                                           & 10 bees                                          \\ \hline
+        Number of states            & 13                                             & 24                                               & 69                                               \\ \hline
+        Number of BSCCs             & 4                                              & 6                                                & 11                                               \\ \hline
+        True parameter $\theta$     & \begin{tabular}[c]{@{}l@{}}$p=0.665623$ \\ $q_1=0.830401$ \\ $q_2=0.839778$ \end{tabular}                     & \begin{tabular}[c]{@{}l@{}}$p=0.278370$ \\ $q_1=0.305994$ \\ $q_2=0.489792$ \\ $q_3=0.737252$ \\ $q_4=0.766581$ \end{tabular}                       & \begin{tabular}[c]{@{}l@{}}$p=0.222169$ \\ $q_1=0.246993$ \\ $q_2=0.281934$ \\ $q_3=0.446384$ \\ $q_4=0.491612$ \\ $q_5=0.534611$ \\ $q_6=0.569409$ \\ $q_7=0.684651$ \\ $q_8=0.717139$ \\ $q_9=0.800987$  \end{tabular}                       \\ \hline
+        Synthetic data $D_{obs}$    & (344, 54, 1390, 8212)                          & \begin{tabular}[c]{@{}l@{}}(1940, 11, 216, 2682,\\ 4200, 951)\end{tabular}                       & \begin{tabular}[c]{@{}l@{}}(769, 0, 1, 10,\\ 187, 972, 2494, 2982,\\ 2133, 419, 33)\end{tabular}                       \\ \hline
+        Property of interest $\Phi$ & $P_{\geq 0.25} (\text{true} \mathsf{U} (S>3))$ & $P_{\geq 0.25} (\texttt{true} \mathsf{U} (S>5))$ & $P_{\geq 0.25} (\texttt{true} \mathsf{U} (S>8))$ \\ \hline
+        \begin{tabular}[c]{@{}l@{}}Satisfaction property\\ $P(\mathcal{M}_\theta\models\Phi)$\end{tabular}  & 0.819666                                       & 0.780172                                         & 0.737244                                         \\ \hline
+    \end{tabular}
+    \caption{True parameter and synthetic data for 3, 5, and 10 bees models.}
+\end{table}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/bee_3_data.png}
+        \caption{Synthetic data of 3 bees model.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/bee_5_data.png}
+        \caption{Synthetic data of 5 bees model.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/bee_10_data.png}
+        \caption{Synthetic data of 10 bees model.}
+    \end{subfigure}
+    \caption{Histogram of data obtained from $10000$ simulation runs on bees models.}
+\end{figure}
+
+\subsubsection{Parameter synthesis results}
+In the following parameter synthesis experiment, we set the number of samples in Sequential Monte
+Carlo $N=200$ and the number of perturbation kernels $M=19$. Perturbation and transition kernel are
+selected as described in Chapter 4. In RF-SMC, the length of Metropolis-Hasting is $N_{MH}=50$. In
+SMC-ABC-SMC, the distance threshold is $\epsilon=0.25$.\\
+Parameter synthesis result for 3 bees model:
+\begin{table}[H]
+    \centering
     \begin{tabular}{|l|l|l|}
         \hline
-                        & Semisynchronous model, 3 bees    & Semisynchronous model, 5 bees    \\ \hline
-        Number of BSCCs & 4                                & 6                                \\ \hline
-        True parameter  & $(0.665623, 0.830401, 0.839778)$ & \begin{tabular}[c]{@{}l@{}}($0.278370,  0.305994, 0.489792,$\\ $0.737252, 0.766581$)\end{tabular}       \\ \hline
-        Synthetic data  & (344, 54, 1390, 8212)            & (1940, 11, 216, 2682, 4200, 951) \\ \hline
+                                                          & RF-SMC                     & SMC-ABC-SMC                \\ \hline
+        True parameter $\theta$                           & \begin{tabular}[c]{@{}l@{}}$p=0.665623$ \\ $q_1=0.830401$ \\ $q_2=0.839778$ \end{tabular} & \begin{tabular}[c]{@{}l@{}}$p=0.665623$ \\ $q_1=0.830401$ \\ $q_2=0.839778$ \end{tabular} \\ \hline
+        Estimated parameter $\hat{\theta}$                & \begin{tabular}[c]{@{}l@{}}$p=0.671388$ \\ $q_1=0.575026$ \\ $q_2=0.525502$ \end{tabular} & \begin{tabular}[c]{@{}l@{}}$p=0.811651$ \\ $q_1=0.621073$ \\ $q_2=0.544130$ \end{tabular} \\ \hline
+        L2 distance  $\Vert \theta, \hat{\theta} \Vert_2$ & 0.404992                   & 0.390576                   \\ \hline
+        \begin{tabular}[c]{@{}l@{}}Satisfaction property\\ $P(\mathcal{M}_{\hat{\theta}}\models\Phi)$\end{tabular}                        & 0.623889                   & 0.595083                   \\ \hline
     \end{tabular}
+    \caption{Parameter synthesis result for 3 bees model.}
 \end{table}
-Observation data $D_{obs}$ is from simulating the instantiated DTMC of true parameters $10000$ times.
+
+\newpage
+\noindent Parameter synthesis for model of 5 bees:
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|l|}
+        \hline
+                                                          & RF-SMC                     & SMC-ABC-SMC                \\ \hline
+        True parameter $\theta$                           & \begin{tabular}[c]{@{}l@{}}$p=0.278370$ \\ $q_1=0.305994$ \\ $q_2=0.489792$ \\ $q_3=0.737252$ \\ $q_4=0.766581$ \end{tabular} & \begin{tabular}[c]{@{}l@{}}$p=0.278370$ \\ $q_1=0.305994$ \\ $q_2=0.489792$ \\ $q_3=0.737252$ \\ $q_4=0.766581$ \end{tabular} \\ \hline
+        Estimated parameter $\hat{\theta}$                & \begin{tabular}[c]{@{}l@{}}$p=0.576565$ \\ $q_1=0.589724$ \\ $q_2=0.490334$ \\ $q_3=0.554397$ \\ $q_4=0.524433$ \end{tabular} & \begin{tabular}[c]{@{}l@{}}$p=0.361220$ \\ $q_1=0.316007$ \\ $q_2=0.545691$ \\ $q_3=0.643962$ \\ $q_4=0.591206$ \end{tabular} \\ \hline
+        L2 distance  $\Vert \theta, \hat{\theta} \Vert_2$ & 0.511366                   & 0.222594                   \\ \hline
+        \begin{tabular}[c]{@{}l@{}}Satisfaction property\\ $P(\mathcal{M}_{\hat{\theta}}\models\Phi)$\end{tabular}                        & 0.623889                   & 0.595083                   \\ \hline
+    \end{tabular}
+    \caption{Parameter synthesis result for 5 bees model}
+\end{table}
+
+\newpage
+\noindent Parameter synthesis for model of 10 bees:
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|l|}
+        \hline
+                                                          & RF-SMC                     & SMC-ABC-SMC                \\ \hline
+        True parameter $\theta$                           & \begin{tabular}[c]{@{}l@{}}$p=0.222169$ \\ $q_1=0.246993$ \\ $q_2=0.281934$ \\ $q_3=0.446384$ \\ $q_4=0.491612$ \\ $q_5=0.534611$ \\ $q_6=0.569409$ \\ $q_7=0.684651$ \\ $q_8=0.717139$ \\ $q_9=0.800987$  \end{tabular} & \begin{tabular}[c]{@{}l@{}}$p=0.222169$ \\ $q_1=0.246993$ \\ $q_2=0.281934$ \\ $q_3=0.446384$ \\ $q_4=0.491612$ \\ $q_5=0.534611$ \\ $q_6=0.569409$ \\ $q_7=0.684651$ \\ $q_8=0.717139$ \\ $q_9=0.800987$  \end{tabular} \\ \hline
+        Estimated parameter $\hat{\theta}$                & \begin{tabular}[c]{@{}l@{}}$p=0.604881$ \\ $q_1=0.472557$ \\ $q_2=0.281484$ \\ $q_3=0.500706$ \\ $q_4=0.49340$ \\ $q_5=0.495508$ \\ $q_6=0.466596$ \\ $q_7=0.510167$ \\ $q_8=0.474153$ \\ $q_9=0.484061$  \end{tabular} & \begin{tabular}[c]{@{}l@{}}$p=0.391313$ \\ $q_1=0.485688$ \\ $q_2=0.424056$ \\ $q_3=0.381489$ \\ $q_4=0.440681$ \\ $q_5=0.578865$ \\ $q_6=0.594232$ \\ $q_7=0.564557$ \\ $q_8=0.547804$ \\ $q_9=0.520006$  \end{tabular} \\ \hline
+        L2 distance  $\Vert \theta, \hat{\theta} \Vert_2$ & 0.665837                   & 0.487042                   \\ \hline
+        \begin{tabular}[c]{@{}l@{}}Satisfaction property\\ $P(\mathcal{M}_{\hat{\theta}}\models\Phi)$\end{tabular}                        & 0.933287                   & 0.907478                   \\ \hline
+    \end{tabular}
+    \caption{Parameter synthesis result for 10 bees model}
+\end{table}
+
+\subsection{Performance}
+To measure the performance of RF-SMC and SMC-ABC-SMC, we measure the physical runtime to finish
+\textit{(total runtime)}, as well as the average physical run time of one perturbation kernel
+\textit{(average perturbation runtime)}.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|l|}
+        \hline
+        Method                     & RF-SMC & SMC-ABC-SMC \\ \hline
+        Total runtime (minutes)    & 5.917  & 68.783      \\ \hline
+        \begin{tabular}[c]{@{}l@{}}Average perturbation\\ runtime (minutes)\end{tabular} & 0.312  & 3.614       \\ \hline
+    \end{tabular}
+    \caption{Physical runtime on 3 bees model.}
+\end{table}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|l|}
+        \hline
+        Method                     & RF-SMC & SMC-ABC-SMC \\ \hline
+        Total runtime (minutes)    & 29.517 & 352.083     \\ \hline
+        \begin{tabular}[c]{@{}l@{}}Average perturbation\\ runtime (minutes)\end{tabular} & 1.553  & 18.518      \\ \hline
+    \end{tabular}
+    \caption{Physical runtime on 5 bees model.}
+\end{table}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|l|}
+        \hline
+        Method                     & RF-SMC   & SMC-ABC-SMC \\ \hline
+        Total runtime (minutes)    & 3976.117 & 581.833     \\ \hline
+        \begin{tabular}[c]{@{}l@{}}Average perturbation\\ runtime (minutes)\end{tabular} & 209.237  & 30.592      \\ \hline
+    \end{tabular}
+    \caption{Physical runtime on 10 bees model.}
+\end{table}
 \begin{figure}[H]
     \centering
     \begin{subfigure}{0.48\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{figures/bee_3_data.png}
-        \caption{True parameters , $10000$ chain simulations.}
+        \includegraphics[width=\linewidth]{figures/bees_runtime_total.png}
+        \caption{Total runtime}
     \end{subfigure}
     \hfill
     \begin{subfigure}{0.48\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{figures/bee_5_data.png}
-        \caption{True parameters, $10000$ chain simulations.}
+        \includegraphics[width=\linewidth]{figures/bees_runtime_avg.png}
+        \caption{Average perturbation runtime}
     \end{subfigure}
+    \caption{Physical runtime on Zeroconf model of different sizes.}
 \end{figure}
-
-\subsubsection{Parameter synthesis results}
-Parameter synthesis for semisynchronous model of 3 bees.
-\begin{table}[H]
-    \begin{tabular}{|l|l|l|}
-        \hline
-        {\color[HTML]{232627} Semisynchronous model, 3 bees} & \begin{tabular}[c]{@{}l@{}}SMC with\\ rational function\end{tabular}                                & \begin{tabular}[c]{@{}l@{}}ABC-SMC with\\ statistical model checking\end{tabular} \\ \hline
-        True parameter                                       & \multicolumn{2}{c|}{(0.66562362, 0.83040077, 0.83977757)}                              \\ \hline
-        Estimated parameter                                  & \begin{tabular}[c]{@{}c@{}}(0.671388, 0.575026,\\ 0.525502)\end{tabular}                                & \begin{tabular}[c]{@{}c@{}}(0.81165139, 0.62107331,\\   0.5441299)\end{tabular} \\ \hline
-        L2 distance                                          & 0.404992                                                  & 0.390576                   \\ \hline
-        Time elapsed                                         & 0:05:55                                                   & 1:08:47                    \\ \hline
-    \end{tabular}
-    \caption{Results summary on semisynchronous 3 bees model}
-\end{table}
-
-
-Parameter synthesis for semisynchronous model of 5 bees.
-\begin{table}[H]
-    \begin{tabular}{|l|l|l|}
-        \hline
-        {\color[HTML]{232627} Semisynchronous model, 5 bees} & \begin{tabular}[c]{@{}l@{}}SMC with\\ rational function\end{tabular}                      & \begin{tabular}[c]{@{}l@{}}ABC-SMC with\\ statistical model checking\end{tabular} \\ \hline
-        True parameter                                       & \multicolumn{2}{c|}{\begin{tabular}[c]{@{}c@{}}(0.278370,  0.305994, 0.489792,\\   0.737252, 0.766581)\end{tabular}}                              \\ \hline
-        Estimated parameter                                  & \begin{tabular}[c]{@{}l@{}}(0.576565, 0.589724,\\  0.490334, 0.554397,\\ 0.524433)\end{tabular}                      & \begin{tabular}[c]{@{}l@{}}(0.36121979, 0.31600669,\\  0.5456908, 0.64396223,\\  0.59120587)\end{tabular} \\ \hline
-        L2 distance                                          & 0.511366                                        & 0.222595                   \\ \hline
-        Time elapsed                                         & 0:29:31                                         & 5:52:05                    \\ \hline
-    \end{tabular}
-    \caption{Results summary on semisynchronous 3 bees model}
-\end{table}
-
 \subsection{Discussion}
 The case study with bee colony we observed that both simulation-based framework and rational
 function based framework deliver estimations which are close to the true parameter. However, the
-simulation-based framework is much more expensive computationally. In the experiment with 5 bees, it
-is shown that the simulation-based framework obtain better estimation to the true parameter.
-However, the result is not conclusive since the algorithm is randomized, and more experiments must
-be conducted to have enough data to conclude the effectiveness of two frameworks.
+computational cost of the rational function based framework RF-SMC grows faster as the model
+state-space increases in size. From 15 bees model, the experiment shows that RF-SMC is about seven
+times slower than the simulation-based SMC-ABC-SMC, without any significant differences on
+estimation results.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{SIR model}
-\subsection{System}
+\subsection{System description}
 \textit{SIR} model (Kermack \cite{kermack1927contribution}) is a model widely used in modeling
 epidemics. In a \text{SIR} model, each individual is of one among three types:
 \begin{itemize}
     \item \textit{Susceptible (S)}
-    \item \textit{Infected (S)}
-    \item \textit{Recovered (S)}
+    \item \textit{Infected (I)}
+    \item \textit{Recovered (R)}
 \end{itemize}
 SIR is a stochastic system modeled by reactions between S, I and R. In this thesis we use
 only 2 reactions.
@@ -486,7 +519,7 @@ only 2 reactions.
     \label{alg:gen-sir-ctmc}
     \footnotesize{
         \hspace*{\algorithmicindent} \textbf{Input:}
-        \begin{itemize}
+        \begin{itemize}[noitemsep,topsep=0pt]
             \item $(S_0, I_0, R_0)$: initial population.
             \item Reactions of rate $\alpha,\beta$
                   \begin{align*}
@@ -495,7 +528,7 @@ only 2 reactions.
                   \end{align*}
         \end{itemize}
         \hspace*{\algorithmicindent} \textbf{Output:}
-        \begin{itemize}
+        \begin{itemize}[noitemsep,topsep=0pt]
             \item CTMC $\mathcal{C}$
         \end{itemize}
     }
@@ -527,7 +560,7 @@ only 2 reactions.
 \end{algorithm}
 
 \subsection{Model and properties}
-\begin{theorem}{Acyclicity}
+\begin{theorem}[Acyclicity]}
     A CTMC $\mathcal{C}$ constructed by Algorithm \ref{alg:gen-sir-ctmc} using reactions
     $R_1, R_2$ is acyclic.
 \end{theorem}
@@ -537,7 +570,7 @@ only 2 reactions.
     \item $|R|$ is monotonically increasing, as there exists no reaction which consumes $R$.
     \item If $P((s,i,r), (s',i',r'))\neq 0$, then $i \neq i'$. That is because all reactions change $i$.
 \end{enumerate}
-As $|S| + |I| + |R| = S_0 + I_0 + R_0$ and $S_0,R_0,I_0$ are constants, if there exists a path fragment
+As $|S| + |I| + |R| = S_0 + I_0 + R_0$ and $S_0,I_0,R_0$ are constants, if there exists a path fragment
 \begin{align*}
     (s^t,i^t,r^t)\rightarrow \quad \ldots \quad \rightarrow(s^{t+k},i^{t+k},r^{t+k})
 \end{align*}
@@ -708,13 +741,12 @@ such that $(s^t,i^t,r^t) = (s^{t+k},i^{t+k},r^{t+k})$ then $k=0$, because all re
 We check the following property: \textit{"With probability of at least 25 percents, the number of infected
     individuals does not exceed half of the population until the system is stabilized."}. In PCTL formula:
 \begin{align*}
-    P_{\geq 0.25} ( !(i > (S_0 + i_0 + R_0)/2) \quad \mathsf{U} \quad (i = 0) )
+    P_{\geq 0.25} ( !(i > (S_0 + I_0 + R_0)/2) \quad \mathsf{U} \quad (i = 0) )
 \end{align*}
 
 
 \subsection{Evaluation}
 \subsubsection{True parameters and synthetic data}
-\subsubsection{Parameter synthesis result}
 We evaluate simulation-based and rational function based frameworks on different size of initial population.
 \begin{figure}[H]
     \centering
@@ -727,28 +759,29 @@ We evaluate simulation-based and rational function based frameworks on different
     \begin{subfigure}{0.3\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/sir1010_data.png}
-        \caption{SIR(5,1,0) synthetic data}
+        \caption{SIR(10,1,0) synthetic data}
     \end{subfigure}
     \hfill
     \begin{subfigure}{0.3\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/sir1510_data.png}
-        \caption{SIR(5,1,0) synthetic data}
+        \caption{SIR(15,1,0) synthetic data}
     \end{subfigure}
     \caption{Synthetic data $D_{obs}$ using selected true parameter.}
 \end{figure}
 
+\subsubsection{Parameter synthesis result}
 \begin{table}[H]
     \begin{tabular}{|l|c|l|}
         \hline
         \multicolumn{1}{|c|}{\textbf{SIR(5,1,0)}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Rational function\\ SMC\end{tabular}}            & \begin{tabular}[c]{@{}l@{}}Statistical model checking\\ ABC-SMC\end{tabular} \\ \hline
-        True parameter                            & \multicolumn{2}{c|}{(0.034055, 0.087734)}                                               \\ \hline
         Number of states                          & \multicolumn{2}{c|}{27}                                                                 \\ \hline
         Number of BSCCs                           & \multicolumn{2}{c|}{6}                                                                  \\ \hline
         Target property                           & \multicolumn{2}{c|}{$P_{\geq 0.25} [!(i>3) U^{<6} (i=0)]$}                              \\ \hline
+        True parameter $p$                        & \multicolumn{2}{c|}{(0.034055, 0.087734)}                                               \\ \hline
         Synthetic data                            & \multicolumn{2}{c|}{(1098, 1377, 1296, 1312, 1466, 3451)}                               \\ \hline
-        Inferred parameter point                  & \multicolumn{1}{l|}{(0.025473, 0.067613)}                  & (0.023077, 0.064812)       \\ \hline
-        L2 distance to true parameter             & \multicolumn{1}{l|}{0.021875}                              & 0.020120                   \\ \hline
+        Estimated parameter $\hat{p}$             & \multicolumn{1}{l|}{(0.025473, 0.067613)}                  & (0.023077, 0.064812)       \\ \hline
+        L2-Norm $\Vert p, \hat{p} \Vert_2$        & \multicolumn{1}{l|}{0.021875}                              & 0.020120                   \\ \hline
         Run time (hh:mm:ss)                       & \multicolumn{1}{l|}{0:19:34}                               & 3:51:36                    \\ \hline
     \end{tabular}
     \caption{SIR(5,1,0) parameter estimation results.}
@@ -776,13 +809,13 @@ In the experiment with $SIR(5,1,0)$ model we can see that rational-function base
     \begin{tabular}{|l|c|l|}
         \hline
         \multicolumn{1}{|c|}{\textbf{SIR(10,1,0)}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Rational function\\ SMC\end{tabular}}                                        & \begin{tabular}[c]{@{}l@{}}Statistical model checking\\ ABC-SMC\end{tabular} \\ \hline
-        True parameter                             & \multicolumn{2}{c|}{(0.025490, 0.06930)}                                                                            \\ \hline
+        True parameter $p$                         & \multicolumn{2}{c|}{(0.025490, 0.06930)}                                                                            \\ \hline
         Number of states                           & \multicolumn{2}{c|}{77}                                                                                             \\ \hline
         Number of BSCCs                            & \multicolumn{2}{c|}{11}                                                                                             \\ \hline
         Target property                            & \multicolumn{2}{c|}{$P_{\geq 0.25} [!(i>5) U^{<11} (i=0)]$}                                                         \\ \hline
         Synthetic data                             & \multicolumn{2}{c|}{(1002, 1258, 1123, 902,  770,  651,  497,  420,  496,  685, 2196)}                              \\ \hline
-        Inferred parameter point                   & \multicolumn{1}{l|}{(0.014095  0.066328)}                                              & (0.022552, 0.066416)       \\ \hline
-        L2 distance to true parameter              & \multicolumn{1}{l|}{0.011776}                                                          & 0.004116                   \\ \hline
+        Estimated parameter $\hat{p}$              & \multicolumn{1}{l|}{(0.014095, 0.066328)}                                              & (0.022552, 0.066416)       \\ \hline
+        L2-Norm $\Vert p, \hat{p} \Vert_2$         & \multicolumn{1}{l|}{0.011776}                                                          & 0.004116                   \\ \hline
         Run time (hh:mm:ss)                        & \multicolumn{1}{l|}{2:45:02}                                                           & 9:27:41                    \\ \hline
     \end{tabular}
     \caption{SIR(10,1,0) parameter estimation results.}
@@ -810,13 +843,13 @@ In the experiment with $SIR(10,1,0)$ model we can see that  simulation based met
     \begin{tabular}{|l|c|l|}
         \hline
         \multicolumn{1}{|c|}{\textbf{SIR(15,1,0)}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Rational function\\ SMC\end{tabular}}                                         & \begin{tabular}[c]{@{}l@{}}Statistical model checking\\ ABC-SMC\end{tabular} \\ \hline
-        True parameter                             & \multicolumn{2}{c|}{(0.017246, 0.067786)}                                                                            \\ \hline
+        True parameter $p$                         & \multicolumn{2}{c|}{(0.017246, 0.067786)}                                                                            \\ \hline
         Number of states                           & \multicolumn{2}{c|}{27}                                                                                              \\ \hline
         Number of BSCCs                            & \multicolumn{2}{c|}{6}                                                                                               \\ \hline
         Target property                            & \multicolumn{2}{c|}{$P_{\geq 0.25} [!(i>7) U^{<16} (i=0)]$}                                                          \\ \hline
         Synthetic data                             & \multicolumn{2}{c|}{(50,181,302,455,539,567,582,566,541,553,574,528,512,586,875,2589,)}                              \\ \hline
-        Inferred parameter point                   & \multicolumn{1}{l|}{(0.023077, 0.064816)}                                               & (0.017584, 0.065357)       \\ \hline
-        L2 distance to true parameter              & \multicolumn{1}{l|}{0.006545}                                                           & 0.005520                   \\ \hline
+        Estimated parameter $\hat{p}$              & \multicolumn{1}{l|}{(0.023077, 0.064816)}                                               & (0.017584, 0.065357)       \\ \hline
+        L2-Norm $\Vert p, \hat{p} \Vert_2$         & \multicolumn{1}{l|}{0.006545}                                                           & 0.005520                   \\ \hline
         Run time (hh:mm:ss)                        & \multicolumn{1}{l|}{1:07:36}                                                            & 3:05:22                    \\ \hline
     \end{tabular}
     \caption{SIR(15,1,0) parameter estimation results.}
@@ -872,10 +905,12 @@ generate synthetic data.
     \end{subfigure}
 \end{figure}
 
+\subsection{Performance}
+
 \subsection{Discussion}
 Unlike experiments with unmerged BSCCs, the experiment with merged BSCCs and simulation based
 framework shows no general pattern of distance among satisfying parameter values. It is
 hypothetically because of the noisy data that leads to a non-converging evaluation of distance
 between simulated data and observed data. A proposed way to solve the problem is to use a decreasing
-threshold scheme, in which $\epsilon$ decrease after each pertubation.
+threshold scheme, in which $\epsilon$ decrease after each perturbation.
 
