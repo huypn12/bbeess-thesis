@@ -1,40 +1,80 @@
 \chapter{Introduction}
-In different areas of research and application, the objects are to study how the number of
-individuals in a closed environment develop under a certain set of assumptions. For instance
+\section{Motivation}
+Firstly introduced by Kingsman \cite{kingman1969markov}, Markov population models  are finite
+state-space, stochastic models widely used in modeling complex and dynamical systems. In a Markov
+population model, each state represents the number of individuals, and the transitions among states
+represent the increase or decrease of a population. In general, Markov population models study the
+population dynamics of a system of interest. For example, Markov population processes are able to
+model:
 \begin{itemize}
       \item Number of online nodes in a distributed system.
       \item Number of surviving individuals in an epidemic model.
 \end{itemize}
-Markov population models \cite{kingman1969markov} are finite state-space, stochastic models that is
-widely used in modeling complex and dynamic systems. In a Markov population model, each state
-represents the number of individuals. Formally, in a Markov population model whose state space is
-$S=(s_1,\ldots,s_n)$, there is a map $f:S\rightarrow\{0,\ldots,N\}$ where $N\in\mathbf{N}^*$ is the
-maximum number of individuals in the system.\\
-In a Markov population models, for example Discrete-time Markov Chain, initial and transition
-probabilities are known a-priori. In order to encompass unknown attributes of a system, we introduce
-\textit{parametric Markov population models}. In a parametric Markov population model, each
-transition is a rational function of parameters. As unknown features of the system are represented
-by parameters, the following research questions are raised
+Studying the Markov population model has challenges. First, model state space exponentially expands
+as we capture more attributes and behavior of the system of interest. The explosion of state-space
+makes model checking of the Markov population model computationally intensive. Second, in a Markov
+population model, such as Discrete-time Markov Chain, initial and transition probabilities are known
+a priori. To encompass unknown attributes of a system, we introduce parametric Markov population
+models. In a parametric Markov population model, each transition is a rational function of
+parameters. As parameters represent unknown features of the system, it gives the following research
+questions
 \begin{itemize}
-      \item Given a set of data collected by observing the system, how can we know about its
+      \item Given a set of data collected by observing the system, what can we know about its
             parameters?
-      \item  Which values of parameters instantiate a model that satisfies a certain property of
+      \item Which values of parameters instantiate a model that satisfies a specific property of
             interest?
 \end{itemize}
 Parameter synthesis is an emerging research direction on probabilistic model checking. Katoen
-\cite{katoen2016probabilistic} define the parameter synthesis problem for pDTMC as to find a set of
-parameter values, which satisfy a given reachability property. In this thesis, we combines Bayesian
-parameter inference and parameter synthesis, so that the result parameters (1) satisfy the property
-of interest, and (2) likely to produce given steady-state data. Contributions of the thesis are
+\cite{katoen2016probabilistic} defines the parameter synthesis problem for the parametric
+discrete-time Markov chain to find a set of parameter values that satisfy a given reachability
+property. In this thesis, we combine Bayesian parameter inference and parameter synthesis. The
+result parameters (i) satisfy the property of
+interest, and (ii) are likely to produce given steady-state data. Contributions of the thesis are
 \begin{itemize}
-      \item Presenting and implementing a data-informed, Bayesian frameworks on parameter synthesis
-            of parametric Discrete-time Markov Chain with different case studies.
-      \item Comparing the performances of optimization methods used to approximate posterior
-            distribution in both cases: closed-form solutions are available and only simulations are
-            possible.
-      \item Evaluating the scalability of the frameworks with different sizes of model state-space.
+      \item We are presenting and implementing a data-informed, Bayesian framework on parameter
+            synthesis of parametric Discrete-time Markov chain. The frameworks work in two cases:
+            (i) when the exact likelihood function of the property of interest is available, and
+            (ii) when it has to be approximated utilizing Monte-Carlo methods.
+      \item We compare the performances of optimization methods used to approximate posterior
+            distribution on various case studies.
+      \item We evaluate the scalability of the frameworks with different sizes of model state-space.
 \end{itemize}
 
+\section{Related works}
+%% Frameworks from molyneux
+The frameworks presented in this thesis are based on ABC-SMC framework \cite{molyneux2019bayesian}
+and ABC-(SMC)2 \cite{molyneux2020abc} by Molyneux et al. However, the ABC-SMC and ABC-(SMC)2
+frameworks synthesize parameters for CTMC and check the CTMC model agains CSL property. In
+parametric DTMC, since the symbolic rational function of PCTL property is obtainable
+\cite{daws2004symbolic}, we based on Del Moral \cite{del2006sequential} and Daviet
+\cite{daviet2018inference} to construct an algorithm based on evaluation of symbolic rational
+function, then benchmark it againts the approach based on only simulation.
+
+%% Model checking
+The theoretical background of model checking discrete-time Markov chain is presented by Baier et al.
+\cite{baier2008principles}. Katoen \cite{katoen2016probabilistic} presents a tutorial to model check
+parametric discrete-time Markov chain and current methods on parameter synthesis . More in-depth
+surveys and discoveries on parametric model checking and parameter synthesis is presented by Junges
+\cite{junges2020parameter} and Hutschenreiter \cite{hutschenreiter2017parametric}.
+
+%% Bayesian inference: optimzation methods
+Markov Chain Monte Carlo sampling algorithms used in this thesis are presented by Metropolis
+\cite{metropolis1953equation}, and Hastings \cite{hastings1970monte}. Del Moral
+\cite{del2006sequential} designed Sequential Monte Carlo to address the problem of Markov Chain
+Monte Carlo. A comparision between different Monte Carlo sampling algorithms, including Markov-chain
+Monte Carlo and Sequential Monte Carlo is presented in \cite{daviet2018inference}. Silk
+\cite{silk2012optimizing} discussed different approaches on the perturbation kernel selection of
+Sequential Monte Carlo and Sequential Monte Carlo with Approximate Bayesian Computation algorithms.
+
+%% Tools: PRISM and STORM
+The model checking step in the frameworks presented by this thesis are implemented using Storm model
+checker \cite{hensel2020probabilistic}. Storm provides well documented and easy to use APIs to embed
+model checking to software projects programmatically. However, Storm does not support Statistical
+Model Checking. Thus, the Statistical Model Checking step in simulation-based frameworks is
+implemented using PRISM \cite{kwiatkowska2011prism}.
+
+\section{Structure of the thesis}
+The content in this thesis is organized to 7 chapters:
 \begin{itemize}
       \item \textbf{Chapter 1} introduces motivations and goals of this research.
       \item \textbf{Chapter 2} presents the theoretical background on probabilistic model checking,

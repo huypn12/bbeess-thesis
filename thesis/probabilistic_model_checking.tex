@@ -509,7 +509,7 @@ With the set of parameters and rational functions being formally defined, we def
 Discrete-time Markov chain based the definition on \cite{junges2019parameter}.
 \begin{definition}[Parametric discrete-time Markov chain]
       \rm
-      A \textit{parametric discrete-time Markov chain} (pDTMC in short) $\mathcal{M}_\theta$ is a tuple $(S, \theta,
+      A \textit{parametric discrete-time Markov chain} $\mathcal{M}_\theta$ is a tuple $(S, \theta,
             \mathbf{P}, \iota_{init}, AP, L)$ where
       \begin{itemize}
             \item $S$ is a countable, non-emty set of \textit{states}
@@ -529,7 +529,7 @@ Discrete-time Markov chain based the definition on \cite{junges2019parameter}.
 \end{definition}
 A parametric DTMC instantiates a non-parametric DTMC by an assignment of its variable.
 \begin{definition}{Parameter value}
-      Let $\mathcal{M}_\theta = (S, \theta, \mathbf{P}, \iota_{init}, AP, L)$ be a pDTMC,
+      Let $\mathcal{M}_\theta = (S, \theta, \mathbf{P}, \iota_{init}, AP, L)$ be a parametric DTMC,
       $\theta=\{\theta_1,\ldots,\theta_n\}$. A value of $\theta$ is a map $v: \theta
             \rightarrow \mathbb{R}^n$. A value $v$ \textit{instantiates} a non-parametric
       Discrete-time Markov chain if $f{\mathbf{v(\theta)}}$ evaluates to a real value for all
@@ -580,14 +580,14 @@ A parametric DTMC instantiates a non-parametric DTMC by an assignment of its var
       \end{figure}
 \end{example}
 
-\subsection{Parameter synthesis of pDTMC}
-With a pDTMC represents a class of DTMC, we concerns of instantiated DTMC which satisfy a certain property of interest.
+\subsection{Parameter synthesis of parametric DTMC}
+With a parametric DTMC represents a class of DTMC, we concerns of instantiated DTMC which satisfy a certain property of interest.
 \begin{definition}{Parameter synthesis (Katoen 2016)\cite{katoen2016probabilistic}} Given a
       parametric DTMC $\mathcal{M}_\theta = (S, \theta, \mathbf{P}, \iota_{init}, AP, L)$ and a
       reachability property $\Phi$, find a set of parameter values $\theta$ such that
       $\mathcal{M}_\theta \models \Phi$.
 \end{definition}
-Katoen \cite{katoen2013model} summarizes the following methods on parameter synthesis of pDTMC:
+Katoen \cite{katoen2013model} summarizes the following methods on parameter synthesis of parametric DTMC:
 \begin{enumerate}
       \item \textit{Computing symbolic reachability probabilities}: using states elimination to obtain symbolic
             rational function of a reachability property \cite{daws2004symbolic}
@@ -596,7 +596,7 @@ Katoen \cite{katoen2013model} summarizes the following methods on parameter synt
             \textit{safe} and \textit{unsafe} regions using non-linear interval arithmetic
             (Kwiatkowska \cite{kwiatkowska2006symmetry}) or SMT solvers such as Z3 \cite{de2008z3}.
       \item \textit{Parameter lifting} is another parameter space partitioning method; it introduces
-            new transitions into the original pDTMC through \textit{relaxation} and
+            new transitions into the original parametric DTMC through \textit{relaxation} and
             \textit{substitution}. The procedure results in a non-parametric transition system with
             transition labels are bounds from given intervals. The region is then checked using
             candidate region generation and checking method.
@@ -618,12 +618,13 @@ With the symbolic rational function $f_\Phi(\theta)$ of $\Phi$ obtained, we assi
 to $\theta$, then replace all symbolic parameters by their concrete value to check if
 $\mathcal{M}_\theta \models \Phi$.
 \begin{example}
-      Given a pDTMC of Knuth die $\mathcal{M}_{(p,q)}, (p,q)\in[0,1]\times[0,1]$ and a reachability
-      property $\Phi = P_{\geq 0.2} (\texttt{F "one"})$, synthesize parameter
+      Given a parametric DTMC of Knuth die $\mathcal{M}_{(p,q)}, (p,q)\in[0,1]\times[0,1]$ and a
+      reachability property $\Phi = P_{\geq 0.2} (\texttt{F "one"})$, synthesize parameter
       $(p,q)\in[0,1]\times[0,1]$ so that $\mathcal{M}_{(p,q)} \models \Phi$. We perform a Monte
       Carlo search on parameter space. Specifically, we sample $p*$ and $q*$ independently using
       uniform distribution $Uniform(0,1)$, then discard the pairs $(p*,q*)$ that instantiate
-      $\mathcal{M}_{(p*,q*)}\nvDash \Phi$. The accepted pairs of $(p*,q*)$ are then visualized as follow:
+      $\mathcal{M}_{(p*,q*)}\nvDash \Phi$. The accepted pairs of $(p*,q*)$ are then visualized as
+      follow:
       \begin{figure}[H]
             \centering
             \includegraphics[width=0.7\textwidth]{figures/knuth_die_trueparams.png}
