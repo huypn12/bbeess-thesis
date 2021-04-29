@@ -184,14 +184,7 @@ sample from directly, we use \textit{Metropolis-Hastings} algorithm  (\textit{MH
 introduced by Metropolis \cite{metropolis1953equation} and later generalized by Hastings
 \cite{hastings1970monte} Metropolis-Hastings algorithm is a \textit{Monte Carlo Markov Chain}
 algorithm. In its essential, Metropolis-Hastings algorithm draws sample from an unknown
-distribution. Using the MH algorithm, we can estimate the parameter by posterior mean, without
-knowing the analytical form of posterior distribution itself. A special case of MH algorithm is
-Gibbs sampling algorithm \cite{geman1984stochastic}, in which candidates are accepted with
-probability 1. Gibbs sampling can be used to draw samples from multivariate posteriors when the
-parameter is of high dimensional. Quality of data can also impacts the estimation result from
-Metropolis-Hastings algorithm; in case of experiment data is acquired from a small sample size,
-statistical techniques to improve data quality can be used, for example \textit{bootstrapping}
-\cite{efron1992bootstrap}.
+distribution.
 
 \begin{algorithm}[H]
     \caption{Metropolis-Hastings Algorithm}
@@ -238,6 +231,13 @@ statistical techniques to improve data quality can be used, for example \textit{
     \end{algorithmic}
 \end{algorithm}
 \noindent The likelihood function can be implemented as log-likelihood to avoid underflow error.
+Using the MH algorithm, we can estimate the parameter by posterior mean, without knowing the
+analytical form of posterior distribution itself. A special case of MH algorithm is Gibbs sampling
+algorithm \cite{geman1984stochastic}, in which candidates are accepted with probability 1. Gibbs
+sampling can be used to draw samples from multivariate posteriors when the parameter is of high
+dimensional. Quality of data can also impacts the estimation result from Metropolis-Hastings
+algorithm; in case of experiment data is acquired from a small sample size, statistical techniques
+to improve data quality can be used, for example \textit{bootstrapping} \cite{efron1992bootstrap}.\\
 Advantages of Metropolis-Hastings are:
 \begin{itemize}
     \item[+] Parameter transition only needs the computation of likelihood function.

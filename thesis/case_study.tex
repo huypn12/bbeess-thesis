@@ -153,11 +153,11 @@ property of interest is
 \begin{table}[H]
     \begin{tabular}{|l|l|l|}
         \hline
-        Method                                           & RF-SMC               & SMC-ABC-SMC          \\ \hline
-        Estimated parameter $\hat{\theta}$               & (0.188956, 0.460554) & (0.176469, 0.355322) \\ \hline
-        True parameter $\theta$                          & (0.105547, 0.449658) & (0.105547, 0.449658) \\ \hline
-        L2 distance $\Vert \theta, \hat{\theta} \Vert_2$ & 0.084117             & 0.118023             \\ \hline
-        \begin{tabular}[c]{@{}l@{}}Satisfaction property\\ $P(\mathcal{M}_{\hat{\theta}}\models\Phi)$\end{tabular}                        & 0.893715             & 0.918133             \\ \hline
+        Method                                                           & RF-SMC               & SMC-ABC-SMC          \\ \hline
+        Estimated parameter $\hat{\theta}$                               & (0.188956, 0.460554) & (0.176469, 0.355322) \\ \hline
+        True parameter $\theta$                                          & (0.105547, 0.449658) & (0.105547, 0.449658) \\ \hline
+        L2 distance $\Vert \theta, \hat{\theta} \Vert_2$                 & 0.084117             & 0.118023             \\ \hline
+        Satisfaction property $P(\mathcal{M}_{\hat{\theta}}\models\Phi)$ & 0.893715             & 0.918133             \\ \hline
     \end{tabular}
     \caption{Parameter estimation results for Zeroconf model of 4 probes.}
 \end{table}
@@ -352,20 +352,20 @@ We verify the following property: \textit{"With probability of at least 25 perce
 
 \subsection{Evaluation}
 \subsubsection{True parameters and synthetic data}
-In the following experiment, we select arbitrary true parameters and use them to generate synthetic
-data by simulating the instantiated models $10000$ times to obtain steady-state distribution. Let
-$S$ be the number of survived bees at the steady state.
+We select arbitrary true parameters to generate synthetic data and obtain steady-state
+distribution. Let $S$ be the number of survived bees at the steady state.
 \begin{table}[H]
+    \footnotesize
     \centering
     \begin{tabular}{|l|l|l|l|}
         \hline
-        Model $\mathcal{M}$         & 3 bees                                         & 5 bees                                           & 10 bees                                          \\ \hline
-        Number of states            & 13                                             & 24                                               & 69                                               \\ \hline
-        Number of BSCCs             & 4                                              & 6                                                & 11                                               \\ \hline
-        True parameter $\theta$     & \begin{tabular}[c]{@{}l@{}}$p=0.665623$ \\ $q_1=0.830401$ \\ $q_2=0.839778$ \end{tabular}                     & \begin{tabular}[c]{@{}l@{}}$p=0.278370$ \\ $q_1=0.305994$ \\ $q_2=0.489792$ \\ $q_3=0.737252$ \\ $q_4=0.766581$ \end{tabular}                       & \begin{tabular}[c]{@{}l@{}}$p=0.222169$ \\ $q_1=0.246993$ \\ $q_2=0.281934$ \\ $q_3=0.446384$ \\ $q_4=0.491612$ \\ $q_5=0.534611$ \\ $q_6=0.569409$ \\ $q_7=0.684651$ \\ $q_8=0.717139$ \\ $q_9=0.800987$  \end{tabular}                       \\ \hline
-        Synthetic data $D_{obs}$    & (344, 54, 1390, 8212)                          & \begin{tabular}[c]{@{}l@{}}(1940, 11, 216, 2682,\\ 4200, 951)\end{tabular}                       & \begin{tabular}[c]{@{}l@{}}(769, 0, 1, 10,\\ 187, 972, 2494, 2982,\\ 2133, 419, 33)\end{tabular}                       \\ \hline
-        Property of interest $\Phi$ & $P_{\geq 0.25} (\text{true} \mathsf{U} (S>3))$ & $P_{\geq 0.25} (\texttt{true} \mathsf{U} (S>5))$ & $P_{\geq 0.25} (\texttt{true} \mathsf{U} (S>8))$ \\ \hline
-        \begin{tabular}[c]{@{}l@{}}Satisfaction property\\ $P(\mathcal{M}_\theta\models\Phi)$\end{tabular}  & 0.819666                                       & 0.780172                                         & 0.737244                                         \\ \hline
+        Model $\mathcal{M}$                & 3 bees                                         & 5 bees                                           & 10 bees                                          \\ \hline
+        Number of states                   & 13                                             & 24                                               & 69                                               \\ \hline
+        Number of BSCCs                    & 4                                              & 6                                                & 11                                               \\ \hline
+        True parameter $\theta$            & \begin{tabular}[c]{@{}l@{}}$p=0.665623$ \\ $q_1=0.830401$ \\ $q_2=0.839778$ \end{tabular}                     & \begin{tabular}[c]{@{}l@{}}$p=0.278370$ \\ $q_1=0.305994$ \\ $q_2=0.489792$ \\ $q_3=0.737252$ \\ $q_4=0.766581$ \end{tabular}                       & \begin{tabular}[c]{@{}l@{}}$p=0.222169$ \\ $q_1=0.246993$ \\ $q_2=0.281934$ \\ $q_3=0.446384$ \\ $q_4=0.491612$ \\ $q_5=0.534611$ \\ $q_6=0.569409$ \\ $q_7=0.684651$ \\ $q_8=0.717139$ \\ $q_9=0.800987$  \end{tabular}                       \\ \hline
+        Synthetic data $D_{obs}$           & (344, 54, 1390, 8212)                          & \begin{tabular}[c]{@{}l@{}}(1940, 11, 216, \\ 2682, 4200, 951)\end{tabular}                       & \begin{tabular}[c]{@{}l@{}}(769, 0, 1, 10, 187, 972,\\  2494, 2982, 2133, 419, 33)\end{tabular}                       \\ \hline
+        Property of interest $\Phi$        & $P_{\geq 0.25} (\text{true} \mathsf{U} (S>3))$ & $P_{\geq 0.25} (\texttt{true} \mathsf{U} (S>5))$ & $P_{\geq 0.25} (\texttt{true} \mathsf{U} (S>8))$ \\ \hline
+        $P(\mathcal{M}_\theta\models\Phi)$ & 0.819666                                       & 0.780172                                         & 0.737244                                         \\ \hline
     \end{tabular}
     \caption{True parameter and synthetic data for 3, 5, and 10 bees models.}
 \end{table}
@@ -374,28 +374,28 @@ $S$ be the number of survived bees at the steady state.
     \begin{subfigure}{0.32\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/bee_3_data.png}
-        \caption{Synthetic data of 3 bees model.}
+        \caption{3 bees model.}
     \end{subfigure}
     \hfill
     \begin{subfigure}{0.32\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/bee_5_data.png}
-        \caption{Synthetic data of 5 bees model.}
+        \caption{5 bees model.}
     \end{subfigure}
     \hfill
     \begin{subfigure}{0.32\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/bee_10_data.png}
-        \caption{Synthetic data of 10 bees model.}
+        \caption{10 bees model.}
     \end{subfigure}
-    \caption{Histogram of data obtained from $10000$ simulation runs on bees models.}
+    \caption{Histogram of steady-state data obtained from $10000$ simulation runs.}
 \end{figure}
 
 \subsubsection{Parameter synthesis results}
-In the following parameter synthesis experiment, we set the number of samples in Sequential Monte
-Carlo $N=200$ and the number of perturbation kernels $M=19$. Perturbation and transition kernel are
-selected as described in Chapter 4. In RF-SMC, the length of Metropolis-Hasting is $N_{MH}=50$. In
-SMC-ABC-SMC, the distance threshold is $\epsilon=0.25$.\\
+We set the number of samples in Sequential Monte Carlo $N=200$ and the number of perturbation
+kernels $M=19$. In RF-SMC, the length of Metropolis-Hasting is $N_{MH}=50$. In SMC-ABC-SMC, the
+distance threshold is $\epsilon=0.25$. Perturbation and transition kernels are component-wise
+uniform distribution. Prior distribution is $Uniform(0,1)$.\\
 Parameter synthesis result for 3 bees model:
 \begin{table}[H]
     \centering
@@ -405,12 +405,11 @@ Parameter synthesis result for 3 bees model:
         True parameter $\theta$                           & \begin{tabular}[c]{@{}l@{}}$p=0.665623$ \\ $q_1=0.830401$ \\ $q_2=0.839778$ \end{tabular} & \begin{tabular}[c]{@{}l@{}}$p=0.665623$ \\ $q_1=0.830401$ \\ $q_2=0.839778$ \end{tabular} \\ \hline
         Estimated parameter $\hat{\theta}$                & \begin{tabular}[c]{@{}l@{}}$p=0.671388$ \\ $q_1=0.575026$ \\ $q_2=0.525502$ \end{tabular} & \begin{tabular}[c]{@{}l@{}}$p=0.811651$ \\ $q_1=0.621073$ \\ $q_2=0.544130$ \end{tabular} \\ \hline
         L2 distance  $\Vert \theta, \hat{\theta} \Vert_2$ & 0.404992                   & 0.390576                   \\ \hline
-        \begin{tabular}[c]{@{}l@{}}Satisfaction property\\ $P(\mathcal{M}_{\hat{\theta}}\models\Phi)$\end{tabular}                        & 0.623889                   & 0.595083                   \\ \hline
+        $P(\mathcal{M}_{\hat{\theta}}\models\Phi)$        & 0.623889                   & 0.595083                   \\ \hline
     \end{tabular}
     \caption{Parameter synthesis result for 3 bees model.}
 \end{table}
 
-\newpage
 \noindent Parameter synthesis for model of 5 bees:
 \begin{table}[H]
     \centering
@@ -420,7 +419,7 @@ Parameter synthesis result for 3 bees model:
         True parameter $\theta$                           & \begin{tabular}[c]{@{}l@{}}$p=0.278370$ \\ $q_1=0.305994$ \\ $q_2=0.489792$ \\ $q_3=0.737252$ \\ $q_4=0.766581$ \end{tabular} & \begin{tabular}[c]{@{}l@{}}$p=0.278370$ \\ $q_1=0.305994$ \\ $q_2=0.489792$ \\ $q_3=0.737252$ \\ $q_4=0.766581$ \end{tabular} \\ \hline
         Estimated parameter $\hat{\theta}$                & \begin{tabular}[c]{@{}l@{}}$p=0.576565$ \\ $q_1=0.589724$ \\ $q_2=0.490334$ \\ $q_3=0.554397$ \\ $q_4=0.524433$ \end{tabular} & \begin{tabular}[c]{@{}l@{}}$p=0.361220$ \\ $q_1=0.316007$ \\ $q_2=0.545691$ \\ $q_3=0.643962$ \\ $q_4=0.591206$ \end{tabular} \\ \hline
         L2 distance  $\Vert \theta, \hat{\theta} \Vert_2$ & 0.511366                   & 0.222594                   \\ \hline
-        \begin{tabular}[c]{@{}l@{}}Satisfaction property\\ $P(\mathcal{M}_{\hat{\theta}}\models\Phi)$\end{tabular}                        & 0.623889                   & 0.595083                   \\ \hline
+        $P(\mathcal{M}_{\hat{\theta}}\models\Phi)$        & 0.623889                   & 0.595083                   \\ \hline
     \end{tabular}
     \caption{Parameter synthesis result for 5 bees model}
 \end{table}
@@ -711,16 +710,16 @@ such that $(s^t,i^t,r^t) = (s^{t+k},i^{t+k},r^{t+k})$ then $k=0$, because all re
             edge[in=150,out=105,loop] node[above]{$\frac{\alpha+3\beta}{3\alpha + 3\beta}$} ()
 
             (S_301)
-            edge [in=240,out=300,loop]  ()
+            edge [in=240,out=300,loop] node{$1$} ()
 
             (S_202)
-            edge [in=240,out=300,loop]  ()
+            edge [in=240,out=300,loop] node{$1$} ()
 
             (S_103)
-            edge [in=240,out=300,loop]  ()
+            edge [in=240,out=300,loop] node{$1$} ()
 
             (S_004)
-            edge [in=240,out=300,loop]  ();
+            edge [in=240,out=300,loop] node{$1$} ();
 
         \end{tikzpicture}
         \caption{$SIR(3,1,0)$ Uniformized DTMC model with parameters$(\alpha, \beta)$ and uniformization rate $(3\alpha + 4\beta)$}
@@ -730,11 +729,11 @@ such that $(s^t,i^t,r^t) = (s^{t+k},i^{t+k},r^{t+k})$ then $k=0$, because all re
 properties, we conduct parameter synthesis experiments on uniformized DTMC instead of the CTMC
 generated from chemical reactions. We check the following property: \textit{"With probability of
     at least 25 percents, the number of infected individuals does not exceed half of the population
-    until the system is stabilized."}. In PCTL formula:
+    until the system is stabilized."}.\\
+Let $N = S_0 + I_0 +R_0$. In PCTL formula we have:
 \begin{align*}
-    P_{\geq 0.25} ( !(i > (S_0 + I_0 + R_0)/2) \quad \mathsf{U} \quad (i = 0) )
+    P_{\geq 0.25} ( !(i > N/2) \quad \mathsf{U}^{\leq N} \quad (i = 0) )
 \end{align*}
-
 
 \subsection{Evaluation}
 \subsubsection{True parameters and synthetic data}
