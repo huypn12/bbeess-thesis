@@ -1,0 +1,69 @@
+%% Creator: Inkscape inkscape 0.92.2, www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'framework_svg-tex.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{330.75bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,1.47619048)%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{framework_svg-tex.pdf}}%
+    \put(0.13605442,1.37641723){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{Parametric DTMC...}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{framework_svg-tex.pdf}}%
+    \put(0.49886621,1.37641723){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{PCTL property...}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=3]{framework_svg-tex.pdf}}%
+    \put(0.861678,1.37641723){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{Steady-state data...}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=4]{framework_svg-tex.pdf}}%
+    \put(0.49886621,1.01360544){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{Sample using...}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=5]{framework_svg-tex.pdf}}%
+    \put(0.861678,0.65079365){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{Estimate or compute...}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=6]{framework_svg-tex.pdf}}%
+    \put(0.13605442,0.65079365){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{Model checking...}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=7]{framework_svg-tex.pdf}}%
+    \put(0.861678,0.20861678){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{Parameter trace...}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=8]{framework_svg-tex.pdf}}%
+    \put(0.20408163,0.20861678){\color[rgb]{0,0,0}\makebox(0,0)[b]{\smash{Validate estimated parameter...}}}%
+  \end{picture}%
+\endgroup%

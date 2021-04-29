@@ -127,14 +127,14 @@ We select a true parameter $(p, q)$ arbitrarily random.
 \begin{table}[H]
     \begin{tabular}{|l|l|l|}
         \hline
-        Model $\mathcal{M}$         & Zeroconf, 4 probes                                                  & Zeroconf, 10 probes                                                  \\ \hline
-        Number of BSCCs             & 2                                                                   & 2                                                                    \\ \hline
-        Number of states            & 9                                                                   & 14                                                                   \\ \hline
-        True parameter $\theta$     & (0.105547, 0.449658)                                                & (0.197779, 0.621824)                                                 \\ \hline
-        Number of samples           & 10000                                                               & 10000                                                                \\ \hline
-        Synthetic data $D_{obs}$    & (41, 9959)                                                          & (22, 9978)                                                           \\ \hline
-        Property of interest $\Phi$ & $P_{\geq 0.75} (\texttt{true} \mathsf{U}^{\leq 4} (\texttt{"OK"}))$ & $P_{\geq 0.75} (\texttt{true} \mathsf{U}^{\leq 10} (\texttt{"OK"}))$ \\ \hline
-        \begin{tabular}[c]{@{}l@{}}Satisfaction property\\ $P(\mathcal{M}_\theta\models\Phi)$\end{tabular}   & 0.946409                                                            & 0.952067                                                             \\ \hline
+        Model $\mathcal{M}$           & Zeroconf, 4 probes                                                  & Zeroconf, 10 probes                                                  \\ \hline
+        Number of BSCCs               & 2                                                                   & 2                                                                    \\ \hline
+        Number of states              & 9                                                                   & 14                                                                   \\ \hline
+        True parameter $\theta=(p,q)$ & (0.105547, 0.449658)                                                & (0.197779, 0.621824)                                                 \\ \hline
+        Number of samples             & 10000                                                               & 10000                                                                \\ \hline
+        Synthetic data $D_{obs}$      & (41, 9959)                                                          & (22, 9978)                                                           \\ \hline
+        Property of interest $\Phi$   & $P_{\geq 0.75} (\texttt{true} \mathsf{U}^{\leq 4} (\texttt{"OK"}))$ & $P_{\geq 0.75} (\texttt{true} \mathsf{U}^{\leq 10} (\texttt{"OK"}))$ \\ \hline
+        \begin{tabular}[c]{@{}l@{}}Satisfaction property\\ $P(\mathcal{M}_\theta\models\Phi)$\end{tabular}     & 0.946409                                                            & 0.952067                                                             \\ \hline
     \end{tabular}
     \caption{Synthetic data for Zeroconf model of 4 and 10 probes.}
 \end{table}
@@ -202,13 +202,13 @@ Zeroconf model with four probes.
     \begin{subfigure}{0.48\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/zeroconf10_rf.png}
-        \caption{Sampled particles using Rational Functions SMC}
+        \caption{Sampled particles using RF-SMC}
     \end{subfigure}
     \hfill
     \begin{subfigure}{0.48\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/zeroconf10_sim.png}
-        \caption{Sampled particles using Statiscal Model Checking ABC-SMC}
+        \caption{Sampled particles using SMC-ABC-SMC}
     \end{subfigure}
     \caption{Parameter synthesis results for Zeroconf model of 10 probes.}
 \end{figure}
@@ -560,11 +560,11 @@ only 2 reactions.
 \end{algorithm}
 
 \subsection{Model and properties}
-\begin{theorem}[Acyclicity]}
+\begin{theorem}[Acyclicity]
     A CTMC $\mathcal{C}$ constructed by Algorithm \ref{alg:gen-sir-ctmc} using reactions
     $R_1, R_2$ is acyclic.
 \end{theorem}
-\textbf{Proof}: For any arbitrary transition in $\mathcal{C}$
+\noindent\textbf{Proof}: For any arbitrary transition in $\mathcal{C}$
 \begin{enumerate}
     \item $|S|$ is monotonically decreasing, as there exists no reaction which produces $S$.
     \item $|R|$ is monotonically increasing, as there exists no reaction which consumes $R$.
@@ -585,22 +585,22 @@ such that $(s^t,i^t,r^t) = (s^{t+k},i^{t+k},r^{t+k})$ then $k=0$, because all re
     Example of an SIR CTMC model with initial population $(S_0, I_0, R_0) = (3,1,0)$
     \begin{figure}[H]
         \centering
-        \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=3cm]
-            \tikzstyle{every state}=[fill=white,draw=black,thick,text=black]
-            \node[state]    (Init)                      {$(3,1,0)$};
-            \node[state]    (S_301)[below of=Init]      {$(3,0,1)$};
+        \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=2.5cm]
+            \tikzstyle{every state}=[font=\footnotesize, fill=white,draw=black,thick,text=black]
+            \node[state,initial]    (Init)                      {$(3,1,0)$};
+            \node[state,accepting]    (S_301)[below of=Init]      {$(3,0,1)$};
             \node[state]    (S_220)[right of=Init]      {$(2,2,0)$};
             \node[state]    (S_211)[below of=S_220]     {$(2,1,1)$};
-            \node[state]    (S_202)[below of=S_211]     {$(2,0,2)$};
+            \node[state,accepting]    (S_202)[below of=S_211]     {$(2,0,2)$};
             \node[state]    (S_130)[right of=S_220]     {$(1,3,0)$};
             \node[state]    (S_121)[below of=S_130]     {$(1,2,1)$};
             \node[state]    (S_112)[below of=S_121]     {$(1,1,2)$};
-            \node[state]    (S_103)[below of=S_112]     {$(1,0,3)$};
+            \node[state,accepting]    (S_103)[below of=S_112]     {$(1,0,3)$};
             \node[state]    (S_040)[right of=S_130]     {$(0,4,0)$};
             \node[state]    (S_031)[below of=S_040]     {$(0,3,1)$};
             \node[state]    (S_022)[below of=S_031]     {$(0,2,2)$};
             \node[state]    (S_013)[below of=S_022]     {$(0,1,3)$};
-            \node[state]    (S_004)[below of=S_013]     {$(0,0,4)$};
+            \node[state,accepting]    (S_004)[below of=S_013]     {$(0,0,4)$};
             \path
             (Init)
             edge node{$\beta$} (S_301)
@@ -636,19 +636,7 @@ such that $(s^t,i^t,r^t) = (s^{t+k},i^{t+k},r^{t+k})$ then $k=0$, because all re
 
             (S_211)
             edge node{$2\alpha$} (S_121)
-            edge node{$\beta$} (S_202)
-
-            (S_301)
-            edge [in=240,out=300,loop]  ()
-
-            (S_202)
-            edge [in=240,out=300,loop]  ()
-
-            (S_103)
-            edge [in=240,out=300,loop]  ()
-
-            (S_004)
-            edge [in=240,out=300,loop]  ();
+            edge node{$\beta$} (S_202);
 
         \end{tikzpicture}
         \caption{$SIR(3,1,0)$ CTMC model with parameters$(\alpha, \beta)$}
@@ -659,22 +647,22 @@ such that $(s^t,i^t,r^t) = (s^{t+k},i^{t+k},r^{t+k})$ then $k=0$, because all re
     Uniformize the chain with uniformization rate $(3\alpha + 4\beta)$, we derive the following uniformized DTMC:
     \begin{figure}[H]
         \centering
-        \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=3.5cm]
-            \tikzstyle{every state}=[fill=white,draw=black,thick,text=black]
-            \node[state]    (Init)                      {$(3,1,0)$};
-            \node[state]    (S_301)[below of=Init]      {$(3,0,1)$};
+        \begin{tikzpicture}[->, >=stealth', auto, semithick, node distance=3cm]
+            \tikzstyle{every state}=[font=\footnotesize, fill=white,draw=black,thick,text=black]
+            \node[state,initial]    (Init)                      {$(3,1,0)$};
+            \node[state,accepting]    (S_301)[below of=Init]      {$(3,0,1)$};
             \node[state]    (S_220)[right of=Init]      {$(2,2,0)$};
             \node[state]    (S_211)[below of=S_220]     {$(2,1,1)$};
-            \node[state]    (S_202)[below of=S_211]     {$(2,0,2)$};
+            \node[state,accepting]    (S_202)[below of=S_211]     {$(2,0,2)$};
             \node[state]    (S_130)[right of=S_220]     {$(1,3,0)$};
             \node[state]    (S_121)[below of=S_130]     {$(1,2,1)$};
             \node[state]    (S_112)[below of=S_121]     {$(1,1,2)$};
-            \node[state]    (S_103)[below of=S_112]     {$(1,0,3)$};
+            \node[state,accepting]    (S_103)[below of=S_112]     {$(1,0,3)$};
             \node[state]    (S_040)[right of=S_130]     {$(0,4,0)$};
             \node[state]    (S_031)[below of=S_040]     {$(0,3,1)$};
             \node[state]    (S_022)[below of=S_031]     {$(0,2,2)$};
             \node[state]    (S_013)[below of=S_022]     {$(0,1,3)$};
-            \node[state]    (S_004)[below of=S_013]     {$(0,0,4)$};
+            \node[state,accepting]    (S_004)[below of=S_013]     {$(0,0,4)$};
             \path[->, every loop/.style={looseness=3}]
             (Init)
             edge node{$\frac{\beta}{3\alpha + 3\beta}$}   (S_301)
@@ -738,8 +726,11 @@ such that $(s^t,i^t,r^t) = (s^{t+k},i^{t+k},r^{t+k})$ then $k=0$, because all re
         \caption{$SIR(3,1,0)$ Uniformized DTMC model with parameters$(\alpha, \beta)$ and uniformization rate $(3\alpha + 4\beta)$}
     \end{figure}
 \end{example}
-We check the following property: \textit{"With probability of at least 25 percents, the number of infected
-    individuals does not exceed half of the population until the system is stabilized."}. In PCTL formula:
+\noindent As it mentioned in Chapter 2 that uniformization of a CTMC preserves bounded until
+properties, we conduct parameter synthesis experiments on uniformized DTMC instead of the CTMC
+generated from chemical reactions. We check the following property: \textit{"With probability of
+    at least 25 percents, the number of infected individuals does not exceed half of the population
+    until the system is stabilized."}. In PCTL formula:
 \begin{align*}
     P_{\geq 0.25} ( !(i > (S_0 + I_0 + R_0)/2) \quad \mathsf{U} \quad (i = 0) )
 \end{align*}
@@ -747,44 +738,58 @@ We check the following property: \textit{"With probability of at least 25 percen
 
 \subsection{Evaluation}
 \subsubsection{True parameters and synthetic data}
-We evaluate simulation-based and rational function based frameworks on different size of initial population.
+We select true parameters are selected arbitrarily random to test the frameworks.
+\begin{table}[H]
+    \begin{adjustwidth}{-2cm}{}
+        \begin{tabular}{|l|l|l|l|}
+            \hline
+            Model $\mathcal{M}$             & SIR(5,1,0)                                          & SIR(10,1,0)                                          & SIR(15,1,0)                                          \\ \hline
+            Number of BSCCs                 & 6                                                   & 11                                                   & 16                                                   \\ \hline
+            Number of states                & 27                                                  & 77                                                   & 152                                                  \\ \hline
+            True parameter $(\alpha,\beta)$ & (0.034055, 0.087735)                                & (0.025490, 0.069298)                                 & (0.011499, 0.062111)                                 \\ \hline
+            Synthetic data $D_{obs}$        & \begin{tabular}[c]{@{}l@{}}(1098, 1377, 1296, \\1312, 1466, 3451)\end{tabular}                          & \begin{tabular}[c]{@{}l@{}}(1002, 1258, 1123, \\ 902,  770,  651, \\ 497,  420,  496, \\ 685, 2196)\end{tabular}                           & \begin{tabular}[c]{@{}l@{}}(50,  181,  302, \\ 455,  539,  567, \\ 582,  566,  541, \\ 553,  574,  528, \\ 512,  586, 875,\\ 2589)\end{tabular}                           \\ \hline
+            Property of interest $\Phi$     & $P_{\geq 0.25} (i\leq3\; \mathsf{U}^{\leq 6}\;i=0)$ & $P_{\geq 0.25} (i\leq 5\;\mathsf{U}^{\leq 11}\;i=0)$ & $P_{\geq 0.25} (i\leq8\; \mathsf{U}^{\leq 16}\;i=0)$ \\ \hline
+            \begin{tabular}[c]{@{}l@{}}Satisfaction property\\ $P(\mathcal{M}_{(\alpha,\beta)}\models\Phi)$\end{tabular}      & 0.3474444                                           & 0.265815                                             & 0.327446                                             \\ \hline
+        \end{tabular}
+    \end{adjustwidth}
+    \caption{Synthetic data for SIR(5,1,0), SIR(10,1,0), SIR(15,1,0)}
+\end{table}
+
 \begin{figure}[H]
     \centering
     \begin{subfigure}{0.3\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/sir510_data.png}
-        \caption{SIR(5,1,0) synthetic data}
+        \caption{SIR(5,1,0)}
     \end{subfigure}
     \hfill
     \begin{subfigure}{0.3\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/sir1010_data.png}
-        \caption{SIR(10,1,0) synthetic data}
+        \caption{SIR(10,1,0)}
     \end{subfigure}
     \hfill
     \begin{subfigure}{0.3\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/sir1510_data.png}
-        \caption{SIR(15,1,0) synthetic data}
+        \caption{SIR(15,1,0)}
     \end{subfigure}
-    \caption{Synthetic data $D_{obs}$ using selected true parameter.}
+    \caption{Histograms of synthetic data $D_{obs}$.}
 \end{figure}
 
+
 \subsubsection{Parameter synthesis result}
+Parameter synthesis results for SIR(5,1,0) model:
 \begin{table}[H]
-    \begin{tabular}{|l|c|l|}
+    \begin{tabular}{|l|l|l|}
         \hline
-        \multicolumn{1}{|c|}{\textbf{SIR(5,1,0)}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Rational function\\ SMC\end{tabular}}            & \begin{tabular}[c]{@{}l@{}}Statistical model checking\\ ABC-SMC\end{tabular} \\ \hline
-        Number of states                          & \multicolumn{2}{c|}{27}                                                                 \\ \hline
-        Number of BSCCs                           & \multicolumn{2}{c|}{6}                                                                  \\ \hline
-        Target property                           & \multicolumn{2}{c|}{$P_{\geq 0.25} [!(i>3) U^{<6} (i=0)]$}                              \\ \hline
-        True parameter $p$                        & \multicolumn{2}{c|}{(0.034055, 0.087734)}                                               \\ \hline
-        Synthetic data                            & \multicolumn{2}{c|}{(1098, 1377, 1296, 1312, 1466, 3451)}                               \\ \hline
-        Estimated parameter $\hat{p}$             & \multicolumn{1}{l|}{(0.025473, 0.067613)}                  & (0.023077, 0.064812)       \\ \hline
-        L2-Norm $\Vert p, \hat{p} \Vert_2$        & \multicolumn{1}{l|}{0.021875}                              & 0.020120                   \\ \hline
-        Run time (hh:mm:ss)                       & \multicolumn{1}{l|}{0:19:34}                               & 3:51:36                    \\ \hline
+        Method                                           & RF-SMC               & SMC-ABC-SMC          \\ \hline
+        Estimated parameter $\hat{\theta}$               & (0.034055, 0.087734) & (0.034055, 0.087734) \\ \hline
+        True parameter $\theta$                          & (0.025473, 0.067613) & (0.023077, 0.064812) \\ \hline
+        L2 distance $\Vert \theta, \hat{\theta} \Vert_2$ & 0.021875             & 0.020120             \\ \hline
+        \begin{tabular}[c]{@{}l@{}}Satisfaction property\\ $P(\mathcal{M}_{\hat{\theta}}\models\Phi)$\end{tabular}                       & 0.352182             & 0.347407             \\ \hline
     \end{tabular}
-    \caption{SIR(5,1,0) parameter estimation results.}
+    \caption{Parameter estimation results for SIR(5,1,0) model.}
 \end{table}
 
 \begin{figure}[H]
@@ -792,33 +797,33 @@ We evaluate simulation-based and rational function based frameworks on different
     \begin{subfigure}{0.48\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/sir510_rfsmc.png}
-        \caption{Sampled particles using Rational Functions SMC}
+        \caption{Sampled particles using RF-SMC}
     \end{subfigure}
     \hfill
     \begin{subfigure}{0.48\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/sir510_abcsmc.png}
-        \caption{Sampled particles using Statiscal Model Checking ABC-SMC}
+        \caption{Sampled particles using SMC-ABC-SMC}
     \end{subfigure}
     \caption{SIR(5,1,0) parameter synthesis results.}
 \end{figure}
 
-In the experiment with $SIR(5,1,0)$ model we can see that rational-function based method and simulation based method deliver results without significantly difference.
+In the experiment with $SIR(5,1,0)$ model we  observe that rational-function based method and
+simulation based method deliver results without any significant difference.
 
+\newpage
+\noindent
+Parameter synthesis results for SIR(10,1,0) model:
 \begin{table}[H]
-    \begin{tabular}{|l|c|l|}
+    \begin{tabular}{|l|l|l|}
         \hline
-        \multicolumn{1}{|c|}{\textbf{SIR(10,1,0)}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Rational function\\ SMC\end{tabular}}                                        & \begin{tabular}[c]{@{}l@{}}Statistical model checking\\ ABC-SMC\end{tabular} \\ \hline
-        True parameter $p$                         & \multicolumn{2}{c|}{(0.025490, 0.06930)}                                                                            \\ \hline
-        Number of states                           & \multicolumn{2}{c|}{77}                                                                                             \\ \hline
-        Number of BSCCs                            & \multicolumn{2}{c|}{11}                                                                                             \\ \hline
-        Target property                            & \multicolumn{2}{c|}{$P_{\geq 0.25} [!(i>5) U^{<11} (i=0)]$}                                                         \\ \hline
-        Synthetic data                             & \multicolumn{2}{c|}{(1002, 1258, 1123, 902,  770,  651,  497,  420,  496,  685, 2196)}                              \\ \hline
-        Estimated parameter $\hat{p}$              & \multicolumn{1}{l|}{(0.014095, 0.066328)}                                              & (0.022552, 0.066416)       \\ \hline
-        L2-Norm $\Vert p, \hat{p} \Vert_2$         & \multicolumn{1}{l|}{0.011776}                                                          & 0.004116                   \\ \hline
-        Run time (hh:mm:ss)                        & \multicolumn{1}{l|}{2:45:02}                                                           & 9:27:41                    \\ \hline
+        Method                                           & RF-SMC               & SMC-ABC-SMC          \\ \hline
+        Estimated parameter $\hat{\theta}$               & (0.014095, 0.066328) & (0.022552, 0.066416) \\ \hline
+        True parameter $\theta$                          & (0.025490, 0.06930)  & (0.025490, 0.06930)  \\ \hline
+        L2 distance $\Vert \theta, \hat{\theta} \Vert_2$ & 0.011776             & 0.004116             \\ \hline
+        \begin{tabular}[c]{@{}l@{}}Satisfaction property\\ $P(\mathcal{M}_{\hat{\theta}}\models\Phi)$\end{tabular}                       & 0.363570             & 0.281154             \\ \hline
     \end{tabular}
-    \caption{SIR(10,1,0) parameter estimation results.}
+    \caption{Parameter estimation results for SIR(10,1,0) model.}
 \end{table}
 
 \begin{figure}[H]
@@ -826,33 +831,32 @@ In the experiment with $SIR(5,1,0)$ model we can see that rational-function base
     \begin{subfigure}{0.48\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/sir1010_rfsmc.png}
-        \caption{SIR(10,1,0), sampled particles using Rational Functions SMC}
+        \caption{SIR(10,1,0), sampled particles using RF-SMC}
     \end{subfigure}
     \hfill
     \begin{subfigure}{0.48\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/sir1010_abcsmc.png}
-        \caption{SIR(10,1,0), sampled particles using Statiscal Model Checking ABC-SMC}
+        \caption{SIR(10,1,0), sampled particles using SMC-ABC-SMC}
     \end{subfigure}
     \caption{ parameter synthesis results.}
 \end{figure}
 
-In the experiment with $SIR(10,1,0)$ model we can see that  simulation based method deliver closer estimation to true parameter.
+In the experiment with $SIR(10,1,0)$ model we can see that rational function based method delivers a
+closer estimation to true parameter with higher satisfaction probability.
 
+\newpage
+\noindent Parameter synthesis results for SIR(15,1,0) model:
 \begin{table}[H]
-    \begin{tabular}{|l|c|l|}
+    \begin{tabular}{|l|l|l|}
         \hline
-        \multicolumn{1}{|c|}{\textbf{SIR(15,1,0)}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Rational function\\ SMC\end{tabular}}                                         & \begin{tabular}[c]{@{}l@{}}Statistical model checking\\ ABC-SMC\end{tabular} \\ \hline
-        True parameter $p$                         & \multicolumn{2}{c|}{(0.017246, 0.067786)}                                                                            \\ \hline
-        Number of states                           & \multicolumn{2}{c|}{27}                                                                                              \\ \hline
-        Number of BSCCs                            & \multicolumn{2}{c|}{6}                                                                                               \\ \hline
-        Target property                            & \multicolumn{2}{c|}{$P_{\geq 0.25} [!(i>7) U^{<16} (i=0)]$}                                                          \\ \hline
-        Synthetic data                             & \multicolumn{2}{c|}{(50,181,302,455,539,567,582,566,541,553,574,528,512,586,875,2589,)}                              \\ \hline
-        Estimated parameter $\hat{p}$              & \multicolumn{1}{l|}{(0.023077, 0.064816)}                                               & (0.017584, 0.065357)       \\ \hline
-        L2-Norm $\Vert p, \hat{p} \Vert_2$         & \multicolumn{1}{l|}{0.006545}                                                           & 0.005520                   \\ \hline
-        Run time (hh:mm:ss)                        & \multicolumn{1}{l|}{1:07:36}                                                            & 3:05:22                    \\ \hline
+        Method                                           & RF-SMC               & SMC-ABC-SMC          \\ \hline
+        Estimated parameter $\hat{\theta}$               & (0.012444, 0.065862) & (0.010022, 0.067230) \\ \hline
+        True parameter $\theta$                          & (0.011499, 0.062111) & (0.011499, 0.062111) \\ \hline
+        L2 distance $\Vert \theta, \hat{\theta} \Vert_2$ & 0.006545             & 0.005520             \\ \hline
+        \begin{tabular}[c]{@{}l@{}}Satisfaction property\\ $P(\mathcal{M}_{\hat{\theta}}\models\Phi)$\end{tabular}                       & 0.366493             & 0.323579             \\ \hline
     \end{tabular}
-    \caption{SIR(15,1,0) parameter estimation results.}
+    \caption{Parameter estimation results for SIR(15,1,0) model.}
 \end{table}
 
 \begin{figure}[H]
@@ -860,57 +864,123 @@ In the experiment with $SIR(10,1,0)$ model we can see that  simulation based met
     \begin{subfigure}{0.48\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/sir1510_rfsmc.png}
-        \caption{Sampled particles using Rational Functions SMC}
+        \caption{Sampled particles using RF-SMC}
     \end{subfigure}
     \hfill
     \begin{subfigure}{0.48\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/sir1510_abcsmc.png}
-        \caption{Sampled particles using Statiscal Model Checking ABC-SMC}
+        \caption{Sampled particles using SMC-ABC-SMC}
     \end{subfigure}
     \caption{SIR(15,1,0) parameter synthesis results.}
 \end{figure}
 
-\subsubsection{Parameter synthesis with uncertainty}
-We introduce an uncertainty by merging BSCCs into 2 bins and use lower number of simulation to
-generate synthetic data.
+\newpage
+\noindent We study the behaviour of both frameworks when less data is available. Instead of using
+synthetic data of $10000$ samples, we use $200$ samples as observed data for parameter synthesis and
+estimation. We also introduce an uncertainty by merging BSCCs into 2 bins: one consists of BSCCs
+with more than half of the population remain uninfected, and the other consists of all BSCCs left.
+This adjustment to the DTMC is done by merging BSCCs into a single BSCC. \\
+We perform the experiment on SIR(15,1,0) with only two BSCCs: (i) BSCCs with $S \leq 8$, and (ii)
+BSCC with $S > 8$. The results are then summarized into the following table:
+
 \begin{table}[H]
-    \begin{tabular}{|l|c|l|}
+    \begin{tabular}{|l|l|l|}
         \hline
-        \multicolumn{1}{|c|}{\textbf{SIR(15,1,0)}, BSCC merged} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Rational function\\ SMC\end{tabular}}             & \begin{tabular}[c]{@{}l@{}}Statistical model checking\\ ABC-SMC\end{tabular} \\ \hline
-        True parameter                                          & \multicolumn{2}{c|}{(0.017246, 0.067786)}                                                \\ \hline
-        Number of states                                        & \multicolumn{2}{c|}{27}                                                                  \\ \hline
-        Number of BSCCs                                         & \multicolumn{2}{c|}{6}                                                                   \\ \hline
-        Target property                                         & \multicolumn{2}{c|}{$P_{\geq 0.25} [!(i>7) U^{<16} (i=0)]$}                              \\ \hline
-        Synthetic data                                          & \multicolumn{2}{c|}{(421,  834, 1126, 1362, 1851, 4406)}                                 \\ \hline
-        Inferred parameter point                                & \multicolumn{1}{l|}{(0.023077, 0.064812)}                   & (0.01758384, 0.06535699)   \\ \hline
-        L2 distance to true parameter                           & \multicolumn{1}{l|}{0.006545}                               & 0.005520                   \\ \hline
-        Run time (hh:mm:ss)                                     & \multicolumn{1}{l|}{1:07:36}                                & 3:05:22                    \\ \hline
+        Method                                           & RF-SMC                   & SMC-ABC-SMC          \\ \hline
+        Estimated parameter $\hat{\theta}$               & (0.00945054, 0.06634182) & (0.016698, 0.081153) \\ \hline
+        True parameter $\theta$                          & (0.011499, 0.062111)     & (0.011499, 0.062111) \\ \hline
+        L2 distance $\Vert \theta, \hat{\theta} \Vert_2$ & 0.004701                 & 0.019740             \\ \hline
+        \begin{tabular}[c]{@{}l@{}}Satisfaction property\\ $P(\mathcal{M}_{\hat{\theta}}\models\Phi)$\end{tabular}                       & 0.374375                 & 0.306351             \\ \hline
     \end{tabular}
-    \caption{SIR(5,1,0) parameter estimation results.}
+    \caption{Parameter estimation results for SIR(15,1,0) model with merged BSCC.}
 \end{table}
 
 \begin{figure}[H]
     \centering
     \begin{subfigure}{0.48\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{figures/sir1510_rfsmc_few.png}
-        \caption{Sampled particles using Rational Functions SMC}
+        \includegraphics[width=\linewidth]{figures/sir1510_merged_bscc_rfsmc.png}
+        \caption{Sampled particles using RF-SMC}
     \end{subfigure}
     \hfill
     \begin{subfigure}{0.48\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{figures/sir1510_abcsmc_few.png}
-        \caption{Sampled particles using Statiscal Model Checking ABC-SMC}
+        \includegraphics[width=\linewidth]{figures/sir1510_merged_bscc_abcsmc.png}
+        \caption{Sampled particles using SMC-ABC-SMC}
     \end{subfigure}
+    \caption{Parameter synthesis results for SIR(15,1,0) model with merged BSCC.}
 \end{figure}
 
+Unlike experiments with SIR(15,1,0) without merging BSCCs, the experiment with merged BSCCs and
+simulation based framework shows no general pattern of distance among satisfying parameter values.
+It is hypothetically because of the noisy data that leads to a non-converging evaluation of distance
+between simulated data and observed data \cite{sisson2007sequential}. A proposed way to solve the
+problem is to use a decreasing threshold scheme, in which $\epsilon$ decrease after each
+perturbation. We perform the experiment again, however multiply distance threshold by a factor
+$0.95$ after each perturbation round. The result is then visualized:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{figures/sir1510_merged_bscc_abcsmc_mod.png}
+    \caption{Parameter synthesis results for SIR(15,1,0) model with merged BSCC and decreasing distance threshold.}
+\end{figure}
+The estimated parameter is $(0.01148671, 0.06624936)$, closer to the true parameter (Euclidean
+distance is $0.004138$), and the satisfaction probability $P(\mathcal{M}_{\alpha,\beta}) = 0.336849$.
+
 \subsection{Performance}
+To measure the performance of RF-SMC and SMC-ABC-SMC, we measure the physical runtime to finish
+\textit{(total runtime)}, as well as the average physical run time of one perturbation kernel
+\textit{(average perturbation runtime)}.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|l|}
+        \hline
+        Method                     & RF-SMC & SMC-ABC-SMC \\ \hline
+        Total runtime (minutes)    & 5.917  & 68.783      \\ \hline
+        \begin{tabular}[c]{@{}l@{}}Average perturbation\\ runtime (minutes)\end{tabular} & 0.312  & 3.614       \\ \hline
+    \end{tabular}
+    \caption{Physical runtime on SIR(5,1,0) model.}
+\end{table}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|l|}
+        \hline
+        Method                     & RF-SMC & SMC-ABC-SMC \\ \hline
+        Total runtime (minutes)    & 29.517 & 352.083     \\ \hline
+        \begin{tabular}[c]{@{}l@{}}Average perturbation\\ runtime (minutes)\end{tabular} & 1.553  & 18.518      \\ \hline
+    \end{tabular}
+    \caption{Physical runtime on SIR(10,1,0) model.}
+\end{table}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|l|}
+        \hline
+        Method                     & RF-SMC   & SMC-ABC-SMC \\ \hline
+        Total runtime (minutes)    & 3976.117 & 581.833     \\ \hline
+        \begin{tabular}[c]{@{}l@{}}Average perturbation\\ runtime (minutes)\end{tabular} & 209.237  & 30.592      \\ \hline
+    \end{tabular}
+    \caption{Physical runtime on SIR(15,1,0) model.}
+\end{table}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/sir_runtime_total.png}
+        \caption{Total runtime}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/sir_runtime_avg.png}
+        \caption{Average perturbation runtime}
+    \end{subfigure}
+    \caption{Physical runtime on SIR models of different population sizes.}
+\end{figure}
 
 \subsection{Discussion}
-Unlike experiments with unmerged BSCCs, the experiment with merged BSCCs and simulation based
-framework shows no general pattern of distance among satisfying parameter values. It is
-hypothetically because of the noisy data that leads to a non-converging evaluation of distance
-between simulated data and observed data. A proposed way to solve the problem is to use a decreasing
-threshold scheme, in which $\epsilon$ decrease after each perturbation.
+As it is shown on performance data, as the state-space of a parametric DTMC grows, the rational
+functions-based method becomes more expensive in computational cost than the simulation-based
+method. Combine with a decreasing distance threshold to approximate the likelihood more precisely,
+SMC-ABC-SMC shows a comparable accuracy to rational function based RF-SMC.
+
 
