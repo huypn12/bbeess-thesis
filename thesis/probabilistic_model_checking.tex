@@ -286,12 +286,19 @@ probabilistic model checking tools Storm \cite{dehnert2017storm}, and PRISM \cit
                   where $\Phi,\Phi_1,\Phi_2$ are state formulas, and $n\in \mathbb{N}$.
       \end{itemize}
 \end{definition}
+
+\begin{example}
+      Given the DTMC as in Figure \ref{fig:knuth-die}. The probability that the simulation eventually ends with the outcome "one dot" is equal to $\frac{1}{6}$:
+      \begin{align*}
+            P_{=\frac{1}{6}}(\Diamond 1)
+      \end{align*}
+\end{example}
+
 \noindent  In a DTMC, a PCTL state formula is verified at each state, while a PCTL path formula is
-verified through a trace from an execution path.\\
-The algorithm to model check DTMC against PCTL properties is described in detail in Katoen
-\cite{baier2008principles}. Given a DTMC $\mathcal{M}$ and a PCTL property $\Phi$, general algorithm
-for checking $\mathcal{M}\models\Phi$ has time complexity polynomial to $|\mathcal{M}|$ and linear
-to $|\Phi|$.
+verified through a trace from an execution path. The algorithm to model check DTMC against PCTL
+properties is described in detail in Katoen \cite{baier2008principles}. Given a DTMC $\mathcal{M}$
+and a PCTL property $\Phi$, general algorithm for checking $\mathcal{M}\models\Phi$ has time
+complexity polynomial to $|\mathcal{M}|$ and linear to $|\Phi|$.
 \begin{theorem}[Complexity of checking a DTMC against a PCTL formula \cite{katoen2013model}]
       For finite DTMC $\mathcal{M}$ and PCTL state-formula $\Phi$,the PCTL model-checking problem
       can be solved in time
@@ -634,8 +641,8 @@ $\mathcal{M}_\theta \models \Phi$.
 \end{example}
 
 \subsection{Summary}
-In this chapter we introduced the essential theoretical concepts on discrete-time models,
-probabilistic temporal logic, and parameter synthesis problem. However, the parameter synthesis
-methods presented exhaustively search on parameter space for satisfying parameter values. In the
-next chapter, we present Bayesian inference methods for later construction of data-informed
-parameter synthesis frameworks.
+This chapter introduced the essential theoretical concepts on discrete-time models, probabilistic
+temporal logic, and parameter synthesis problem. However, the parameter synthesis methods presented
+exhaustively search on parameter space for satisfying parameter values. In the next chapter, we
+present Bayesian inference methods for later construction of data-informed parameter synthesis
+frameworks.

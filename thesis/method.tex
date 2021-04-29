@@ -121,9 +121,8 @@ In the SMC algorithm with exact likelihood is available, we select Metropolis-Ha
 kernel $Q(\theta^t|\theta^{t-1})$ identical to the perturbation kernel.
 
 \section{RF-SMC framework}
-We design RF-SMC framework based on Sequential Monte Carlo algorithm to work with rational
-functions. Firstly, we design Metropolis-Hastings algorithm to mutate particles in each
-perturbation.
+We design a Sequential Monte Carlo framework with rational functions, using a modified
+Metropolis-Hastings algorithm to mutate particles in each perturbation.
 
 \begin{algorithm}[H]
     \caption{Metropolis-Hastings with rational functions}
@@ -185,7 +184,7 @@ perturbation.
     \end{algorithmic}
 \end{algorithm}
 The only difference to the original Metropolis-Hastings algorithm is that the following algorithm
-only accept parameter values $\theta$ that instantiate DTMC models which satisfy the property of
+only accepts parameter values $\theta$ that instantiate DTMC models which satisfy the property of
 interest.
 \begin{algorithm}[H]
     \caption{Sequential Monte Carlo with rational functions}
@@ -247,14 +246,13 @@ Without the availability of analytical form to evaluate steady-state distributio
 interest, we face the following obstacles:
 \begin{itemize}
     \item \textbf{Absence of likelihood functions:} As the rational functions for properties are not
-          available, we do not have the analytical form of likelihood. The abscence of likelihood
-          suggests to exploit \textit{likelihood-free methods}. In this framework we use Approximate
-          Bayesian Computation in combination with Sequential Monte Carlo method.
-    \item \textbf{Absence of rational functions for evaluation of property of interest:} the
-          satisfaction of an instantiated model to a bounded path property is checked by Statistical
-          Model Checking.
+          available, we do not have the analytical form of likelihood. The absence of likelihood
+          suggests exploiting \textit{likelihood-free methods}. In this framework, we use Approximate
+          Bayesian Computation in combination with the Sequential Monte Carlo method.
+    \item \textbf{Absence of rational functions for evaluation of property of interest:} Statistical
+          Model Checking then checks the satisfaction of an instantiated model to a bounded path property.
 \end{itemize}
-For this case we present Statistical Model Checking, Approximate Bayesian Computation - Sequential
+For this case, we present Statistical Model Checking, Approximate Bayesian Computation - Sequential
 Monte Carlo method \textit{(SMC-ABC-SMC)} framework. SMC-ABC-SMC differs from RF-SMC only in their
 perturbation step.
 \begin{itemize}
@@ -262,9 +260,8 @@ perturbation step.
           no analytical form to evaluate the likelihood. As there is no likelihood function, we
           apply Approximate Bayesian Computation and  accept the first particle whose simulation runs
           satisfies the distance threshold.
-    \item There is also no rational function for the property
-          of interest $\Phi$, so we apply Statistical model checking with confidence $\alpha$ and indifference
-          width $\delta$.
+    \item There is also no rational function for the property of interest $\Phi$, so we apply
+          Statistical Model Checking with confidence level $\alpha$ and approximation parameter $\delta$.
 \end{itemize}
 
 \begin{algorithm}[H]

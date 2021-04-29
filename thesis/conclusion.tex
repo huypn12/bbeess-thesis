@@ -3,7 +3,7 @@ We presented frameworks to perform data-informed parameter synthesis. The framew
 against different case studies and show that they are able to deliver both satisfying parameter
 value set and an estimated parameter value that is close to the original value which is used to
 synthesize test data. Therefore, these frameworks are applicable when we need not only an estimation
-on the unknown attributes of a system, but also proactively verify the system against a desired property.\\
+on the unknown attributes of a system, but also proactively verify the system against a desired property.
 There are many possible extensions to the presented frameworks, including but not limited to:
 \begin{itemize}
       \item \textit{Statistical Model Checking}: we can use Absolute-Error Massart Bounds (proposed by
@@ -14,7 +14,8 @@ There are many possible extensions to the presented frameworks, including but no
             Checking by using Bayesian approach.
       \item \textit{Sampling algorithms}: different sampling algorithms can be used to estimate
             posterior distribution. For example, PyMC3 library \cite{salvatier2016pymc3} uses
-            No-U-Turn Sampling algorithm by default to estimate posterior distribution.
+            No-U-Turn Sampling algorithm by default, as it exploits the gradient of the likelihood
+            to better approximate the posterior distribution.
       \item \textit{Implementation improvement}: currently StormPy prohibits our implementation to be
             parallelized, since StormPy's core classes are not serializable. Porting to C++ language
             possibly has several benefits by achieving higher performance of C++ and exploiting the
