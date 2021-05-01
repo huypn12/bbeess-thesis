@@ -3,18 +3,18 @@ Discrete-time Markov chain is a formalism often used to model stochastic populat
 chapter, we present essential concepts on probabilistic model checking, including probabilistic
 models and properties. We also briefly present a general deterministic model checking algorithm for
 a specific temporal logic, namely Probabilistic Computational Tree Logic (or PCTL in short). Due to
-the state space explosion, applying deterministic model checking algorithm is often computationally
-expensive. Therefore, we also present a simulation based model checking, namely statistical model
-checking (or SMC in short) for bounded and unbounded path property. We also introduce definitions
-of parametric DTMC and the parameter synthesis problem, as well as the symbolic computing approach to
-verify parametric models.
+the state space explosion, applying a deterministic model checking algorithm is often
+computationally expensive. Therefore, we also present a simulation-based model checking, namely
+statistical model checking (or SMC in short) for bounded and unbounded path property. We also
+introduce definitions of parametric DTMC and the parameter synthesis problem, and the symbolic
+computing approach to verify parametric models.
 
 
 \section{Markov models}
 \subsection{Discrete Time Markov chain}
-Markov models are stochastic models evolving in discrete or continuous time, which satisfy
+Markov models are stochastic models evolving in discrete or continuous time, which satisfy the
 \textit{memoryless property}. Memoryless property is a property of probability distributions, which
-refers to the independent of the probability distribution on its previous states. Discrete-time
+refers to the independence of the probability distribution on its previous states. Discrete-time
 Markov chain is a Markov model of finite state-space and countable (discrete) time. In a
 discrete-time Markov chain, times between any state transition are uniform.
 \begin{definition}[Discrete Time Markov Chain \cite{baier2008principles}]
@@ -40,9 +40,10 @@ discrete-time Markov chain, times between any state transition are uniform.
 \begin{example}[Knuth-Yao die]
       \rm
       Knuth and Yao \cite{knuth1976complexity} introduced an algorithm to simulate a fair dice by a
-      fair coin. The algorithm terminates returning one among six possible outcome of a die tossing
-      (from one to six). We formalize the algorithm by a DTMC with 6 BSCCs, each of them represents
-      a possible outcome of a die tossing. The probabilities to reach each BSCC among the six is $1/6$.
+      fair coin. The algorithm terminates returning one among six possible outcomes of a die tossing
+      (from one to six). We formalize the algorithm by a DTMC with 6 BSCCs. Each of the 6 BSCCs
+      represents a possible outcome of a die tossing. The probabilities of reaching each BSCC among
+      the six is $1/6$.
       \begin{figure}[H]
             \centering
             \begin{forest}
@@ -150,7 +151,7 @@ the steady state distribution in DTMC with BSCC(s)
 
 \subsection{Continuous-time Markov chain}
 The discrete-time memoryless property can also be extended into continuous-time memoryless property.
-Continuous-time Markov chain is often used to model a system, in which times between transitions
+Continuous-time Markov chain is often used to model a system in which times between transitions
 vary and are real numbers.
 \begin{definition}[Continuous-time Markov chain \cite{katoen2001faster}]
       A \textit{Continuous-time Markov chain} (or CTMC in short) $\mathcal{C}$ is a tuple
@@ -211,16 +212,16 @@ vary and are real numbers.
       \end{align*}
 \end{definition}
 
-CTMC is a strong formalism to model systems with regarding to real-time properties. In this thesis,
+CTMC is a solid formalism to model systems concerning real-time properties. In this thesis,
 we transform CTMCs into DTMCs through a process of \textit{uniformization} \cite{katoen2001faster}.
 Uniformization discretizes a CTMC by transforming it in to a CTMC which has uniform exit rates among
 states, so that we can approximate the uniformized CTMC using a DTMC by removing the exit rates.
-Katoen \cite{katoen2001faster} show that the uniformization of CTMC perserves the transient
+Katoen \cite{katoen2001faster} shows that the uniformization of CTMC preserves the transient
 probabilities. Baier \cite{baier2002simulation} proved that the time-bounded until formulas remain
 unaffected as we transform a CTMC to its equivalent uniformized form. Through uniformization, we can
-check time-bounded reachability propety. Furthermore, transforming a CTMC to an equivalent DTMC
-allow us to obtain symbolic form of PCTL formula, thus enables a more efficient evaluation of
-properties.
+check the time-bounded reachability property. Furthermore, transforming a CTMC to an equivalent DTMC
+allows us to obtain a symbolic form of the PCTL formula, thus enabling a more efficient evaluation
+of properties.
 
 \begin{definition}[CTMC uniformization \cite{katoen2001faster}]
       \rm
@@ -316,8 +317,8 @@ complexity polynomial to $|\mathcal{M}|$ and linear to $|\Phi|$.
 \end{theorem}
 
 \subsection{State explosion problem}
-\textit{State-explosion problem} occurs when the size of a model state space grows exponentially as
-the number of state variables in the system increases \cite{clarke2011model}. As a finite-state
+The \textit{state-explosion problem} occurs when the size of a model state space grows exponentially
+as the number of state variables in the system increases \cite{clarke2011model}. As a finite-state
 abstraction of a system, each state in a model consists of state variables, which encode a property
 of the system it models. However, due to the combinatorial explosion, the state-space grows
 exponentially in size. For example, consider a distributed software system, in which a
@@ -327,27 +328,27 @@ exponentially in size. For example, consider a distributed software system, in w
       \item $M$ communication channels of capacity $Q$.
 \end{enumerate}
 The total number of global states is $2^{8N}Q^M$. The size of state-space grows exponentially as we
-add new variables and/or communication channels. As discussed before, the complexity of model
+add new variables and communication channels. As discussed before, the complexity of model
 checking a PCTL property against a DTMC model is polynomial to the DTMC's state-space. However, the
 state-explosion problem renders model checking computationally expensive. One possible way to cope
-with state-explosion problem and to reduce the computational cost is to use \textit{statistical
+with the state-explosion problem and to reduce the computational cost is to use \textit{statistical
       model checking}.
 
 \section{Statistical model checking}
 Statistical model checking is a simulation-based approach to model check a stochastic model
-$\mathcal{D}$ against a PCTL property $\Phi$. The essential concept of probabilistic model
-checking is to simulate a number of traces from $\mathcal{M}$, monitor if each trace satisfies $\Phi$, then
+$\mathcal{D}$ against a PCTL property $\Phi$. The essential concept of probabilistic model checking
+is to simulate a number of traces from $\mathcal{M}$, monitor if each trace satisfies $\Phi$, then
 estimate probability $P(\mathcal{M}\models\Phi)$ by a statistical inference \cite{agha2018survey}.\\
 Given a stochastic model $\mathcal{M}$ and a property $\Phi$, statistical model checking solves the
-\textit{qualitative} and \textit{quantitative} problem\footnote{\url{https://www-verimag.imag.fr/Statistical-Model-Checking-814.html\#nb3}}:
+\textit{qualitative} and \textit{quantitative}
+problem\footnote{\url{https://www-verimag.imag.fr/Statistical-Model-Checking-814.html\#nb3}}:
 \begin{enumerate}
-      \item \textbf{Quantitative}: Estimate the probability $p = Pr(\mathcal{M}\models\Phi)$. In other
-            words, it checks $\mathcal{M}$ the property \begin{align*}
-                  P_{=?}(\Phi)
+      \item \textbf{Quantitative}: Estimate the probability $p = Pr(\mathcal{M}\models\Phi)$. In
+            other words, it checks $\mathcal{M}$ the property \begin{align*} P_{=?}(\Phi)
             \end{align*}
-      \item \textbf{Qualitative}: Decide if $p = Pr(\mathcal{M}\models\Phi)$ is greater or less than a
-            threshold $\epsilon$. In other words, it checks $\mathcal{M}$ the property \begin{align*}
-                  P_J(\Phi)
+      \item \textbf{Qualitative}: Decide if $p = Pr(\mathcal{M}\models\Phi)$ is greater or less than
+            a threshold $\epsilon$. In other words, it checks $\mathcal{M}$ the property
+            \begin{align*} P_J(\Phi)
             \end{align*}
             where $J\subseteq[0,1]$ is an interval.
 \end{enumerate}
@@ -420,18 +421,17 @@ $\epsilon$. The estimation algorithm is described in detail in \cite{herault2004
       \end{algorithmic}
 \end{algorithm}
 The Chernoff-Hoeffding gives a lower bound of total simulation runs $N$ to estimate a satisfaction
-property with a specific error margin. In case $\Phi$ has probabilistic bound, we use hypothesis
-test as the outcome of checking $\mathcal{D}$ against $\Phi$ is Boolean.
+property with a specific error margin.
 
 \subsection{Statistical model checking of qualitative properties.}
-Wald \cite{wald1945sequential} introduces Sequential Probability Ratio Test (SPRT in short) to perform
-hypothesis test on sequential statistical analysis, in which the sample size $N$ is not know
-a-priori. SPRT updates a cummulative sum and stop when it has enough information to decide whether
-to statistically accept null hypothesis or alternative hypothesis.\\
+Wald \cite{wald1945sequential} introduces the Sequential Probability Ratio Test (SPRT in short) to
+perform hypothesis tests on sequential statistical analysis, in which the sample size $N$ is not
+known \textit{a priori}. SPRT updates a cumulative sum and stops when it has enough information to
+accept the null hypothesis or alternative hypothesis statistically.\\
 Younes \cite{younes2002probabilistic} introduces an application of Wald's SPRT on statistical model
 checking. Given a DTMC $\mathcal{D}$ and a PCTL property $\Phi$ with probabilistic bound $\Phi =
       P_J(\varphi)$. Without loss of generality, we asume that $\Phi = P_{\geq p}(\varphi),
-      p\in[0,1]$. SPRT method tests the following null hypothesis and alternative hypothesis with
+      p\in[0,1]$. The SPRT method tests the following null hypothesis and alternative hypothesis with
 approximation width $\epsilon$:
 \begin{align*}
        & H_0: \hat{p} \geq p + \epsilon \\
@@ -641,8 +641,8 @@ $\mathcal{M}_\theta \models \Phi$.
 \end{example}
 
 \subsection{Summary}
-This chapter introduced the essential theoretical concepts on discrete-time models, probabilistic
-temporal logic, and parameter synthesis problem. However, the parameter synthesis methods presented
+This chapter introduced the essential theoretical concepts of discrete-time models, probabilistic
+temporal logic, and parameter synthesis. However, the parameter synthesis methods presented
 exhaustively search on parameter space for satisfying parameter values. In the next chapter, we
 present Bayesian inference methods for later construction of data-informed parameter synthesis
 frameworks.

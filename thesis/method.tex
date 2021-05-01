@@ -8,12 +8,12 @@ synthesize a set of $N$ parameter values $(\theta_1,\ldots,\theta_N)$ such that
     \forall i \in \{1,\ldots,N\}: \mathcal{M}_{\theta_i} \models \Phi
 \end{align*}
 The set of satisfying parameter values $(\theta_1,\ldots,\theta_N)$ has corresponding weights
-$(w_1,\ldots,w_N)$. The weight $w_i, 1\leq i\leq N$ that represents the likelihood
+$(w_1,\ldots,w_N)$. The weight $w_i, 1\leq i\leq N$ represents the likelihood
 $P(D_{obs}|\theta_i)$ or its approximation.\\
-We design two frameworks towards two different use cases. In the first use cases, symbolic rational
-functions are available for (i) the evaluation of steady-state distribution, and (ii) the evalution
+We design two frameworks for two different use cases. In the first use cases, symbolic rational
+functions are available for (i) the evaluation of steady-state distribution, and (ii) the evaluation
 of property $\Phi$. In the second use case, we assume that there is no rational function obtainable
-for steady-state distribution and $\Phi$. Instead, we (i) use simulation runs to estimate
+for steady-state distribution and $\Phi$. Instead, we (i) use simulation runs to estimate the
 steady-state distribution, and (ii) use statistical model checking to verify the property of
 interest $\Phi$.
 
@@ -22,11 +22,12 @@ interest $\Phi$.
 We present the generic framework for Bayesian parameter synthesis of parametric discrete-time Markov
 chain. The generic framework takes a parametric discrete-time Markov chain, a property of interest,
 and steady-state data as input. In the core of the framework, we use Sequential Monte Carlo to
-sample the parameter space. The generic framework is based on Sequential Monte Carlo algorithm.
+sample the parameter space. The generic framework is based on the Sequential Monte Carlo algorithm.
 However, in the specific implementations of the generic framework, there are two important
 differences in each iteration of the Sequential Monte Carlo algorithm.
 \begin{enumerate}
-    \item \textit{Computing likelihood}: do we compute the (i) exact likelihood, or (ii) do we approximate it?
+    \item \textit{Computing likelihood}: do we compute the (i) exact likelihood, or (ii) do we
+          approximate it?
     \item \textit{Model checking the property of interest}: do we use (i) rational functions to
           evaluate the property of interest $\Phi$, or (ii) do we use statistical model checking?
 \end{enumerate}
@@ -196,13 +197,16 @@ interest.
             \item $\Phi$: bounded reachability property of interest.
             \item $\pi(\theta)$: prior distribution on $\theta$.
             \item $N$: number of particles in the Sequential Monte Carlo trace.
-            \item $M$ perturbation kernels $F_t(\theta^t | \theta^{t-1}_1,\ldots,\theta^{t-1}_N), 1\leq t \leq M$
+            \item $M$ perturbation kernels $F_t(\theta^t | \theta^{t-1}_1,\ldots,\theta^{t-1}_N),
+                      1\leq t \leq M$
             \item $N_{MH}$: number of particles in each Metropolis-Hastings step.
-            \item $Q_t(\theta^t|\theta^{t-1}), 1 \leq t \leq N_{MH}$: transition kernel for Metropolis-Hastings step.
+            \item $Q_t(\theta^t|\theta^{t-1}), 1 \leq t \leq N_{MH}$: transition kernel for
+                  Metropolis-Hastings step.
         \end{itemize}
         \hspace*{\algorithmicindent} \textbf{Output:}
         \begin{itemize}[noitemsep,topsep=0pt]
-            \item $(\theta_1,\ldots,\theta_N)$, $(w_1,\ldots,w_N)$: $N$ sampled particles and their corresponding weights.
+            \item $(\theta_1,\ldots,\theta_N)$, $(w_1,\ldots,w_N)$: $N$ sampled particles and their
+                  corresponding weights.
             \item $\hat{\theta}$: estimated model parameter.
         \end{itemize}
     }
@@ -242,7 +246,7 @@ interest.
 
 
 \section{SMC-ABC-SMC framework}
-Without the availability of analytical form to evaluate steady-state distribution and the property of
+Without the availability of analytical form to evaluate the steady-state distribution and the property of
 interest, we face the following obstacles:
 \begin{itemize}
     \item \textbf{Absence of likelihood functions:} As the rational functions for properties are not
@@ -256,7 +260,7 @@ For this case, we present Statistical Model Checking, Approximate Bayesian Compu
 Monte Carlo method \textit{(SMC-ABC-SMC)} framework. SMC-ABC-SMC differs from RF-SMC only in their
 perturbation step.
 \begin{itemize}
-    \item In SMC-ABC-SMC framework, we work with a \textit{likelihood-free} setup, in which there is
+    \item In the SMC-ABC-SMC framework, we work with a \textit{likelihood-free} setup in which there is
           no analytical form to evaluate the likelihood. As there is no likelihood function, we
           apply Approximate Bayesian Computation and  accept the first particle whose simulation runs
           satisfies the distance threshold.
