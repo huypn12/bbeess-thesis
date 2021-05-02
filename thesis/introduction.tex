@@ -1,6 +1,6 @@
 \chapter{Introduction}
 \section{Motivation}
-Firstly introduced by Kingsman \cite{kingman1969markov}, Markov population models  are finite
+Firstly introduced by Kingsman \cite{kingman1969markov}, Markov population processes are finite
 state-space, stochastic models widely used in modeling complex and dynamical systems. In a Markov
 population model, each state represents the number of individuals, and the transitions among states
 represent the increase or decrease of a population. In general, Markov population models study the
@@ -35,9 +35,9 @@ steady-state data. Contributions of the thesis are
             synthesis of parametric Discrete-time Markov chain. The frameworks work in two cases:
             (i) when the exact likelihood function of the property of interest is available, and
             (ii) when it has to be approximated utilizing Monte-Carlo methods.
-      \item We compare the performances of optimization methods used to approximate posterior
+      \item We compare the performances of proposed frameworks used to approximate posterior
             distribution on various case studies.
-      \item We evaluate the scalability of the frameworks with different sizes of model state-space.
+      \item We evaluate the scalability of the frameworks for different sizes of model state-space.
 \end{itemize}
 
 \section{Related works}
@@ -60,7 +60,7 @@ surveys and discoveries on parametric model checking and parameter synthesis are
 %% Bayesian inference: optimzation methods
 Markov Chain Monte Carlo sampling algorithms used in this thesis are presented by Metropolis
 \cite{metropolis1953equation}, and Hastings \cite{hastings1970monte}. Del Moral
-\cite{del2006sequential} designed Sequential Monte Carlo to address the problem of Markov Chain
+\cite{del2006sequential} designed Sequential Monte Carlo to address the limitations of Markov Chain
 Monte Carlo. A comparison between different Monte Carlo sampling algorithms, including Markov-chain
 Monte Carlo and Sequential Monte Carlo is presented in \cite{daviet2018inference}. Silk
 \cite{silk2012optimizing} and Filippi \cite{filippi2013optimality} discussed different approaches on
@@ -82,11 +82,9 @@ The content in this thesis is organized to 7 chapters:
             include discrete stochastic models and their  corresponding temporal logics.
       \item \textbf{Chapter 3} presents essential concepts on Bayesian inference, including sampling
             and optimization algorithms.
-      \item \textbf{Chapter 4} reviews the state-of-the-art works of other researchers on the
-            problem of parameter synthesis.
-      \item \textbf{Chapter 5} present Bayesian parameter synthesis frameworks.
-      \item \textbf{Chapter 6} describes case studies and benchmarks presented frameworks under
+      \item \textbf{Chapter 4} proposes Bayesian parameter synthesis frameworks.
+      \item \textbf{Chapter 5} describes case studies and benchmarks presented frameworks under
             different setups.
-      \item \textbf{Chapter 7} conclusion and possible future works.
+      \item \textbf{Chapter 6} conclusion and outlook.
 \end{itemize}
 

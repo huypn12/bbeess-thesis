@@ -1,17 +1,20 @@
 \begin{abstract}
     Population models are mathematical models to study the dynamics of a population. Markov
-    population processes are Markov chains of continuous or discrete time, in which each state
-    represents a vector of population size. We present a frameworkS for data-informed parameter
-    synthesis of parametric Markov population processes. Given experimental data for the population
-    at its steady-state, parameter synthesis aims to find a set of parameters to satisfy a temporal
-    property of interest. We design a Bayesian framework for parameter synthesis in two cases: (i)
-    when the exact likelihood function of the property of interest is available, and (ii) when it
-    has to be approximated by means of Monte-Carlo methods. The frameworks are constructed with
-    different sampling and optimization techniques to approximate the posterior distribution. We
-    evaluate the frameworks using various population models of different sizes using synthetic data
-    generated from a known true parameter. By measuring the distance between estimated parameters
-    and true parameters and visualize synthesized parameter values with their corresponding weights,
-    we show that our frameworks can derive a set of satisfying parameter values and an estimation
-    that is close to the true parameter.
+    population processes are Markov chains of continuous or discrete time, in which a state tracks
+    population size of each of the involved species. We study a framework for data-informed
+    parameter synthesis of parametric Markov population processes. Given experimental data for the
+    population at its steady-state, parameter synthesis aims to find a set of parameters satisfying
+    a temporal property of interest. We assume that experimental observations of the population are
+    available at steady-state. We design and compare performance of a Bayesian framework for
+    parameter synthesis in two cases: (i) when the exact likelihood function of the property of
+    interest is computed in a pre-processing step, and (ii) when it has to be approximated by means
+    of Monte-Carlo methods (it is likelihood-free). The frameworks are constructed with different
+    sampling and optimization techniques to approximate the posterior distribution. We evaluate the
+    frameworks using various population models of different sizes, using synthetic data generated
+    from a known true parameter. By measuring the distance between estimated parameters and true
+    parameters, and by visualize synthesized parameter values with their corresponding posterior
+    estimate, we show that both frameworks can derive a set of satisfying parameter values and an
+    estimation that is close to the true parameter. Furthermore, results show that the
+    likelihood-free framework is overall performing better.
 \end{abstract}
 

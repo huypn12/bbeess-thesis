@@ -20,11 +20,12 @@ interest $\Phi$.
 \newpage
 \section{Generic framework}
 We present the generic framework for Bayesian parameter synthesis of parametric discrete-time Markov
-chain. The generic framework takes a parametric discrete-time Markov chain, a property of interest,
-and steady-state data as input. In the core of the framework, we use Sequential Monte Carlo to
-sample the parameter space. The generic framework is based on the Sequential Monte Carlo algorithm.
-However, in the specific implementations of the generic framework, there are two important
-differences in each iteration of the Sequential Monte Carlo algorithm.
+chain (concept shown in Fig. ~\ref{fig:generic-framework}). The generic framework takes a
+parametric discrete-time Markov chain, a property of interest, and steady-state data as input. In
+the core of the framework, we use Sequential Monte Carlo to sample the parameter space. The generic
+framework is based on the Sequential Monte Carlo algorithm. However, in the specific implementations
+of the generic framework, there are two important differences in each iteration of the Sequential
+Monte Carlo algorithm.
 \begin{enumerate}
     \item \textit{Computing likelihood}: do we compute the (i) exact likelihood, or (ii) do we
           approximate it?

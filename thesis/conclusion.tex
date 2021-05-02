@@ -16,11 +16,14 @@ There are possible extensions to the presented frameworks, including but not lim
             Model Checking to achieve a better bound on the number of simulations.
       \item \textit{Bayesian Model Checking}: Jha \cite{jha2009bayesian}, and Zuliani
             \cite{zuliani2013bayesian} presents a novel method that improves Statistical Model
-            Checking by using Bayesian inference.
+            Checking by using Bayesian inference. By incorporating prior knowledge about the model
+            being verified, the method requires less simulation runs than the frequentist
+            statistical model checking, thus reducing the computational cost.
       \item \textit{Sampling algorithms}: different sampling algorithms can be used to estimate
             posterior distribution. For example, PyMC3 library \cite{salvatier2016pymc3} uses
             No-U-Turn Sampling (Hoffman \cite{hoffman2014no}) algorithm by default, as it exploits
-            the gradient of the likelihood to better approximate the posterior distribution.
+            the gradient of the likelihood to approximate the posterior distribution with less
+            iterations.
       \item \textit{Implementation improvement}: Currently, StormPy technically prohibits our
             implementation from being parallelized since StormPy's core classes are not serializable
             \footnote{\url{https://github.com/moves-rwth/stormpy/issues/36}}. Porting to the C++

@@ -3,7 +3,7 @@ To evaluate the effectiveness of the presented frameworks, we use three case stu
 study, we benchmark the frameworks using the following steps:
 \begin{enumerate}
     \item Describe the system of concern.
-    \item Construct parametric DTMC models and formalize a reachability property.
+    \item Construct parametric DTMC models and formalize a property of interest for parameter synthesis.
     \item Select model true parameters arbitrarily random and generate synthetic data from it.
     \item Apply the frameworks for both rational functions and simulation-based setups.
     \item Visualize the parameter synthesis and inference result.
@@ -12,9 +12,9 @@ study, we benchmark the frameworks using the following steps:
 \end{enumerate}
 The first case study is \textit{IPv4 ZeroConfiguration Protocol}. The second case study comes from
 the experiments of the Department of Biology at the University of Konstanz on the defensive
-behaviour of bee colonies\cite{hajnal2019data}. The third case study is an epidemics model; it is
-introduced in order to show the expansion of the model state-space as the system has more states
-to be encoded. All experiments are conducted in the following system:
+behaviour of bee colonies\cite{hajnal2019data}. The third case study is a stochastic SIR model of
+epidemics; it is introduced in order to show the expansion of the model state-space as the system
+has more states to be encoded. All experiments are conducted in the following system:
 \begin{itemize}
     \item Intel Xeon W-2135 processor, 64GB RAM, OpenSUSE 15.2
     \item Python 3.8.8, StormPy 1.6.3, Storm stable, PRISM 4.6
@@ -498,18 +498,18 @@ To measure the performance of RF-SMC and SMC-ABC-SMC, we measure the physical ru
     \caption{Physical runtime on Zeroconf model of different sizes.}
 \end{figure}
 \subsection{Discussion}
-The case study with bee colony observed that both simulation-based and rational-function-based
-frameworks deliver estimations close to the true parameter. In the experiments with 3 bees and 5
-bees models, the results show that the evaluation of rational functions is approximately twelve
-times less computationally expensive than the simulation-based method. However, the computational
-cost of the rational-function-based framework RF-SMC grows faster as the model state-space increases
-in size. From 15 bees model, the experiment shows that RF-SMC is approximately seven times slower
-than the simulation-based SMC-ABC-SMC, without any significant differences in estimation results. As
-the parameter models are high-dimensional (more than 3 dimensions), we do not visualize parameter
-accept regions and reject regions to investigate the parameter space further. In terms of
-performance,  the cost of rational functions evaluation grows intermittently faster from 5 bees
-model to 10 bees model. It suggests that for a model of more than 10 bees, the simulation-based
-method is preferable.
+The case study with bee colony observed that overall, the simulation-based method delivers
+estimations that are closer to the true parameter than rational-function-based frameworks. In the
+experiments with 3 bees and 5 bees models, the results show that the evaluation of rational
+functions is approximately twelve times less computationally expensive than the simulation-based
+method. However, the computational cost of the rational-function-based framework RF-SMC grows faster
+as the model state-space increases in size. From 15 bees model, the experiment shows that RF-SMC is
+approximately seven times slower than the simulation-based SMC-ABC-SMC, without any significant
+differences in estimation results. As the parameter models are high-dimensional (more than 3
+dimensions), we do not visualize parameter accept regions and reject regions to investigate the
+parameter space further. In terms of performance,  the cost of rational functions evaluation grows
+intermittently faster from 5 bees model to 10 bees model. It suggests that for a model of more than
+10 bees, the simulation-based method is preferable.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{SIR model}
@@ -791,23 +791,6 @@ We select true parameters are selected arbitrarily random to test the frameworks
     \caption{Histograms of synthetic data $D_{obs}$.}
 \end{figure}
 
-We show examples of simulating CTMC with choosen true parameters $(\alpha, \beta)$:
-\begin{figure}[H]
-    \centering
-    \begin{subfigure}{0.3\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/sir510_data.png}
-        \caption{SIR(5,1,0)}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}{0.3\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/sir1010_data.png}
-        \caption{SIR(10,1,0)}
-    \end{subfigure}
-    \caption{Histograms of synthetic data $D_{obs}$.}
-\end{figure}
-
 We show examples of examples and counter-examples with simulations of CTMC. Using Gillespie
 algorithm \cite{gillespie1976general} to simulate CTMC of selected $(\alpha, \beta)$, we show (i)
 example of the property \textit{"the number of infected individuals does not exceed half of the
@@ -924,8 +907,9 @@ Parameter synthesis results for SIR(10,1,0) model:
     \caption{ parameter synthesis results.}
 \end{figure}
 
-In the experiment with $SIR(10,1,0)$ model we can see that the rational-function-based method delivers a
-closer estimation to true parameter with higher satisfaction probability.
+In the experiment with $SIR(10,1,0)$ model we can see that the simulation-based method delivers a
+closer estimation to true parameter. However, rational-function-based method gives an estimation
+with higher satisfaction probability.
 
 \newpage
 \noindent Parameter synthesis results for SIR(15,1,0) model:
@@ -940,6 +924,10 @@ closer estimation to true parameter with higher satisfaction probability.
     \end{tabular}
     \caption{Parameter estimation results for SIR(15,1,0) model.}
 \end{table}
+In the experiment with $SIR(10,1,0)$ model we can see that the simulation-based method delivers a
+slightly closer estimation to true parameter. Rational-function-based method gives an estimation
+with higher satisfaction probability. However, overall, the estimations are comparable in terms of
+accuracy an satisfaction probability
 
 \begin{figure}[H]
     \centering

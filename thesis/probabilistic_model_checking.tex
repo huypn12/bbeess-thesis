@@ -5,18 +5,18 @@ models and properties. We also briefly present a general deterministic model che
 a specific temporal logic, namely Probabilistic Computational Tree Logic (or PCTL in short). Due to
 the state space explosion, applying a deterministic model checking algorithm is often
 computationally expensive. Therefore, we also present a simulation-based model checking, namely
-statistical model checking (or SMC in short) for bounded and unbounded path property. We also
-introduce definitions of parametric DTMC and the parameter synthesis problem, and the symbolic
-computing approach to verify parametric models.
+statistical model checking (or SMC in short) for bounded path property. We also introduce
+definitions of parametric DTMC and the parameter synthesis problem, and the symbolic computing
+approach to verify parametric models.
 
 
 \section{Markov models}
 \subsection{Discrete Time Markov chain}
 Markov models are stochastic models evolving in discrete or continuous time, which satisfy the
-\textit{memoryless property}. Memoryless property is a property of probability distributions, which
-refers to the independence of the probability distribution on its previous states. Discrete-time
-Markov chain is a Markov model of finite state-space and countable (discrete) time. In a
-discrete-time Markov chain, times between any state transition are uniform.
+\textit{memoryless property}. Memoryless property is a property of stochastic processes, which
+refers to the independence of the future states of the process on its previously visited states.
+Discrete-time Markov chain is a Markov model of discrete state-space and countable (discrete) time. In
+a discrete-time Markov chain, times between any state transition are uniform.
 \begin{definition}[Discrete Time Markov Chain \cite{baier2008principles}]
       \rm
       A \textit{Discrete-time Markov chain} (or DTMC in short) $\mathcal{M}$ is a tuple
@@ -212,16 +212,17 @@ vary and are real numbers.
       \end{align*}
 \end{definition}
 
-CTMC is a solid formalism to model systems concerning real-time properties. In this thesis,
-we transform CTMCs into DTMCs through a process of \textit{uniformization} \cite{katoen2001faster}.
+CTMC is a solid formalism to model systems concerning real-time properties. In this thesis, we
+transform CTMCs into DTMCs through a process of \textit{uniformization} \cite{katoen2001faster}.
 Uniformization discretizes a CTMC by transforming it in to a CTMC which has uniform exit rates among
-states, so that we can approximate the uniformized CTMC using a DTMC by removing the exit rates.
-Katoen \cite{katoen2001faster} shows that the uniformization of CTMC preserves the transient
-probabilities. Baier \cite{baier2002simulation} proved that the time-bounded until formulas remain
-unaffected as we transform a CTMC to its equivalent uniformized form. Through uniformization, we can
-check the time-bounded reachability property. Furthermore, transforming a CTMC to an equivalent DTMC
-allows us to obtain a symbolic form of the PCTL formula, thus enabling a more efficient evaluation
-of properties.
+states, so that we can approximate the uniformized CTMC using a DTMC by removing the exit rates, and
+modelling times between transitions by a Poisson process with rate equal to the chosen
+uniformization constant. Katoen \cite{katoen2001faster} shows that the uniformization of CTMC
+preserves the transient probabilities. Baier \cite{baier2002simulation} proved that the time-bounded
+until formulas remain unaffected as we transform a CTMC to its equivalent uniformized form. Through
+uniformization, we can check the time-bounded reachability property. Furthermore, transforming a
+CTMC to an equivalent DTMC allows us to obtain a symbolic form of the PCTL formula, thus enabling a
+more efficient evaluation of properties.
 
 \begin{definition}[CTMC uniformization \cite{katoen2001faster}]
       \rm
@@ -367,7 +368,7 @@ problem\footnote{\url{https://www-verimag.imag.fr/Statistical-Model-Checking-814
 
 
 \subsection{Statistical model checking of quantitative properties.}
-Given an \textit{approximation parameter} $\epsilon$ and a \textit{confidential parameter}
+Given an \textit{approximation parameter} $\epsilon$ and a \textit{confidence parameter}
 $\alpha$, we estimate $\hat{p}$ as an estimation of $p$ such that
 \begin{align*}
       Pr(|p-\hat{p}| \leq \epsilon) \geq 1 - \alpha
@@ -392,7 +393,8 @@ For example, given approximation parameter $\epsilon=0.01$ and confidence parame
 we obtain $N\geq 147556$. However, if we want a more precise estimation, for example
 $\epsilon=0.005$, then the total number of simulation runs $N\geq 590221$. In other words, the total
 number of simulation runs is proportional to the quadratic reciprocal of the approximation parameter
-$\epsilon$. The estimation algorithm is described in detail in \cite{herault2004approximate}.
+$\epsilon$. The estimation algorithm \textit{Approximate Probabilistic Model Checking} (APMC in
+short) is described in detail in \cite{herault2004approximate}.
 \begin{algorithm}[H]
       \caption{Statistical Model Checking, APMC method.}
       \label{alg:smc-apmc}
@@ -608,7 +610,7 @@ Katoen \cite{katoen2013model} summarizes the following methods on parameter synt
             transition labels are bounds from given intervals. The region is then checked using
             candidate region generation and checking method.
 \end{enumerate}
-In this thesis we use only symbolic model checking \cite{daws2004symbolic}.
+In this thesis we use only symbolic reachability probabilities \cite{daws2004symbolic}.
 \begin{example}[Parametric Knuth-Yao die \cite{knuth1976complexity}]
       Using the example of parametric Knuth-Yao die as in Figure \ref{fig:knuth-die-pq}, we obtain
       the following symbolic rational functions for each possible outcome of rolling the die.
@@ -642,7 +644,5 @@ $\mathcal{M}_\theta \models \Phi$.
 
 \subsection{Summary}
 This chapter introduced the essential theoretical concepts of discrete-time models, probabilistic
-temporal logic, and parameter synthesis. However, the parameter synthesis methods presented
-exhaustively search on parameter space for satisfying parameter values. In the next chapter, we
-present Bayesian inference methods for later construction of data-informed parameter synthesis
-frameworks.
+temporal logic, and parameter synthesis. In the next chapter, we present Bayesian inference methods
+for later construction of data-informed parameter synthesis frameworks.
